@@ -1,5 +1,6 @@
 package com.groupa.chickendirectfarm.product;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.groupa.chickendirectfarm.productbatch.ProductBatch;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -25,6 +26,7 @@ public class Product {
     private int quantity;
 
     @OneToMany(mappedBy = "product")
+    @JsonIgnore
     private List<ProductBatch> ProductBatches;
 
     public Product(String breed, String description, int price, String stockStatus, int quantity) {
