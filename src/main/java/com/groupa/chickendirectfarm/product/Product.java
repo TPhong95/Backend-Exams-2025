@@ -25,7 +25,7 @@ public class Product {
     private int quantity;
 
     @OneToMany(mappedBy = "product")
-    private List<ProductBatch> productOrderEvents;
+    private List<ProductBatch> ProductBatches;
 
     public Product(String breed, String description, int price, String stockStatus, int quantity) {
         this.breed = breed;
@@ -33,5 +33,14 @@ public class Product {
         this.price = price;
         this.stockStatus = stockStatus;
         this.quantity = quantity;
+    }
+
+    public Product(String breed, String description, int price, String stockStatus, int quantity, List<ProductBatch> productBatches) {
+        this.breed = breed;
+        this.description = description;
+        this.price = price;
+        this.stockStatus = stockStatus;
+        this.quantity = quantity;
+        ProductBatches = productBatches;
     }
 }
