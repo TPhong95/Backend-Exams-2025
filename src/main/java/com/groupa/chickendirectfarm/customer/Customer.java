@@ -1,6 +1,7 @@
 package com.groupa.chickendirectfarm.customer;
 
 import com.groupa.chickendirectfarm.address.Address;
+import com.groupa.chickendirectfarm.purchase.Purchase;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,4 +23,7 @@ public class Customer {
 
     @OneToMany(mappedBy = "customer")
     private List<Address> addresses;
+
+    @OneToMany(mappedBy = "customer")
+    private List<Purchase> purchases;
 }

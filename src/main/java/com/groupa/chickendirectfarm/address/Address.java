@@ -1,10 +1,13 @@
 package com.groupa.chickendirectfarm.address;
 
 import com.groupa.chickendirectfarm.customer.Customer;
+import com.groupa.chickendirectfarm.purchase.Purchase;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -23,4 +26,7 @@ public class Address {
     @ManyToOne
     @JoinColumn(name = "customer_id")
     private Customer customer;
+
+    @OneToMany(mappedBy = "address")
+    private List<Purchase> purchases;
 }
