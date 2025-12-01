@@ -1,0 +1,9 @@
+services:
+  db:
+    image: postgres:13-alpine
+    environment:
+      POSTGRES_DB: ChickenDirect
+      POSTGRES_USER: appuser
+      POSTGRES_PASSWORD: pirate
+    ports:
+      - "5432:5432"
