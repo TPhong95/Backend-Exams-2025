@@ -50,7 +50,7 @@ create sequence address_seq increment by 1 start with 1;
 create table purchase_event(
     id INTEGER primary key,
     shipped_status varchar(25),
-    purchase_date timestamp,
+    timestamp timestamp,
     purchase_id INTEGER
 );
 
