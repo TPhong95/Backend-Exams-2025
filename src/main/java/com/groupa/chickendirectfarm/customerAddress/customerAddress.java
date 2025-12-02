@@ -1,4 +1,4 @@
-package com.groupa.chickendirectfarm.address;
+package com.groupa.chickendirectfarm.customerAddress;
 
 import com.groupa.chickendirectfarm.customer.Customer;
 import com.groupa.chickendirectfarm.purchase.Purchase;
@@ -13,9 +13,9 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @Entity
-public class Address {
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "address_seq")
-    @SequenceGenerator(name = "address_seq", sequenceName = "address_seq", allocationSize = 1)
+public class customerAddress {
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "customer_address_seq")
+    @SequenceGenerator(name = "customer_address_seq", sequenceName = "customer_address_seq", allocationSize = 1)
     @Id
     private Integer id;
 
@@ -27,6 +27,6 @@ public class Address {
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
-    @OneToMany(mappedBy = "address")
+    @OneToMany(mappedBy = "customer_address")
     private List<Purchase> purchases;
 }

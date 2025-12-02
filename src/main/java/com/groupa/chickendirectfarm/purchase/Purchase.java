@@ -1,6 +1,6 @@
 package com.groupa.chickendirectfarm.purchase;
 
-import com.groupa.chickendirectfarm.address.Address;
+import com.groupa.chickendirectfarm.customerAddress.customerAddress;
 import com.groupa.chickendirectfarm.customer.Customer;
 import com.groupa.chickendirectfarm.productbatch.ProductBatch;
 import jakarta.persistence.*;
@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -30,8 +29,8 @@ public class Purchase {
 
 
     @ManyToOne
-    @JoinColumn(name = "address_id")
-    private Address address;
+    @JoinColumn(name = "customer_address_id")
+    private customerAddress customerAddress;
 
     @OneToMany (mappedBy = "purchase")
     private List<ProductBatch> ProductBatches;
