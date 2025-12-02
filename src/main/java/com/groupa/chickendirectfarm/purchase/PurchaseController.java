@@ -3,6 +3,9 @@ package com.groupa.chickendirectfarm.purchase;
 import com.groupa.chickendirectfarm.purchaseBatch.PurchaseBatch;
 import com.groupa.chickendirectfarm.purchaseBatch.PurchaseBatchDto;
 import com.groupa.chickendirectfarm.purchaseBatch.PurchaseBatchService;
+import com.groupa.chickendirectfarm.purchaseevent.PurchaseEvent;
+import com.groupa.chickendirectfarm.purchaseevent.PurchaseEventService;
+import com.groupa.chickendirectfarm.purchaseevent.PurchaseEventDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,9 +16,11 @@ import java.util.List;
 public class PurchaseController {
     private final PurchaseService purchaseService;
     private final PurchaseBatchService purchaseBatchService;
-    public PurchaseController(PurchaseService purchaseService, PurchaseBatchService purchaseBatchService) {
+    private final PurchaseEventService purchaseEventService;
+    public PurchaseController(PurchaseService purchaseService, PurchaseBatchService purchaseBatchService, PurchaseEventService purchaseEventService) {
         this.purchaseService = purchaseService;
         this.purchaseBatchService = purchaseBatchService;
+        this.purchaseEventService = purchaseEventService;
     }
 
     @PostMapping
@@ -58,6 +63,27 @@ public class PurchaseController {
     public ResponseEntity<String> deletePurchaseBatchById(@PathVariable int id){
         purchaseBatchService.deletePurchaseBatchById(id);
         return ResponseEntity.ok("Purchase Batch with id " + id + " was deleted");
+    }
+
+    @PostMapping("/event")
+    public ResponseEntity<PurchaseEvent> savePurchaseEvent(@RequestBody PurchaseEventDto purchaseEventDto ){
+        return ResponseEntity.ok(purchaseEventService.save(purchaseEventDto));
+    }
+
+    @GetMapping("/event/{id}")
+    public ResponseEntity<PurchaseEvent> getPurchaseEventById(@PathVariable int id){
+        return ResponseEntity.ok(purchaseEventService.getPurchaseEventById(id));
+    }
+
+    @GetMapping("/event")
+    public ResponseEntity<List<PurchaseEvent>> getAllPurchaseEvents(){
+        return ResponseEntity.ok(purchaseEventService.getAllPurchaseEvents());
+    }
+
+    @DeleteMapping("/event/{id}")
+    public ResponseEntity<String> deletePurchaseEventById(@PathVariable int id){
+        purchaseEventService.deletePurchaseEventById(id);
+        return ResponseEntity.ok("Purchase Event with id " + id + " was deleted");
     }
 
 }
