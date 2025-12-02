@@ -23,6 +23,7 @@ public class PurchaseBatch {
 
     @ManyToOne()
     @JoinColumn(name = "purchase_id")
+    @JsonIgnoreProperties("purchaseBatches")
     private Purchase purchase;
 
     @ManyToOne()

@@ -1,5 +1,6 @@
 package com.groupa.chickendirectfarm.customerAddress;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.groupa.chickendirectfarm.customer.Customer;
 import com.groupa.chickendirectfarm.purchase.Purchase;
 import jakarta.persistence.*;
@@ -24,9 +25,11 @@ public class CustomerAddress {
 
     @ManyToOne
     @JoinColumn(name = "customer_id")
+    @JsonIgnoreProperties("customerAddress")
     private Customer customer;
 
     @OneToMany(mappedBy = "customerAddress")
+    @JsonIgnoreProperties("customerAddress")
     private List<Purchase> purchases;
 
     public CustomerAddress(String streetName, String phone, String email, Customer customer) {
