@@ -23,6 +23,7 @@ create table purchase(
     id INTEGER primary key,
     shipping_charge INTEGER,
     total_price INTEGER,
+    customer_id INTEGER,
     customer_address_id INTEGER,
     address_id INTEGER
 );

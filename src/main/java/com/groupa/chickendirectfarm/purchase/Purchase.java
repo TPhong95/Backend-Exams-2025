@@ -1,6 +1,6 @@
 package com.groupa.chickendirectfarm.purchase;
 
-import com.groupa.chickendirectfarm.customerAddress.customerAddress;
+import com.groupa.chickendirectfarm.customerAddress.CustomerAddress;
 import com.groupa.chickendirectfarm.customer.Customer;
 import com.groupa.chickendirectfarm.productbatch.ProductBatch;
 import jakarta.persistence.*;
@@ -29,8 +29,8 @@ public class Purchase {
 
     @ManyToOne
     @JoinColumn(name = "customer_address_id")
-    private customerAddress customerAddress;
+    private CustomerAddress customerAddress;
 
     @OneToMany (mappedBy = "purchase")
-    private List<ProductBatch> ProductBatches;
+    private List<ProductBatch> productBatches;
 }

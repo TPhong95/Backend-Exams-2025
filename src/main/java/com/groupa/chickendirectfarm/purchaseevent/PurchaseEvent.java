@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 public class PurchaseEvent {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "purchase_event_seq")
-    @SequenceGenerator(name = "purchase_event_seq", sequenceName = "purchase_event_seq")
+    @SequenceGenerator(name = "purchase_event_seq", sequenceName = "purchase_event_seq", allocationSize = 1)
     private int id;
     private LocalDateTime purchaseDate;
     private ShippedStatus shippedStatus;
