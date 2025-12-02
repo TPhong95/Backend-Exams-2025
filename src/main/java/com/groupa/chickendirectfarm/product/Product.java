@@ -1,12 +1,15 @@
 package com.groupa.chickendirectfarm.product;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.groupa.chickendirectfarm.productbatch.ProductBatch;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -26,8 +29,8 @@ public class Product {
     private int quantity;
 
     @OneToMany(mappedBy = "product")
-    @JsonIgnore
-    private List<ProductBatch> ProductBatches;
+    @JsonIgnoreProperties("product")
+    private List<ProductBatch> productBatches;
 
     public Product(String breed, String description, int price, String stockStatus, int quantity) {
         this.breed = breed;
@@ -35,14 +38,6 @@ public class Product {
         this.price = price;
         this.stockStatus = stockStatus;
         this.quantity = quantity;
-    }
-
-    public Product(String breed, String description, int price, String stockStatus, int quantity, List<ProductBatch> productBatches) {
-        this.breed = breed;
-        this.description = description;
-        this.price = price;
-        this.stockStatus = stockStatus;
-        this.quantity = quantity;
-        ProductBatches = productBatches;
+        this.productBatches = null;
     }
 }

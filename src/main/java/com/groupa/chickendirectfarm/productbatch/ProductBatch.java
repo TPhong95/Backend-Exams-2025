@@ -1,6 +1,7 @@
 package com.groupa.chickendirectfarm.productbatch;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.groupa.chickendirectfarm.product.Product;
 import com.groupa.chickendirectfarm.purchase.Purchase;
 import jakarta.persistence.*;
@@ -26,6 +27,7 @@ public class ProductBatch {
 
     @ManyToOne()
     @JoinColumn(name = "product_id")
+    @JsonIgnoreProperties("productBatches")
     private Product product;
 
     public ProductBatch(int quantity, int totalPrice, Purchase purchase, Product product) {
