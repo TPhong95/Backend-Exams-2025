@@ -39,11 +39,11 @@ public class Purchase {
     private List<PurchaseBatch> purchaseBatches;
     @JsonIgnoreProperties("purchase")
 
-    public Purchase(int shippingCharge, long totalPrice, Customer customer, CustomerAddress customerAddress) {
+    public Purchase(int shippingCharge, long totalPrice, Customer customer, CustomerAddress customerAddress, List<PurchaseBatch> purchaseBatches) {
         this.shippingCharge = shippingCharge;
         this.totalPrice = totalPrice;
         this.customer = customer;
         this.customerAddress = customerAddress;
+        this.purchaseBatches = purchaseBatches;
     }
-
 }
