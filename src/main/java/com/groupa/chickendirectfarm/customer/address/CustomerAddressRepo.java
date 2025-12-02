@@ -1,4 +1,4 @@
-package com.groupa.chickendirectfarm.customerAddress;
+package com.groupa.chickendirectfarm.customer.address;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

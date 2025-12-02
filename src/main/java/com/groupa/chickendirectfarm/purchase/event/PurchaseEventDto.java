@@ -1,4 +1,4 @@
-package com.groupa.chickendirectfarm.purchaseevent;
+package com.groupa.chickendirectfarm.purchase.event;
 
 import java.time.LocalDateTime;
 

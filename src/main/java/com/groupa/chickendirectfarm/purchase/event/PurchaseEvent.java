@@ -1,4 +1,4 @@
-package com.groupa.chickendirectfarm.purchaseevent;
+package com.groupa.chickendirectfarm.purchase.event;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.groupa.chickendirectfarm.purchase.Purchase;

@@ -1,7 +1,7 @@
 package com.groupa.chickendirectfarm.purchase;
 
 import com.groupa.chickendirectfarm.customer.CustomerService;
-import com.groupa.chickendirectfarm.customerAddress.CustomerAddressService;
+import com.groupa.chickendirectfarm.customer.address.CustomerAddressService;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

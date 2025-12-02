@@ -1,4 +1,4 @@
-package com.groupa.chickendirectfarm.customerAddress;
+package com.groupa.chickendirectfarm.customer.address;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.groupa.chickendirectfarm.customer.Customer;

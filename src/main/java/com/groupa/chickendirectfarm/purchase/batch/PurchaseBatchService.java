@@ -1,4 +1,4 @@
-package com.groupa.chickendirectfarm.purchaseBatch;
+package com.groupa.chickendirectfarm.purchase.batch;
 
 import com.groupa.chickendirectfarm.product.ProductService;
 import com.groupa.chickendirectfarm.purchase.PurchaseService;

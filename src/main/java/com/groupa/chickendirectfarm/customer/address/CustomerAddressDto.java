@@ -1,4 +1,4 @@
-package com.groupa.chickendirectfarm.customerAddress;
+package com.groupa.chickendirectfarm.customer.address;
 
 public record CustomerAddressDto(
         int id,

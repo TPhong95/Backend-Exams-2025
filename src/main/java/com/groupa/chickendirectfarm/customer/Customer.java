@@ -2,7 +2,7 @@ package com.groupa.chickendirectfarm.customer;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.groupa.chickendirectfarm.customerAddress.CustomerAddress;
+import com.groupa.chickendirectfarm.customer.address.CustomerAddress;
 import com.groupa.chickendirectfarm.purchase.Purchase;
 import jakarta.persistence.*;
 import lombok.Getter;

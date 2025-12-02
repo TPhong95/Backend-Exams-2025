@@ -1,7 +1,7 @@
 package com.groupa.chickendirectfarm.customer;
-import com.groupa.chickendirectfarm.customerAddress.CustomerAddress;
-import com.groupa.chickendirectfarm.customerAddress.CustomerAddressDto;
-import com.groupa.chickendirectfarm.customerAddress.CustomerAddressService;
+import com.groupa.chickendirectfarm.customer.address.CustomerAddress;
+import com.groupa.chickendirectfarm.customer.address.CustomerAddressDto;
+import com.groupa.chickendirectfarm.customer.address.CustomerAddressService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

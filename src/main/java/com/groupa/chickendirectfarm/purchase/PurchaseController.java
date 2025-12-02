@@ -1,11 +1,11 @@
 package com.groupa.chickendirectfarm.purchase;
 
-import com.groupa.chickendirectfarm.purchaseBatch.PurchaseBatch;
-import com.groupa.chickendirectfarm.purchaseBatch.PurchaseBatchDto;
-import com.groupa.chickendirectfarm.purchaseBatch.PurchaseBatchService;
-import com.groupa.chickendirectfarm.purchaseevent.PurchaseEvent;
-import com.groupa.chickendirectfarm.purchaseevent.PurchaseEventService;
-import com.groupa.chickendirectfarm.purchaseevent.PurchaseEventDto;
+import com.groupa.chickendirectfarm.purchase.batch.PurchaseBatch;
+import com.groupa.chickendirectfarm.purchase.batch.PurchaseBatchDto;
+import com.groupa.chickendirectfarm.purchase.batch.PurchaseBatchService;
+import com.groupa.chickendirectfarm.purchase.event.PurchaseEvent;
+import com.groupa.chickendirectfarm.purchase.event.PurchaseEventService;
+import com.groupa.chickendirectfarm.purchase.event.PurchaseEventDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
