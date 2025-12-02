@@ -1,7 +1,7 @@
 package com.groupa.chickendirectfarm.product;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.groupa.chickendirectfarm.productbatch.PurchaseBatch;
+import com.groupa.chickendirectfarm.purchaseBatch.PurchaseBatch;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

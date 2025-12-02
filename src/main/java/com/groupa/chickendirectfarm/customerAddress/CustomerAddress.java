@@ -28,4 +28,11 @@ public class CustomerAddress {
 
     @OneToMany(mappedBy = "customerAddress")
     private List<Purchase> purchases;
+
+    public CustomerAddress(String streetName, String phone, String email, Customer customer) {
+        this.streetName = streetName;
+        this.phone = phone;
+        this.email = email;
+        this.customer = customer;
+    }
 }

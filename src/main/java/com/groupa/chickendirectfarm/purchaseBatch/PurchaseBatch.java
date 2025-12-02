@@ -1,4 +1,4 @@
-package com.groupa.chickendirectfarm.productbatch;
+package com.groupa.chickendirectfarm.purchaseBatch;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

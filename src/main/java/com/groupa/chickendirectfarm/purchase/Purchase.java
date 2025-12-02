@@ -2,7 +2,7 @@ package com.groupa.chickendirectfarm.purchase;
 
 import com.groupa.chickendirectfarm.customerAddress.CustomerAddress;
 import com.groupa.chickendirectfarm.customer.Customer;
-import com.groupa.chickendirectfarm.productbatch.PurchaseBatch;
+import com.groupa.chickendirectfarm.purchaseBatch.PurchaseBatch;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,5 +32,14 @@ public class Purchase {
     private CustomerAddress customerAddress;
 
     @OneToMany (mappedBy = "purchase")
+
     private List<PurchaseBatch> purchaseBatches;
+
+    public Purchase(int shippingCharge, long totalPrice, Customer customer, CustomerAddress customerAddress) {
+        this.shippingCharge = shippingCharge;
+        this.totalPrice = totalPrice;
+        this.customer = customer;
+        this.customerAddress = customerAddress;
+    }
+
 }

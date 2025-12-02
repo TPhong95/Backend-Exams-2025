@@ -22,7 +22,7 @@ public class Customer {
     private String name;
 
     @OneToMany(mappedBy = "customer")
-    private List<CustomerAddress> CustomerAddresses;
+    private List<CustomerAddress> customerAddresses;
 
     @OneToMany(mappedBy = "customer")
     private List<Purchase> purchases;
