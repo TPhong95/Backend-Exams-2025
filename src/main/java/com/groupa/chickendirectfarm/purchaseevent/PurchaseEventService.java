@@ -7,12 +7,10 @@ import java.util.List;
 
 @Service
 public class PurchaseEventService {
-    private final PurchaseEventDto purchaseEventDto;
     private final PurchaseEventRepo purchaseEventRepo;
     private final PurchaseService purchaseService;
 
-    public PurchaseEventService(PurchaseEventDto purchaseEventDto, PurchaseEventRepo purchaseEventRepo, PurchaseService purchaseService) {
-        this.purchaseEventDto = purchaseEventDto;
+    public PurchaseEventService(PurchaseEventRepo purchaseEventRepo, PurchaseService purchaseService) {
         this.purchaseEventRepo = purchaseEventRepo;
         this.purchaseService = purchaseService;
     }
