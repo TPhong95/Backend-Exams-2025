@@ -9,7 +9,7 @@ quantity INTEGER
 create sequence product_seq increment by 1 start with 1;
 
 
-create table product_batch(
+create table purchase_batch(
     id INTEGER primary key,
     quantity INTEGER,
     total_price INTEGER,

@@ -13,9 +13,9 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ProductBatch {
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "product_batch_seq")
-    @SequenceGenerator(name = "product_batch_seq", sequenceName = "product_batch_seq", allocationSize = 1)
+public class PurchaseBatch {
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "purchase_batch_seq")
+    @SequenceGenerator(name = "purchase_batch_seq", sequenceName = "purchase_batch_seq", allocationSize = 1)
     @Id
     private int id;
     private int quantity;
@@ -27,10 +27,10 @@ public class ProductBatch {
 
     @ManyToOne()
     @JoinColumn(name = "product_id")
-    @JsonIgnoreProperties("productBatches")
+    @JsonIgnoreProperties("purchaseBatches")
     private Product product;
 
-    public ProductBatch(int quantity, int totalPrice, Purchase purchase, Product product) {
+    public PurchaseBatch(int quantity, int totalPrice, Purchase purchase, Product product) {
         this.quantity = quantity;
         this.totalPrice = totalPrice;
         this.purchase = purchase;
