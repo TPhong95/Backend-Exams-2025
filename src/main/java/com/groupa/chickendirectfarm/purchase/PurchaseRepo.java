@@ -1,8 +1,8 @@
-package com.groupa.chickendirectfarm.product;
+package com.groupa.chickendirectfarm.purchase;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ProductRepo extends JpaRepository <Product, Integer> {
+public interface PurchaseRepo extends JpaRepository<Purchase, Integer> {
 }
