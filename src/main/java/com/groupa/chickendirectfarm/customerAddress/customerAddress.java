@@ -17,8 +17,7 @@ public class customerAddress {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "customer_address_seq")
     @SequenceGenerator(name = "customer_address_seq", sequenceName = "customer_address_seq", allocationSize = 1)
     @Id
-    private Integer id;
-
+    private int id;
     private String streetName;
     private String phone;
     private String email;

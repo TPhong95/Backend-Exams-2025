@@ -7,7 +7,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 import java.util.List;
 
 
@@ -19,7 +18,7 @@ public class Purchase {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "purchase_seq")
     @SequenceGenerator(name = "purchase_seq", sequenceName = "purchase_seq", allocationSize = 1)
-    private Integer id;
+    private int id;
     private int shippingCharge;
     private long totalPrice;
 

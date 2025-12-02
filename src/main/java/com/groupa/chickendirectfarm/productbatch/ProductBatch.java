@@ -17,7 +17,7 @@ public class ProductBatch {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "product_batch_seq")
     @SequenceGenerator(name = "product_batch_seq", sequenceName = "product_batch_seq", allocationSize = 1)
     @Id
-    private Integer id;
+    private int id;
     private int quantity;
     private int totalPrice;
 
