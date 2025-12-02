@@ -1,5 +1,6 @@
 package com.groupa.chickendirectfarm.purchase;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.groupa.chickendirectfarm.customerAddress.CustomerAddress;
 import com.groupa.chickendirectfarm.customer.Customer;
 import com.groupa.chickendirectfarm.purchaseBatch.PurchaseBatch;
@@ -24,16 +25,19 @@ public class Purchase {
 
     @ManyToOne
     @JoinColumn(name = "customer_id")
+    @JsonIgnoreProperties("purchase")
     private Customer customer;
 
 
     @ManyToOne
     @JoinColumn(name = "customer_address_id")
+    @JsonIgnoreProperties("purchase")
     private CustomerAddress customerAddress;
 
     @OneToMany (mappedBy = "purchase")
 
     private List<PurchaseBatch> purchaseBatches;
+    @JsonIgnoreProperties("purchase")
 
     public Purchase(int shippingCharge, long totalPrice, Customer customer, CustomerAddress customerAddress) {
         this.shippingCharge = shippingCharge;

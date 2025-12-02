@@ -41,11 +41,11 @@ create table customer_address (
     id INTEGER primary key,
     street_name varchar(255),
     phone varchar(25),
-    email varchar(25),
+    email varchar(255),
     customer_id INTEGER
 );
 
-create sequence address_seq increment by 1 start with 1;
+create sequence customer_address_seq increment by 1 start with 1;
 
 create table purchase_event(
     id INTEGER primary key,
