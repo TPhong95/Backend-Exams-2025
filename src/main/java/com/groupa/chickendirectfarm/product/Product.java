@@ -36,7 +36,7 @@ public class Product {
     private List<PurchaseBatch> purchaseBatches;
 
     @OneToMany(mappedBy = "product")
-    @JsonIgnoreProperties("product")
+    @JsonIgnoreProperties({"product"})
     private List<ProductEvent> productEvents;
 
     public Product(String breed, String description, int price, StockStatus stockStatus, int quantity) {

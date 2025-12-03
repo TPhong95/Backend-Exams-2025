@@ -10,26 +10,13 @@ import java.util.List;
 @Service
 public class PurchaseService {
     private final PurchaseRepo purchaseRepo;
-    private final CustomerService customerService;
-    private final CustomerAddressService customerAddressService;
 
-    public PurchaseService(PurchaseRepo purchaseRepo, CustomerService customerService, CustomerAddressService customerAddressService) {
+    public PurchaseService(PurchaseRepo purchaseRepo) {
         this.purchaseRepo = purchaseRepo;
-        this.customerService = customerService;
-        this.customerAddressService = customerAddressService;
     }
 
-    public Purchase save(PurchaseDto purchaseDto) {
-        var customerId = customerService.getCustomerById(purchaseDto.customerId());
-        var customerAddressId = customerAddressService.getCustomerAddressById(purchaseDto.customerAddressId());
-        var newPurchase = new Purchase(
-                purchaseDto.shippingCharge(),
-                purchaseDto.totalPrice(),
-                customerId,
-                customerAddressId,
-                new ArrayList<>()
-        );
-        return purchaseRepo.save(newPurchase);
+    public Purchase save(Purchase purchase) {
+        return purchaseRepo.save(purchase);
     }
 
     public Purchase getPurchaseById(int id){

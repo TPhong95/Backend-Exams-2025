@@ -11,6 +11,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -38,10 +40,12 @@ public class Purchase {
     @JsonIgnoreProperties({"purchases", "customer"})
     private CustomerAddress customerAddress;
 
-    @OneToMany (mappedBy = "purchase")
-    @JsonIgnoreProperties("purchase")
-    private List<PurchaseBatch> purchaseBatches;
-
+    @OneToMany(
+            mappedBy = "purchase",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<PurchaseBatch> purchaseBatches = new ArrayList<>();
     @JsonIgnoreProperties("purchase")
     @OneToMany(mappedBy = "purchase")
     private List<PurchaseEvent> purchaseEvents;

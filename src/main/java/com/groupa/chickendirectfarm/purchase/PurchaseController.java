@@ -15,17 +15,20 @@ import java.util.List;
 @RequestMapping("/api/purchase")
 public class PurchaseController {
     private final PurchaseService purchaseService;
+    private final PurchaseOrchestrationService purchaseOrchestrationService;
     private final PurchaseBatchService purchaseBatchService;
     private final PurchaseEventService purchaseEventService;
-    public PurchaseController(PurchaseService purchaseService, PurchaseBatchService purchaseBatchService, PurchaseEventService purchaseEventService) {
+    public PurchaseController(PurchaseService purchaseService, PurchaseBatchService purchaseBatchService, PurchaseEventService purchaseEventService, PurchaseOrchestrationService purchaseOrchestrationService, PurchaseBatchService purchaseBatchService1, PurchaseEventService purchaseEventService1) {
         this.purchaseService = purchaseService;
-        this.purchaseBatchService = purchaseBatchService;
-        this.purchaseEventService = purchaseEventService;
+        this.purchaseOrchestrationService = purchaseOrchestrationService;
+        this.purchaseBatchService = purchaseBatchService1;
+        this.purchaseEventService = purchaseEventService1;
     }
 
-    @PostMapping
+    @PostMapping()
     public ResponseEntity<Purchase> savePurchase(@RequestBody PurchaseDto purchaseDto){
-        return ResponseEntity.ok(purchaseService.save(purchaseDto));
+        Purchase purchase = purchaseOrchestrationService.create(purchaseDto);
+        return ResponseEntity.ok(purchaseService.save(purchase));
     }
 
     @GetMapping("/{id}")
@@ -43,7 +46,7 @@ public class PurchaseController {
         purchaseService.deletePurchaseById(id);
         return ResponseEntity.ok("Purchase with id " + id + " was deleted");
     }
-
+/*
     @PostMapping("/batch")
     public ResponseEntity<PurchaseBatch> savePurchaseBatch(@RequestBody PurchaseBatchDto purchaseBatchDto){
         return ResponseEntity.ok(purchaseBatchService.save(purchaseBatchDto));
@@ -65,6 +68,8 @@ public class PurchaseController {
         return ResponseEntity.ok("Purchase Batch with id " + id + " was deleted");
     }
 
+
+ */
     @PostMapping("/event")
     public ResponseEntity<PurchaseEvent> savePurchaseEvent(@RequestBody PurchaseEventDto purchaseEventDto ){
         return ResponseEntity.ok(purchaseEventService.save(purchaseEventDto));

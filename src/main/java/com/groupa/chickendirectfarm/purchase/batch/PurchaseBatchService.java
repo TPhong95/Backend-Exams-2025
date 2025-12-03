@@ -16,7 +16,7 @@ public class PurchaseBatchService {
         this.purchaseService = purchaseService;
         this.productService = productService;
     }
-
+/*
 public PurchaseBatch save(PurchaseBatchDto purchaseBatchDto){
         var purchaseId = purchaseService.getPurchaseById(purchaseBatchDto.purchaseId());
         var productId = productService.getProductById(purchaseBatchDto.productId());
@@ -24,6 +24,8 @@ public PurchaseBatch save(PurchaseBatchDto purchaseBatchDto){
         return purchaseBatchRepo.save(newPurchaseBatch);
 }
 
+
+ */
 public PurchaseBatch getPurchaseBatchById(int id){
     return purchaseBatchRepo.findById(id).orElseThrow();
 }
