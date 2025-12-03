@@ -1,6 +1,7 @@
 package com.groupa.chickendirectfarm.customer.address;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.groupa.chickendirectfarm.customer.Customer;
 import com.groupa.chickendirectfarm.purchase.Purchase;
 import jakarta.persistence.*;
@@ -14,6 +15,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @Entity
+@JsonPropertyOrder({"id", "streetName", "phone", "email", "customer", "customerAddress"})
 public class CustomerAddress {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "customer_address_seq")
     @SequenceGenerator(name = "customer_address_seq", sequenceName = "customer_address_seq", allocationSize = 1)
@@ -25,7 +27,7 @@ public class CustomerAddress {
 
     @ManyToOne
     @JoinColumn(name = "customer_id")
-    @JsonIgnoreProperties("customerAddress")
+    @JsonIgnoreProperties("customerAddresses")
     private Customer customer;
 
     @OneToMany(mappedBy = "customerAddress")

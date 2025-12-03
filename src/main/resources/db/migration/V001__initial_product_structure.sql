@@ -17,7 +17,7 @@ create table purchase_batch(
     product_id INTEGER
 );
 
-create sequence product_batch_seq increment by 1 start with 1;
+create sequence purchase_batch_seq increment by 1 start with 1;
 
 create table purchase(
     id INTEGER primary key,

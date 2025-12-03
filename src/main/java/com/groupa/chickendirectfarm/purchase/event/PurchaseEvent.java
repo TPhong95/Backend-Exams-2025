@@ -1,6 +1,7 @@
 package com.groupa.chickendirectfarm.purchase.event;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.groupa.chickendirectfarm.purchase.Purchase;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @Entity
+@JsonPropertyOrder({"id", "purchase", "shippedStatus", "timestamp"})
 public class PurchaseEvent {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "purchase_event_seq")
@@ -24,7 +26,7 @@ public class PurchaseEvent {
 
     @ManyToOne
     @JoinColumn(name = "purchase_id")
-    @JsonIgnoreProperties("purchaseEvents")
+    @JsonIgnoreProperties({"purchaseEvents", "shippingCharge", "totalPrice", "customer", "customerAddress", "purchaseBatches"})
     private Purchase purchase;
 
     public PurchaseEvent(ShippedStatus shippedStatus, Purchase purchase) {

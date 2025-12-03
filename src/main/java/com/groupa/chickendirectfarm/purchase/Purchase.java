@@ -1,6 +1,8 @@
 package com.groupa.chickendirectfarm.purchase;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.groupa.chickendirectfarm.customer.address.CustomerAddress;
 import com.groupa.chickendirectfarm.customer.Customer;
 import com.groupa.chickendirectfarm.purchase.batch.PurchaseBatch;
@@ -16,6 +18,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @Entity
+@JsonPropertyOrder({"id", "customer", "customerAddress", "purchaseBatches", "shippingCharge", "totalPrice"})
 public class Purchase {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "purchase_seq")
@@ -26,19 +29,18 @@ public class Purchase {
 
     @ManyToOne
     @JoinColumn(name = "customer_id")
-    @JsonIgnoreProperties("purchase")
+    @JsonIgnoreProperties({"customerAddresses", "purchases"})
     private Customer customer;
 
 
     @ManyToOne
     @JoinColumn(name = "customer_address_id")
-    @JsonIgnoreProperties("purchase")
+    @JsonIgnoreProperties({"purchases", "customer"})
     private CustomerAddress customerAddress;
 
     @OneToMany (mappedBy = "purchase")
     @JsonIgnoreProperties("purchase")
     private List<PurchaseBatch> purchaseBatches;
-
 
     @JsonIgnoreProperties("purchase")
     @OneToMany(mappedBy = "purchase")

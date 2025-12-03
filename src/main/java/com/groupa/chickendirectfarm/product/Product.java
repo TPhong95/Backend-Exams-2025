@@ -1,6 +1,7 @@
 package com.groupa.chickendirectfarm.product;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.groupa.chickendirectfarm.product.event.ProductEvent;
 import com.groupa.chickendirectfarm.purchase.batch.PurchaseBatch;
 import jakarta.persistence.*;
@@ -14,6 +15,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @Entity
+@JsonPropertyOrder({"id", "breed", "description", "price", "quantity", "stockStatus", "purchaseBatches"})
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "product_seq")
