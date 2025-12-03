@@ -22,7 +22,7 @@ public class CustomerAddressService {
     }
 
     public CustomerAddress getCustomerAddressById(int id){
-        return customerAddressRepo.findById(id).orElse(null);
+        return customerAddressRepo.findById(id).orElseThrow();
     }
 
     public List<CustomerAddress> getAllCustomerAddresses(){

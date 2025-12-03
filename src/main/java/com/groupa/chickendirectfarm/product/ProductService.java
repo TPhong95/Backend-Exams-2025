@@ -16,7 +16,7 @@ public class ProductService {
     }
 
     public Product getProductById(int id){
-        return productRepo.findById(id).orElse(null);
+        return productRepo.findById(id).orElseThrow();
     }
 
     public List<Product> getAllProducts(){

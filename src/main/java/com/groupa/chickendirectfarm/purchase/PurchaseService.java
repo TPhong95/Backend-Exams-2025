@@ -33,7 +33,7 @@ public class PurchaseService {
     }
 
     public Purchase getPurchaseById(int id){
-        return purchaseRepo.findById(id).orElse(null);
+        return purchaseRepo.findById(id).orElseThrow();
     }
 
     public List<Purchase> getAllPurchases(){

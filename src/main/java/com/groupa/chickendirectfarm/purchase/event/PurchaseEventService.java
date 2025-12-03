@@ -16,12 +16,14 @@ public class PurchaseEventService {
     }
 
     public PurchaseEvent save(PurchaseEventDto purchaseEventDto){
-        var purchaseId = purchaseService.getPurchaseById(purchaseEventDto.purchaseId());
-        var newPurchaseEvent = new PurchaseEvent(purchaseEventDto.timestamp(), purchaseEventDto.shippedStatus(), purchaseId);
+        var purchase = purchaseService.getPurchaseById(purchaseEventDto.purchaseId());
+        var newPurchaseEvent = new PurchaseEvent(
+                purchaseEventDto.shippedStatus(),
+                purchase);
         return purchaseEventRepo.save(newPurchaseEvent);
     }
     public PurchaseEvent getPurchaseEventById(int id){
-        return purchaseEventRepo.findById(id).orElse(null);
+        return purchaseEventRepo.findById(id).orElseThrow();
     }
 
     public List<PurchaseEvent> getAllPurchaseEvents(){
@@ -30,5 +32,9 @@ public class PurchaseEventService {
 
     public void deletePurchaseEventById(int id){
         purchaseEventRepo.deleteById(id);
+    }
+
+    public List<PurchaseEvent> getEventsByPurchaseId(int purchaseId) {
+        return purchaseEventRepo.findByPurchaseId(purchaseId);
     }
 }

@@ -18,14 +18,16 @@ public class PurchaseEvent {
     @SequenceGenerator(name = "purchase_event_seq", sequenceName = "purchase_event_seq", allocationSize = 1)
     private int id;
     private LocalDateTime timestamp;
+
+    @Enumerated(EnumType.STRING)
     private ShippedStatus shippedStatus;
 
     @ManyToOne
     @JoinColumn(name = "purchase_id")
-    @JsonIgnoreProperties("purchase_event")
+    @JsonIgnoreProperties("purchaseEvents")
     private Purchase purchase;
 
-    public PurchaseEvent(LocalDateTime timeStamp, ShippedStatus shippedStatus, Purchase purchase) {
+    public PurchaseEvent(ShippedStatus shippedStatus, Purchase purchase) {
         this.timestamp = LocalDateTime.now();
         this.shippedStatus = shippedStatus;
         this.purchase = purchase;

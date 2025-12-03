@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.groupa.chickendirectfarm.customer.address.CustomerAddress;
 import com.groupa.chickendirectfarm.customer.Customer;
 import com.groupa.chickendirectfarm.purchase.batch.PurchaseBatch;
+import com.groupa.chickendirectfarm.purchase.event.PurchaseEvent;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -35,9 +36,14 @@ public class Purchase {
     private CustomerAddress customerAddress;
 
     @OneToMany (mappedBy = "purchase")
-
-    private List<PurchaseBatch> purchaseBatches;
     @JsonIgnoreProperties("purchase")
+    private List<PurchaseBatch> purchaseBatches;
+
+
+    @JsonIgnoreProperties("purchase")
+    @OneToMany(mappedBy = "purchase")
+    private List<PurchaseEvent> purchaseEvents;
+
 
     public Purchase(int shippingCharge, long totalPrice, Customer customer, CustomerAddress customerAddress, List<PurchaseBatch> purchaseBatches) {
         this.shippingCharge = shippingCharge;

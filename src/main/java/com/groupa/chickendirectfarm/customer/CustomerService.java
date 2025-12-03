@@ -16,7 +16,7 @@ public class CustomerService {
     }
 
     public Customer getCustomerById(int id){
-        return customerRepo.findById(id).orElse(null);
+        return customerRepo.findById(id).orElseThrow();
     }
 
     public List<Customer> getAllCustomers(){

@@ -9,6 +9,7 @@ import com.groupa.chickendirectfarm.customer.address.CustomerAddressRepo;
 import com.groupa.chickendirectfarm.product.Breed;
 import com.groupa.chickendirectfarm.product.Product;
 import com.groupa.chickendirectfarm.product.ProductRepo;
+import com.groupa.chickendirectfarm.product.StockStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.Random;
@@ -42,7 +43,7 @@ public class TestData {
                     breed.toString(),
                     "The color of the chicken is " + breed.toString().toLowerCase() + ".",
                     new Random().nextInt(50, 200),
-                    "IN_STOCK",
+                    StockStatus.IN_STOCK,
                     new Random().nextInt(100, 200)
 
             ));

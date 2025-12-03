@@ -25,7 +25,7 @@ public PurchaseBatch save(PurchaseBatchDto purchaseBatchDto){
 }
 
 public PurchaseBatch getPurchaseBatchById(int id){
-    return purchaseBatchRepo.findById(id).orElse(null);
+    return purchaseBatchRepo.findById(id).orElseThrow();
 }
 
 public List<PurchaseBatch> getAllPurchaseBatches(){
