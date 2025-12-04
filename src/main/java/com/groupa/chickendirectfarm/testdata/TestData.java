@@ -55,12 +55,14 @@ public class TestData {
 
         List<Breed> breeds = new ArrayList<>(Arrays.asList(Breed.values()));
         Collections.shuffle(breeds, random);
-        int howManyBreeds = random.nextInt(breeds.size()+1);
+
+
+        int howManyBreeds = random.nextInt(1, breeds.size()+1);
         List<Breed> randomBreeds = breeds.subList(0, Math.min(howManyBreeds, breeds.size()));
 
         for (Breed breed : randomBreeds) {
             Product product = testProducts.get(breed);
-            int amountOfChickens = random.nextInt(11);
+            int amountOfChickens = random.nextInt(1, 11);
 
             PurchaseBatch chickenBatch = purchaseBatchRepo.save(new PurchaseBatch(
                     amountOfChickens,
