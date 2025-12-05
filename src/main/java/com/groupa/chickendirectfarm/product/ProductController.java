@@ -3,7 +3,6 @@ package com.groupa.chickendirectfarm.product;
 import com.groupa.chickendirectfarm.exception.notfound.ProductNotFoundException;
 import com.groupa.chickendirectfarm.product.event.ProductEvent;
 import com.groupa.chickendirectfarm.product.event.ProductEventService;
-import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

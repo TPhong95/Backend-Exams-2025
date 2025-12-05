@@ -28,6 +28,7 @@ public class Purchase {
     private int id;
     private int shippingCharge;
     private long totalPrice;
+    private int totalQuantity;
 
     @ManyToOne
     @JoinColumn(name = "customer_id")
@@ -52,9 +53,8 @@ public class Purchase {
     private List<PurchaseEvent> purchaseEvents;
 
 
-    public Purchase(int shippingCharge, long totalPrice, Customer customer, CustomerAddress customerAddress, List<PurchaseBatch> purchaseBatches) {
+    public Purchase(int shippingCharge, Customer customer, CustomerAddress customerAddress, List<PurchaseBatch> purchaseBatches) {
         this.shippingCharge = shippingCharge;
-        this.totalPrice = totalPrice;
         this.customer = customer;
         this.customerAddress = customerAddress;
         this.purchaseBatches = purchaseBatches;

@@ -32,6 +32,8 @@ public class PurchaseOrchestrationService {
         this.customerAddressService = customerAddressService;
     }
 
+
+
     @Transactional
     public Purchase create(PurchaseDto purchaseDto) {
         Customer customer = customerService.getCustomerById(purchaseDto.customerId());
@@ -43,10 +45,10 @@ public class PurchaseOrchestrationService {
         purchase.setCustomer(customer);
         purchase.setCustomerAddress(customerAddress);
         purchase.setShippingCharge(50);
-        purchase.setTotalPrice(0);
 
         List<PurchaseBatch> batches = new ArrayList<>();
         long totalPrice = 0;
+        int totalQuantity = 0;
 
 
         for (PurchaseBatchDto batchDto : purchaseDto.purchaseBatchesDto()) {
@@ -67,12 +69,13 @@ public class PurchaseOrchestrationService {
 
             batches.add(batch);
             totalPrice += batchTotal;
+            totalQuantity += batchDto.quantity();
     }
         purchase.setPurchaseBatches(batches);
         purchase.setTotalPrice(totalPrice + purchase.getShippingCharge());
+        purchase.setTotalQuantity(totalQuantity);
 
         return purchaseService.save(purchase);
-
 
 }
 }

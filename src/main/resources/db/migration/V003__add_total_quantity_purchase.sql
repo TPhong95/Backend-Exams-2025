@@ -1,0 +1,1 @@
+alter table purchase add total_quantity INTEGER not null default 0;

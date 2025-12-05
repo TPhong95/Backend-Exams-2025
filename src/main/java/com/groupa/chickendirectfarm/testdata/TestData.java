@@ -47,9 +47,9 @@ public class TestData {
         createCustomers();
         createAddresses();
         createProducts();
-        createPurchases();
+        //createPurchases();
     }
-
+/*
     private List<PurchaseBatch> createPurchaseBatches(Purchase purchase) {
         List<PurchaseBatch> purchaseBatches = new ArrayList<>();
 
@@ -83,7 +83,6 @@ public class TestData {
 
             Purchase purchase = new Purchase(
                     shippingPrice,
-                    shippingPrice,
                     customerAddress.getCustomer(),
                     customerAddress,
                     null
@@ -103,6 +102,8 @@ public class TestData {
             purchaseRepo.save(purchase);
         }
     }
+
+ */
 
 
     private void createProducts() {
