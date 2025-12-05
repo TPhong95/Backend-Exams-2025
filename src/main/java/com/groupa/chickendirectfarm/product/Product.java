@@ -1,7 +1,6 @@
 package com.groupa.chickendirectfarm.product;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.groupa.chickendirectfarm.product.event.ProductEvent;
 import com.groupa.chickendirectfarm.purchase.batch.PurchaseBatch;
@@ -37,7 +36,7 @@ public class Product {
     private List<PurchaseBatch> purchaseBatches;
 
     @OneToMany(mappedBy = "product")
-    @JsonIgnoreProperties({"product"})
+    @JsonIgnore
     private List<ProductEvent> productEvents;
 
     public Product(String breed, String description, int price, StockStatus stockStatus, int quantity) {

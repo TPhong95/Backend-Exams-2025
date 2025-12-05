@@ -46,8 +46,9 @@ public class Purchase {
             orphanRemoval = true
     )
     private List<PurchaseBatch> purchaseBatches = new ArrayList<>();
-    @JsonIgnoreProperties("purchase")
+
     @OneToMany(mappedBy = "purchase")
+    @JsonIgnore
     private List<PurchaseEvent> purchaseEvents;
 
 
