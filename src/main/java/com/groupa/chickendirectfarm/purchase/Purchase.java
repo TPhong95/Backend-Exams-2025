@@ -52,11 +52,12 @@ public class Purchase {
     @JsonIgnore
     private List<PurchaseEvent> purchaseEvents;
 
-
+ /*
     public Purchase(int shippingCharge, Customer customer, CustomerAddress customerAddress, List<PurchaseBatch> purchaseBatches) {
         this.shippingCharge = shippingCharge;
         this.customer = customer;
         this.customerAddress = customerAddress;
         this.purchaseBatches = purchaseBatches;
     }
+     */
 }

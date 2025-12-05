@@ -10,11 +10,9 @@ import com.groupa.chickendirectfarm.product.Breed;
 import com.groupa.chickendirectfarm.product.Product;
 import com.groupa.chickendirectfarm.product.ProductRepo;
 import com.groupa.chickendirectfarm.product.StockStatus;
-import com.groupa.chickendirectfarm.purchase.Purchase;
 import com.groupa.chickendirectfarm.purchase.PurchaseDto;
 import com.groupa.chickendirectfarm.purchase.PurchaseOrchestrationService;
 import com.groupa.chickendirectfarm.purchase.PurchaseRepo;
-import com.groupa.chickendirectfarm.purchase.batch.PurchaseBatch;
 import com.groupa.chickendirectfarm.purchase.batch.PurchaseBatchDto;
 import com.groupa.chickendirectfarm.purchase.batch.PurchaseBatchRepo;
 import org.springframework.stereotype.Service;
@@ -123,7 +121,10 @@ public class TestData {
     private void createCustomers() {
         for (int i = 0; i < 20; i++) {
             customerRepo.save(new Customer(
-            faker.company().name()));
+            faker.company().name(),
+            faker.phoneNumber().phoneNumber(),
+            faker.internet().emailAddress()
+            ));
         }
     }
 
