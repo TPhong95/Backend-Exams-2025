@@ -1,5 +1,6 @@
 package com.groupa.chickendirectfarm.product;
 
+import com.groupa.chickendirectfarm.exception.notfound.ProductNotFoundException;
 import com.groupa.chickendirectfarm.product.event.ProductEvent;
 import com.groupa.chickendirectfarm.product.event.ProductEventService;
 import org.apache.coyote.Response;
@@ -25,12 +26,16 @@ public class ProductController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Product> getProductById(@PathVariable int id){
-        return ResponseEntity.ok(productService.getProductById(id));
+        var result = productService.getProductById(id);
+        if (result == null){throw new ProductNotFoundException("Product not found");}
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping()
     public ResponseEntity<List<Product>> getAllProducts(){
-        return ResponseEntity.ok(productService.getAllProducts());
+        var result = productService.getAllProducts();
+        if (result == null){throw new ProductNotFoundException("Products not found");}
+        return ResponseEntity.ok(result);
     }
 
     @DeleteMapping("/{id}")
