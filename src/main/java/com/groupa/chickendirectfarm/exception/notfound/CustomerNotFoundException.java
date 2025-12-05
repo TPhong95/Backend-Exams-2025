@@ -1,4 +1,4 @@
-package com.groupa.chickendirectfarm.exception;
+package com.groupa.chickendirectfarm.exception.notfound;
 
 public class CustomerNotFoundException extends BasicNotFoundException {
     public CustomerNotFoundException(String message) {

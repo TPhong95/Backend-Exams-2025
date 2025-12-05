@@ -2,11 +2,15 @@ package com.groupa.chickendirectfarm.customer;
 import com.groupa.chickendirectfarm.customer.address.CustomerAddress;
 import com.groupa.chickendirectfarm.customer.address.CustomerAddressDto;
 import com.groupa.chickendirectfarm.customer.address.CustomerAddressService;
+import com.groupa.chickendirectfarm.exception.notfound.CustomerAddressNotFoundException;
+import com.groupa.chickendirectfarm.exception.notfound.CustomerNotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/customer")
 
@@ -20,16 +24,22 @@ public class CustomerController {
 
     @PostMapping()
     public ResponseEntity<Customer> saveCustomer(@RequestBody Customer customer){
-        return ResponseEntity.ok(customerService.save(customer));
+        var result = customerService.save(customer);
+        log.info(result.toString());
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Customer> getCustomerById(@PathVariable int id){
-        return ResponseEntity.ok(customerService.getCustomerById(id));
+        var result = customerService.getCustomerById(id);
+        log.info(result.toString());
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping()
     public ResponseEntity<List<Customer>> getAllCustomers(){
+        var result = customerService.getAllCustomers();
+        if (result == null){throw new CustomerNotFoundException("Customers not found");}
         return ResponseEntity.ok(customerService.getAllCustomers());
     }
 
@@ -46,11 +56,15 @@ public class CustomerController {
 
     @GetMapping("/address/{id}")
     public ResponseEntity<CustomerAddress> getCustomerAddressById(@PathVariable int id){
-        return ResponseEntity.ok(customerAddressService.getCustomerAddressById(id));
+        var result = customerAddressService.getCustomerAddressById(id);
+        if (result == null){throw new CustomerNotFoundException("Customer address not found");}
+        return ResponseEntity.ok(result);
     }
     @GetMapping("/address")
     public ResponseEntity<List<CustomerAddress>> getAllCustomerAddresses(){
-        return ResponseEntity.ok(customerAddressService.getAllCustomerAddresses());
+        var result = customerAddressService.getAllCustomerAddresses();
+        if (result == null){throw new CustomerAddressNotFoundException("Customers addresses not found");}
+        return ResponseEntity.ok(result);
     }
 
     @DeleteMapping("/address/{id}")

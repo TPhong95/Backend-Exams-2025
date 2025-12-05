@@ -1,7 +1,6 @@
 package com.groupa.chickendirectfarm.purchase;
 
-import com.groupa.chickendirectfarm.purchase.batch.PurchaseBatch;
-import com.groupa.chickendirectfarm.purchase.batch.PurchaseBatchDto;
+import com.groupa.chickendirectfarm.exception.notfound.PurchaseNotFoundException;
 import com.groupa.chickendirectfarm.purchase.batch.PurchaseBatchService;
 import com.groupa.chickendirectfarm.purchase.event.PurchaseEvent;
 import com.groupa.chickendirectfarm.purchase.event.PurchaseEventService;
@@ -33,12 +32,16 @@ public class PurchaseController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Purchase> getPurchaseById(@PathVariable int id){
-        return ResponseEntity.ok(purchaseService.getPurchaseById(id));
+        var result = purchaseService.getPurchaseById(id);
+        if (result == null){throw new PurchaseNotFoundException("Purchase not found");}
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping()
     public ResponseEntity<List<Purchase>> getAllPurchases(){
-        return ResponseEntity.ok(purchaseService.getAllPurchases());
+        var  result = purchaseService.getAllPurchases();
+        if (result == null){throw new PurchaseNotFoundException("Purchases not found");}
+        return ResponseEntity.ok(result);
     }
 
     @DeleteMapping("/{id}")
