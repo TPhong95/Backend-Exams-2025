@@ -11,8 +11,11 @@ import com.groupa.chickendirectfarm.product.Product;
 import com.groupa.chickendirectfarm.product.ProductRepo;
 import com.groupa.chickendirectfarm.product.StockStatus;
 import com.groupa.chickendirectfarm.purchase.Purchase;
+import com.groupa.chickendirectfarm.purchase.PurchaseDto;
+import com.groupa.chickendirectfarm.purchase.PurchaseOrchestrationService;
 import com.groupa.chickendirectfarm.purchase.PurchaseRepo;
 import com.groupa.chickendirectfarm.purchase.batch.PurchaseBatch;
+import com.groupa.chickendirectfarm.purchase.batch.PurchaseBatchDto;
 import com.groupa.chickendirectfarm.purchase.batch.PurchaseBatchRepo;
 import org.springframework.stereotype.Service;
 
@@ -29,17 +32,19 @@ public class TestData {
     private final CustomerAddressRepo customerAddressRepo;
     private final PurchaseRepo purchaseRepo;
     private final PurchaseBatchRepo purchaseBatchRepo;
+    private final PurchaseOrchestrationService purchaseOrchestrationService;
 
     private final CustomerService customerService;
 
     private Map<Breed, Product> testProducts = new HashMap<>();
 
-    public TestData(CustomerRepo customerRepo, ProductRepo productRepo, CustomerAddressRepo customerAddressRepo, PurchaseRepo purchaseRepo, PurchaseBatchRepo purchaseBatchRepo, CustomerService customerService) {
+    public TestData(CustomerRepo customerRepo, ProductRepo productRepo, CustomerAddressRepo customerAddressRepo, PurchaseRepo purchaseRepo, PurchaseBatchRepo purchaseBatchRepo, PurchaseOrchestrationService purchaseOrchestrationService, CustomerService customerService) {
         this.customerRepo = customerRepo;
         this.productRepo = productRepo;
         this.customerAddressRepo = customerAddressRepo;
         this.purchaseRepo = purchaseRepo;
         this.purchaseBatchRepo = purchaseBatchRepo;
+        this.purchaseOrchestrationService = purchaseOrchestrationService;
         this.customerService = customerService;
     }
 
@@ -47,11 +52,11 @@ public class TestData {
         createCustomers();
         createAddresses();
         createProducts();
-        //createPurchases();
+        createTestPurchases();
     }
-/*
-    private List<PurchaseBatch> createPurchaseBatches(Purchase purchase) {
-        List<PurchaseBatch> purchaseBatches = new ArrayList<>();
+
+    private List<PurchaseBatchDto> createTestPurchaseBatches() {
+        List<PurchaseBatchDto> testPurchaseBatches = new ArrayList<>();
 
         List<Breed> breeds = new ArrayList<>(Arrays.asList(Breed.values()));
         Collections.shuffle(breeds, random);
@@ -64,52 +69,37 @@ public class TestData {
             Product product = testProducts.get(breed);
             int amountOfChickens = random.nextInt(1, 11);
 
-            PurchaseBatch chickenBatch = purchaseBatchRepo.save(new PurchaseBatch(
+            PurchaseBatchDto chickenBatch = new PurchaseBatchDto(
                     amountOfChickens,
-                    amountOfChickens * product.getPrice(),
-                    purchase,
-                    product
-            ));
-            purchaseBatches.add(chickenBatch);
+                    product.getId()
+            );
+            testPurchaseBatches.add(chickenBatch);
         }
-        return purchaseBatches;
+        return testPurchaseBatches;
     }
 
-    private void createPurchases() {
+    private void createTestPurchases() {
         for (int i = 0; i < 50; i++) {
             CustomerAddress customerAddress = customerAddressRepo.findById(random.nextInt(100)+1).orElseThrow();
-
             int shippingPrice = random.nextInt(200, 500) +1;
 
-            Purchase purchase = new Purchase(
+            PurchaseDto purchaseDto = new PurchaseDto(
+                    customerAddress.getCustomer().getId(),
+                    customerAddress.getId(),
                     shippingPrice,
-                    customerAddress.getCustomer(),
-                    customerAddress,
-                    null
+                    createTestPurchaseBatches()
             );
-            purchase = purchaseRepo.save(purchase);
 
-            List<PurchaseBatch> listOfChickenBatches = createPurchaseBatches(purchase);
-            purchase.setPurchaseBatches(listOfChickenBatches);
-
-            long totalPrice = purchase.getTotalPrice();
-
-            for (PurchaseBatch ChickenBatch : listOfChickenBatches) {
-                totalPrice += ChickenBatch.getTotalPrice();
-            }
-            purchase.setTotalPrice(totalPrice);
-
-            purchaseRepo.save(purchase);
+            var testPurchase = purchaseOrchestrationService.create(purchaseDto);
+            purchaseRepo.save(testPurchase);
         }
     }
-
- */
 
 
     private void createProducts() {
         for (Breed breed : Breed.values()) {
             Product product = productRepo.save(new Product(
-                    breed.toString(),
+                    breed,
                     "The color of the chicken is " + breed.toString().toLowerCase() + ".",
                     random.nextInt(50, 200) + 1,
                     StockStatus.IN_STOCK,

@@ -22,7 +22,8 @@ public class Product {
     @SequenceGenerator(name = "product_seq", sequenceName = "product_seq", allocationSize = 1)
     private int id;
 
-    private String breed;
+    @Enumerated(EnumType.STRING)
+    private Breed breed;
     private String description;
     private int price;
 
@@ -39,7 +40,9 @@ public class Product {
     @JsonIgnore
     private List<ProductEvent> productEvents;
 
-    public Product(String breed, String description, int price, StockStatus stockStatus, int quantity) {
+
+
+    public Product(Breed breed, String description, int price, StockStatus stockStatus, int quantity) {
         this.breed = breed;
         this.description = description;
         this.price = price;

@@ -33,14 +33,13 @@ public class PurchaseController {
     @GetMapping("/{id}")
     public ResponseEntity<Purchase> getPurchaseById(@PathVariable int id){
         var result = purchaseService.getPurchaseById(id);
-        if (result == null){throw new PurchaseNotFoundException("Purchase not found");}
         return ResponseEntity.ok(result);
     }
 
     @GetMapping()
     public ResponseEntity<List<Purchase>> getAllPurchases(){
         var  result = purchaseService.getAllPurchases();
-        if (result == null){throw new PurchaseNotFoundException("Purchases not found");}
+        if (result.isEmpty()) {return ResponseEntity.notFound().build();}
         return ResponseEntity.ok(result);
     }
 

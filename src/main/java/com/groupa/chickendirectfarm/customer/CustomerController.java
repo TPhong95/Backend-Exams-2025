@@ -39,7 +39,7 @@ public class CustomerController {
     @GetMapping()
     public ResponseEntity<List<Customer>> getAllCustomers(){
         var result = customerService.getAllCustomers();
-        if (result == null){throw new CustomerNotFoundException("Customers not found");}
+        if (result.isEmpty()) {return ResponseEntity.noContent().build();}
         return ResponseEntity.ok(customerService.getAllCustomers());
     }
 
@@ -57,13 +57,12 @@ public class CustomerController {
     @GetMapping("/address/{id}")
     public ResponseEntity<CustomerAddress> getCustomerAddressById(@PathVariable int id){
         var result = customerAddressService.getCustomerAddressById(id);
-        if (result == null){throw new CustomerNotFoundException("Customer address not found");}
         return ResponseEntity.ok(result);
     }
     @GetMapping("/address")
     public ResponseEntity<List<CustomerAddress>> getAllCustomerAddresses(){
         var result = customerAddressService.getAllCustomerAddresses();
-        if (result == null){throw new CustomerAddressNotFoundException("Customers addresses not found");}
+        if (result.isEmpty()) {return ResponseEntity.notFound().build();}
         return ResponseEntity.ok(result);
     }
 

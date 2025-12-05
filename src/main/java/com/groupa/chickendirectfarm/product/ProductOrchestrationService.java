@@ -35,7 +35,7 @@ public class ProductOrchestrationService {
         }
         product.setStockStatus(newStatus);
 
-        productService.save(product);
+        productService.update(product);
 
         productEventService.save(newStatus, product);
     }

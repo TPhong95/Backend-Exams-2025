@@ -7,5 +7,6 @@ import java.util.List;
 public record PurchaseDto(
         int customerId,
         int customerAddressId,
+        int shippingPrice,
         List<PurchaseBatchDto> purchaseBatchesDto
 ) {}

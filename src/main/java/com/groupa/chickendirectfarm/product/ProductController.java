@@ -26,14 +26,13 @@ public class ProductController {
     @GetMapping("/{id}")
     public ResponseEntity<Product> getProductById(@PathVariable int id){
         var result = productService.getProductById(id);
-        if (result == null){throw new ProductNotFoundException("Product not found");}
         return ResponseEntity.ok(result);
     }
 
     @GetMapping()
     public ResponseEntity<List<Product>> getAllProducts(){
         var result = productService.getAllProducts();
-        if (result == null){throw new ProductNotFoundException("Products not found");}
+        if (result.isEmpty()) {return ResponseEntity.notFound().build();}
         return ResponseEntity.ok(result);
     }
 

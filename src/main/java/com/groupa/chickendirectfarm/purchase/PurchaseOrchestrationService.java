@@ -44,7 +44,7 @@ public class PurchaseOrchestrationService {
         Purchase purchase = new Purchase();
         purchase.setCustomer(customer);
         purchase.setCustomerAddress(customerAddress);
-        purchase.setShippingCharge(50);
+        purchase.setShippingCharge(purchaseDto.shippingPrice());
 
         List<PurchaseBatch> batches = new ArrayList<>();
         long totalPrice = 0;

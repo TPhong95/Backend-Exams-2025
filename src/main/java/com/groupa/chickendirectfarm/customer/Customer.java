@@ -22,7 +22,6 @@ public class Customer {
     @SequenceGenerator(name = "customer_seq", sequenceName = "customer_seq", allocationSize = 1)
     @Id
     private int id;
-
     private String name;
 
     @OneToMany(mappedBy = "customer")
