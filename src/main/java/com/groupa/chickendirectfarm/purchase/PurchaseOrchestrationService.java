@@ -4,6 +4,7 @@ import com.groupa.chickendirectfarm.customer.Customer;
 import com.groupa.chickendirectfarm.customer.CustomerService;
 import com.groupa.chickendirectfarm.customer.address.CustomerAddress;
 import com.groupa.chickendirectfarm.customer.address.CustomerAddressService;
+import com.groupa.chickendirectfarm.exception.DuplicateProductInPurchaseException;
 import com.groupa.chickendirectfarm.product.Product;
 import com.groupa.chickendirectfarm.product.ProductOrchestrationService;
 import com.groupa.chickendirectfarm.product.ProductService;
@@ -13,7 +14,9 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class PurchaseOrchestrationService {
@@ -50,8 +53,11 @@ public class PurchaseOrchestrationService {
         long totalPrice = 0;
         int totalQuantity = 0;
 
-
+        Set<Integer> productIds = new HashSet<>();
         for (PurchaseBatchDto batchDto : purchaseDto.purchaseBatchesDto()) {
+            if (!productIds.add(batchDto.productId())) {
+                throw new DuplicateProductInPurchaseException("Duplicate product in purchase batch with id: " + batchDto.productId());
+            }
             Product product = productService. getProductById(batchDto. productId());
 
             productOrchestrationService.decreaseStock(

@@ -1,6 +1,6 @@
 package com.groupa.chickendirectfarm.product;
 
-import com.groupa.chickendirectfarm.exception.OutOfStockExpection;
+import com.groupa.chickendirectfarm.exception.OutOfStockException;
 import com.groupa.chickendirectfarm.product.event.ProductEventService;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -19,7 +19,7 @@ public class ProductOrchestrationService {
         Product product = productService.getProductById(productId);
 
         if (product. getQuantity() < quantity) {
-            throw new OutOfStockExpection(
+            throw new OutOfStockException(
                     "Not enough stock!  Available: " + product.getQuantity() +
                             ", requested: " + quantity
             );

@@ -1,6 +1,8 @@
 package com.groupa.chickendirectfarm.exception;
 
+import com.groupa.chickendirectfarm.exception.alreadyexist.CustomerAddressAlreadyExistException;
 import com.groupa.chickendirectfarm.exception.alreadyexist.CustomerAlreadyExistException;
+import com.groupa.chickendirectfarm.exception.alreadyexist.ProductAlreadyExistsException;
 import com.groupa.chickendirectfarm.exception.notfound.CustomerAddressNotFoundException;
 import com.groupa.chickendirectfarm.exception.notfound.CustomerNotFoundException;
 import com.groupa.chickendirectfarm.exception.notfound.ProductNotFoundException;
@@ -18,8 +20,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class ErrorHandler {
 
 
-    @ExceptionHandler(OutOfStockExpection.class)
-     public ResponseEntity<String> handleOutOfStockException(OutOfStockExpection e) {
+    @ExceptionHandler(OutOfStockException.class)
+     public ResponseEntity<String> handleOutOfStockException(OutOfStockException e) {
         log.warn(e.getMessage());
          return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
      }
@@ -50,6 +52,30 @@ public class ErrorHandler {
 
     @ExceptionHandler(CustomerAlreadyExistException.class)
     public ResponseEntity<String> handleCustomerAlreadyExistException(CustomerAlreadyExistException e) {
+        log.warn(e.getMessage());
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(CustomerAddressAlreadyExistException.class)
+    public ResponseEntity<String>  handleCustomerAddressAlreadyExistException(CustomerAddressAlreadyExistException e) {
+        log.warn(e.getMessage());
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(ProductAlreadyExistsException.class)
+    public ResponseEntity<String> handleProductAlreadyExistException(ProductAlreadyExistsException e) {
+        log.warn(e.getMessage());
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(DuplicateProductInPurchaseException.class)
+    public ResponseEntity<String> handleDuplicateProductInPurchaseException(DuplicateProductInPurchaseException e) {
+        log.warn(e.getMessage());
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(CustomerHasPurchasesException.class)
+    public ResponseEntity<String> handleCustomerHasPurchasesException(CustomerHasPurchasesException e) {
         log.warn(e.getMessage());
         return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
     }

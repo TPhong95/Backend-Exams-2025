@@ -1,5 +1,6 @@
 package com.groupa.chickendirectfarm.customer;
 
+import com.groupa.chickendirectfarm.exception.CustomerHasPurchasesException;
 import com.groupa.chickendirectfarm.exception.alreadyexist.CustomerAlreadyExistException;
 import com.groupa.chickendirectfarm.exception.notfound.CustomerNotFoundException;
 import org.springframework.stereotype.Service;
@@ -29,8 +30,9 @@ public class CustomerService {
     }
 
     public void deleteCustomerById(int id){
-        if(!customerRepo.existsById(id)){
-            throw new CustomerNotFoundException("Customer with id " + id + " not found.");
+        Customer customer = getCustomerById(id);
+        if(customer.getPurchases() == null || customer.getPurchases().isEmpty()){
+            throw new CustomerHasPurchasesException("Customer with id " + id + " has purchases.");
         }
         customerRepo.deleteById(id);
     }
