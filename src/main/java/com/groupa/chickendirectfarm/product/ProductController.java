@@ -53,7 +53,4 @@ public class ProductController {
         return ResponseEntity.ok(productEventService.getAllProductEvents());
     }
 
-
-
-
 }

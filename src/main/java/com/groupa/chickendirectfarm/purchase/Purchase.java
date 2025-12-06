@@ -49,7 +49,7 @@ public class Purchase {
     private List<PurchaseBatch> purchaseBatches = new ArrayList<>();
 
     @OneToMany(mappedBy = "purchase")
-    @JsonIgnore
+    @JsonIgnoreProperties("purchase")
     private List<PurchaseEvent> purchaseEvents;
 
  /*

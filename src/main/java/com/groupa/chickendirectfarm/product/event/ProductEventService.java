@@ -9,7 +9,9 @@ import java.util.List;
 @Service
 public class ProductEventService {
     private final ProductEventRepo productEventRepo;
+
     public ProductEventService(ProductEventRepo productEventRepo) {
+
         this.productEventRepo = productEventRepo;
     }
 

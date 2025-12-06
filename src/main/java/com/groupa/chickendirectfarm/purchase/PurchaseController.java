@@ -1,6 +1,5 @@
 package com.groupa.chickendirectfarm.purchase;
 
-import com.groupa.chickendirectfarm.exception.notfound.PurchaseNotFoundException;
 import com.groupa.chickendirectfarm.purchase.batch.PurchaseBatchService;
 import com.groupa.chickendirectfarm.purchase.event.PurchaseEvent;
 import com.groupa.chickendirectfarm.purchase.event.PurchaseEventService;
@@ -74,7 +73,7 @@ public class PurchaseController {
  */
     @PostMapping("/event")
     public ResponseEntity<PurchaseEvent> savePurchaseEvent(@RequestBody PurchaseEventDto purchaseEventDto ){
-        return ResponseEntity.ok(purchaseEventService.save(purchaseEventDto));
+        return ResponseEntity.ok(purchaseEventService.updatePurchaseEvent(purchaseEventDto));
     }
 
     @GetMapping("/event/{id}")

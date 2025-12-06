@@ -10,6 +10,8 @@ import com.groupa.chickendirectfarm.product.ProductOrchestrationService;
 import com.groupa.chickendirectfarm.product.ProductService;
 import com.groupa.chickendirectfarm.purchase.batch.PurchaseBatch;
 import com.groupa.chickendirectfarm.purchase.batch.PurchaseBatchDto;
+import com.groupa.chickendirectfarm.purchase.event.PurchaseEventService;
+import com.groupa.chickendirectfarm.purchase.event.ShippedStatus;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -25,14 +27,16 @@ public class PurchaseOrchestrationService {
     private final ProductOrchestrationService productOrchestrationService;
     private final CustomerService customerService;
     private final CustomerAddressService customerAddressService;
+    private final PurchaseEventService purchaseEventService;
 
 
-    public PurchaseOrchestrationService(PurchaseService purchaseService, ProductService productService, ProductOrchestrationService productOrchestrationService, CustomerService customerService, CustomerAddressService customerAddressService) {
+    public PurchaseOrchestrationService(PurchaseService purchaseService, ProductService productService, ProductOrchestrationService productOrchestrationService, CustomerService customerService, CustomerAddressService customerAddressService, PurchaseEventService purchaseEventService) {
         this.purchaseService = purchaseService;
         this.productService = productService;
         this.productOrchestrationService = productOrchestrationService;
         this.customerService = customerService;
         this.customerAddressService = customerAddressService;
+        this.purchaseEventService = purchaseEventService;
     }
 
 
@@ -77,6 +81,7 @@ public class PurchaseOrchestrationService {
             totalPrice += batchTotal;
             totalQuantity += batchDto.quantity();
     }
+        purchaseEventService.save(ShippedStatus.NOT_SHIPPED, purchase);
         purchase.setPurchaseBatches(batches);
         purchase.setTotalPrice(totalPrice + purchase.getShippingCharge());
         purchase.setTotalQuantity(totalQuantity);

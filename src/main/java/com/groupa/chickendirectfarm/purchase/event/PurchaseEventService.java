@@ -1,5 +1,6 @@
 package com.groupa.chickendirectfarm.purchase.event;
 
+import com.groupa.chickendirectfarm.purchase.Purchase;
 import com.groupa.chickendirectfarm.purchase.PurchaseService;
 import org.springframework.stereotype.Service;
 
@@ -15,13 +16,20 @@ public class PurchaseEventService {
         this.purchaseService = purchaseService;
     }
 
-    public PurchaseEvent save(PurchaseEventDto purchaseEventDto){
-        var purchase = purchaseService.getPurchaseById(purchaseEventDto.purchaseId());
-        var newPurchaseEvent = new PurchaseEvent(
-                purchaseEventDto.shippedStatus(),
-                purchase);
-        return purchaseEventRepo.save(newPurchaseEvent);
+
+
+    public PurchaseEvent updatePurchaseEvent(PurchaseEventDto purchaseEventDto){
+
+        PurchaseEvent purchaseEvent = new PurchaseEvent(purchaseEventDto.shippedStatus(), purchaseService.getPurchaseById(purchaseEventDto.purchaseId()));
+        return purchaseEventRepo.save(purchaseEvent);
     }
+
+
+    public PurchaseEvent save(ShippedStatus shippedStatus, Purchase purchase){
+        PurchaseEvent purchaseEvent = new PurchaseEvent(shippedStatus, purchase);
+        return purchaseEventRepo.save(purchaseEvent);
+    }
+
     public PurchaseEvent getPurchaseEventById(int id){
         return purchaseEventRepo.findById(id).orElseThrow();
     }
