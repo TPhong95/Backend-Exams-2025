@@ -9,23 +9,10 @@ import java.util.List;
 @Service
 public class PurchaseBatchService {
     private final PurchaseBatchRepo purchaseBatchRepo;
-    private final PurchaseService purchaseService;
-    private final ProductService productService;
-    public PurchaseBatchService(PurchaseBatchRepo purchaseBatchRepo, PurchaseService purchaseService, ProductService productService) {
+    public PurchaseBatchService(PurchaseBatchRepo purchaseBatchRepo) {
         this.purchaseBatchRepo = purchaseBatchRepo;
-        this.purchaseService = purchaseService;
-        this.productService = productService;
     }
-/*
-public PurchaseBatch save(PurchaseBatchDto purchaseBatchDto){
-        var purchaseId = purchaseService.getPurchaseById(purchaseBatchDto.purchaseId());
-        var productId = productService.getProductById(purchaseBatchDto.productId());
-        var newPurchaseBatch = new PurchaseBatch(purchaseBatchDto.quantity(), purchaseBatchDto.totalPrice(), purchaseId, productId);
-        return purchaseBatchRepo.save(newPurchaseBatch);
-}
 
-
- */
 public PurchaseBatch getPurchaseBatchById(int id){
     return purchaseBatchRepo.findById(id).orElseThrow();
 }

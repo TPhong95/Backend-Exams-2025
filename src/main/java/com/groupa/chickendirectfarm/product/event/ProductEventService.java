@@ -15,8 +15,9 @@ public class ProductEventService {
         this.productEventRepo = productEventRepo;
     }
 
-public ProductEvent save(StockStatus stockStatus, Product product){
-        ProductEvent productEvent = new ProductEvent(stockStatus, product);
+public ProductEvent save(StockStatus stockStatus, Product product, int incomingQuantity, int previousQuantity, ProductEventAction productEventAction){
+        ProductEvent productEvent = new ProductEvent(stockStatus, product, incomingQuantity, previousQuantity, productEventAction);
+        productEvent.setNewQuantity(previousQuantity + incomingQuantity);
         return productEventRepo.save(productEvent);
 }
 

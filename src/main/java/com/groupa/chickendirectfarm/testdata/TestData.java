@@ -6,10 +6,8 @@ import com.groupa.chickendirectfarm.customer.CustomerRepo;
 import com.groupa.chickendirectfarm.customer.CustomerService;
 import com.groupa.chickendirectfarm.customer.address.CustomerAddress;
 import com.groupa.chickendirectfarm.customer.address.CustomerAddressRepo;
-import com.groupa.chickendirectfarm.product.Breed;
-import com.groupa.chickendirectfarm.product.Product;
-import com.groupa.chickendirectfarm.product.ProductRepo;
-import com.groupa.chickendirectfarm.product.StockStatus;
+import com.groupa.chickendirectfarm.product.*;
+import com.groupa.chickendirectfarm.product.event.ProductEventAction;
 import com.groupa.chickendirectfarm.purchase.PurchaseDto;
 import com.groupa.chickendirectfarm.purchase.PurchaseOrchestrationService;
 import com.groupa.chickendirectfarm.purchase.PurchaseRepo;
@@ -33,10 +31,11 @@ public class TestData {
     private final PurchaseOrchestrationService purchaseOrchestrationService;
 
     private final CustomerService customerService;
+    private final ProductOrchestrationService productOrchestrationService;
 
     private Map<Breed, Product> testProducts = new HashMap<>();
 
-    public TestData(CustomerRepo customerRepo, ProductRepo productRepo, CustomerAddressRepo customerAddressRepo, PurchaseRepo purchaseRepo, PurchaseBatchRepo purchaseBatchRepo, PurchaseOrchestrationService purchaseOrchestrationService, CustomerService customerService) {
+    public TestData(CustomerRepo customerRepo, ProductRepo productRepo, CustomerAddressRepo customerAddressRepo, PurchaseRepo purchaseRepo, PurchaseBatchRepo purchaseBatchRepo, PurchaseOrchestrationService purchaseOrchestrationService, CustomerService customerService, ProductOrchestrationService productOrchestrationService) {
         this.customerRepo = customerRepo;
         this.productRepo = productRepo;
         this.customerAddressRepo = customerAddressRepo;
@@ -44,6 +43,7 @@ public class TestData {
         this.purchaseBatchRepo = purchaseBatchRepo;
         this.purchaseOrchestrationService = purchaseOrchestrationService;
         this.customerService = customerService;
+        this.productOrchestrationService = productOrchestrationService;
     }
 
     public void createTestData() {
@@ -96,14 +96,15 @@ public class TestData {
 
     private void createProducts() {
         for (Breed breed : Breed.values()) {
+            var quantity = random.nextInt(500, 1000) + 1;
             Product product = productRepo.save(new Product(
                     breed,
                     "The color of the chicken is " + breed.toString().toLowerCase() + ".",
                     random.nextInt(50, 200) + 1,
-                    StockStatus.IN_STOCK,
-                    random.nextInt(500, 1000) + 1
+                    0
             ));
             testProducts.put(breed, product);
+            productOrchestrationService.increaseStock(product.getId(), quantity, ProductEventAction.RESTOCK);
         }
     }
 

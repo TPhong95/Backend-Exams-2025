@@ -27,8 +27,6 @@ public class Product {
     private String description;
     private int price;
 
-    @Enumerated(EnumType.STRING)
-    private StockStatus stockStatus;
 
     private int quantity;
 
@@ -37,16 +35,15 @@ public class Product {
     private List<PurchaseBatch> purchaseBatches;
 
     @OneToMany(mappedBy = "product")
-    @JsonIgnore
+    @OrderBy("timestamp DESC")
     private List<ProductEvent> productEvents;
 
 
 
-    public Product(Breed breed, String description, int price, StockStatus stockStatus, int quantity) {
+    public Product(Breed breed, String description, int price, int quantity) {
         this.breed = breed;
         this.description = description;
         this.price = price;
-        this.stockStatus = stockStatus;
         this.quantity = quantity;
     }
 }

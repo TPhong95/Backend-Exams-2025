@@ -50,6 +50,7 @@ public class Purchase {
 
     @OneToMany(mappedBy = "purchase")
     @JsonIgnoreProperties("purchase")
+    @OrderBy("timestamp DESC")
     private List<PurchaseEvent> purchaseEvents;
 
  /*

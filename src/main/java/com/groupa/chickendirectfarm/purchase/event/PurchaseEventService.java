@@ -9,21 +9,10 @@ import java.util.List;
 @Service
 public class PurchaseEventService {
     private final PurchaseEventRepo purchaseEventRepo;
-    private final PurchaseService purchaseService;
 
-    public PurchaseEventService(PurchaseEventRepo purchaseEventRepo, PurchaseService purchaseService) {
+    public PurchaseEventService(PurchaseEventRepo purchaseEventRepo) {
         this.purchaseEventRepo = purchaseEventRepo;
-        this.purchaseService = purchaseService;
     }
-
-
-
-    public PurchaseEvent updatePurchaseEvent(PurchaseEventDto purchaseEventDto){
-
-        PurchaseEvent purchaseEvent = new PurchaseEvent(purchaseEventDto.shippedStatus(), purchaseService.getPurchaseById(purchaseEventDto.purchaseId()));
-        return purchaseEventRepo.save(purchaseEvent);
-    }
-
 
     public PurchaseEvent save(ShippedStatus shippedStatus, Purchase purchase){
         PurchaseEvent purchaseEvent = new PurchaseEvent(shippedStatus, purchase);
