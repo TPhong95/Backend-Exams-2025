@@ -1,5 +1,9 @@
 package com.groupa.chickendirectfarm.purchase;
 
+import com.groupa.chickendirectfarm.dto.CustomerAddressResponseDto;
+import com.groupa.chickendirectfarm.dto.PurchaseBatchResponseDto;
+import com.groupa.chickendirectfarm.dto.PurchaseDetailsResponseDto;
+import com.groupa.chickendirectfarm.dto.PurchaseStatusHistoryDto;
 import com.groupa.chickendirectfarm.exception.conflict.PurchaseAlreadyHandledException;
 import com.groupa.chickendirectfarm.exception.notfound.PurchaseNotFoundException;
 import com.groupa.chickendirectfarm.product.ProductOrchestrationService;
@@ -10,6 +14,7 @@ import com.groupa.chickendirectfarm.purchase.event.PurchaseEventService;
 import com.groupa.chickendirectfarm.purchase.event.ShippedStatus;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -32,8 +37,17 @@ public class PurchaseService {
         return purchaseRepo.findById(id).orElseThrow(() -> new PurchaseNotFoundException("Purchase with id " + id + " not found"));
     }
 
+    public PurchaseDetailsResponseDto getPurchaseDtoById(int id) {
+        Purchase purchase = getPurchaseById(id);
+        return convertToDetailsDto(purchase);
+    }
+
     public List<Purchase> getAllPurchases() {
         return purchaseRepo.findAll();
+    }
+
+    public List<PurchaseDetailsResponseDto> getAllPurchaseDtos() {
+        return purchaseRepo.findAll().stream().map(this::convertToDetailsDto).toList();
     }
 
     public void deletePurchaseById(int id) {
@@ -66,5 +80,72 @@ public class PurchaseService {
             productOrchestrationService.increaseStock(purchaseBatch.getProduct().getId(), purchaseBatch.getQuantity(), ProductEventAction.CANCELED);
         }
         purchaseEventService.save(ShippedStatus.CANCELLED, purchase);
+    }
+
+    private PurchaseBatchResponseDto convertBatchToDto(PurchaseBatch batch) {
+        return new PurchaseBatchResponseDto(
+                batch.getProduct().getBreed().toString(),
+                batch.getQuantity(),
+                batch.getProduct().getPrice(),
+                batch.getTotalPrice()
+        );
+    }
+
+    private CustomerAddressResponseDto convertAddressToDto(Purchase purchase) {
+        return new CustomerAddressResponseDto(
+                purchase.getCustomerAddress().getId(),
+                purchase.getCustomerAddress().getStreetName(),
+                purchase.getCustomerAddress().getPhone(),
+                purchase.getCustomerAddress().getEmail()
+        );
+    }
+
+    private PurchaseStatusHistoryDto convertEventToDto(PurchaseEvent event) {
+        return new PurchaseStatusHistoryDto(
+                event.getShippedStatus().toString(),
+                event.getTimestamp()
+        );
+    }
+
+
+    private PurchaseDetailsResponseDto convertToDetailsDto(Purchase purchase) {
+        List<PurchaseBatchResponseDto> batches = purchase.getPurchaseBatches()
+                .stream()
+                .map(this::convertBatchToDto)
+                .toList();
+
+        List<PurchaseStatusHistoryDto> statusHistory = purchase.getPurchaseEvents()
+                .stream()
+                .map(this::convertEventToDto)
+                .toList();
+
+        String currentStatus;
+        if (purchase.getPurchaseEvents().isEmpty()) {
+            currentStatus = "UNKNOWN";
+        } else {
+            currentStatus = purchase.getPurchaseEvents().getFirst().getShippedStatus(). toString();
+        }
+
+        LocalDateTime orderDate;
+        if (purchase.getPurchaseEvents().isEmpty()) {
+            orderDate = null;
+        } else {
+            orderDate = purchase.getPurchaseEvents().getLast().getTimestamp();
+        }
+
+        return new PurchaseDetailsResponseDto(
+                purchase. getId(),
+                orderDate,
+                currentStatus,
+                purchase. getCustomer().getName(),
+                purchase.getCustomer().getPrimaryPhone(),
+                purchase.getCustomer().getPrimaryEmail(),
+                convertAddressToDto(purchase),
+                batches,
+                statusHistory,
+                purchase.getTotalQuantity(),
+                purchase.getShippingCharge(),
+                purchase.getTotalPrice()
+        );
     }
 }

@@ -12,5 +12,4 @@ public record PurchaseResponseDto(
         String shippedStatus,
         String shippingAddress,
         LocalDateTime orderDate
-
 ) {}

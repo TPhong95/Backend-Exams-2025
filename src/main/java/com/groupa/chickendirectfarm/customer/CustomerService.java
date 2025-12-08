@@ -38,8 +38,14 @@ public class CustomerService {
         return convertToDto(customer);
     }
 
+    //Mangler expection på all metodene i alle klasser
     public List<Customer> getAllCustomers(){
         return customerRepo.findAll();
+    }
+
+    public List<CustomerResponseDto> getAllCustomerDto(){
+     List<Customer> customers = getAllCustomers();
+     return customers.stream().map(this::convertToDto).toList();
     }
 
     public void deleteCustomerById(int id){

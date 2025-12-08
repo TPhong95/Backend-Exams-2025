@@ -33,10 +33,10 @@ public class CustomerController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<Customer>> getAllCustomers(){
+    public ResponseEntity<List<CustomerResponseDto>> getAllCustomers(){
         var result = customerService.getAllCustomers();
         if (result.isEmpty()) {return ResponseEntity.noContent().build();}
-        return ResponseEntity.ok(customerService.getAllCustomers());
+        return ResponseEntity.ok(customerService.getAllCustomerDto());
     }
 
     @DeleteMapping("/{id}")

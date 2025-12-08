@@ -1,6 +1,7 @@
 package com.groupa.chickendirectfarm.purchase;
 
 import com.groupa.chickendirectfarm.dto.PurchaseCreateDto;
+import com.groupa.chickendirectfarm.dto.PurchaseDetailsResponseDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,14 +24,14 @@ public class PurchaseController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Purchase> getPurchaseById(@PathVariable int id){
-        var result = purchaseService.getPurchaseById(id);
+    public ResponseEntity<PurchaseDetailsResponseDto> getPurchaseById(@PathVariable int id){
+        var result = purchaseService.getPurchaseDtoById(id);
         return ResponseEntity.ok(result);
     }
 
     @GetMapping()
-    public ResponseEntity<List<Purchase>> getAllPurchases(){
-        var  result = purchaseService.getAllPurchases();
+    public ResponseEntity<List<PurchaseDetailsResponseDto>> getAllPurchases(){
+        var  result = purchaseService.getAllPurchaseDtos();
         if (result.isEmpty()) {return ResponseEntity.notFound().build();}
         return ResponseEntity.ok(result);
     }

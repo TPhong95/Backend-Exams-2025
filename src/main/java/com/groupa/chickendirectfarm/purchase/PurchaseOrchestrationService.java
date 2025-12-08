@@ -5,7 +5,7 @@ import com.groupa.chickendirectfarm.customer.CustomerService;
 import com.groupa.chickendirectfarm.customer.address.CustomerAddress;
 import com.groupa.chickendirectfarm.customer.address.CustomerAddressService;
 import com.groupa.chickendirectfarm.dto.PurchaseCreateDto;
-import com.groupa.chickendirectfarm.exception.DuplicateProductInPurchaseException;
+import com.groupa.chickendirectfarm.exception.conflict.DuplicateProductInPurchaseException;
 import com.groupa.chickendirectfarm.product.Product;
 import com.groupa.chickendirectfarm.product.ProductOrchestrationService;
 import com.groupa.chickendirectfarm.product.ProductService;
@@ -62,9 +62,12 @@ public class PurchaseOrchestrationService {
 
         Set<Integer> productIds = new HashSet<>();
         for (PurchaseBatchCreateDto batchDto : purchaseCreateDto.purchaseBatchesDto()) {
+
             if (!productIds.add(batchDto.productId())) {
                 throw new DuplicateProductInPurchaseException("Duplicate product in purchase batch with id: " + batchDto.productId());
             }
+
+
             Product product = productService. getProductById(batchDto. productId());
 
             productOrchestrationService.decreaseStock(
