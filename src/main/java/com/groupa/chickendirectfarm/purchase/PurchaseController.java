@@ -1,9 +1,6 @@
 package com.groupa.chickendirectfarm.purchase;
 
-import com.groupa.chickendirectfarm.purchase.batch.PurchaseBatchService;
-import com.groupa.chickendirectfarm.purchase.event.PurchaseEvent;
-import com.groupa.chickendirectfarm.purchase.event.PurchaseEventService;
-import com.groupa.chickendirectfarm.purchase.event.PurchaseEventDto;
+import com.groupa.chickendirectfarm.dto.PurchaseCreateDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,8 +17,8 @@ public class PurchaseController {
     }
 
     @PostMapping()
-    public ResponseEntity<Purchase> savePurchase(@RequestBody PurchaseDto purchaseDto){
-        Purchase purchase = purchaseOrchestrationService.create(purchaseDto);
+    public ResponseEntity<Purchase> savePurchase(@RequestBody PurchaseCreateDto purchaseCreateDto){
+        Purchase purchase = purchaseOrchestrationService.create(purchaseCreateDto);
         return ResponseEntity.ok(purchaseService.save(purchase));
     }
 

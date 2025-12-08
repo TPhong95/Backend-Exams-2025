@@ -1,6 +1,6 @@
 package com.groupa.chickendirectfarm.product;
 
-import com.groupa.chickendirectfarm.exception.notfound.ProductNotFoundException;
+import com.groupa.chickendirectfarm.dto.ProductRestockDto;
 import com.groupa.chickendirectfarm.product.event.ProductEvent;
 import com.groupa.chickendirectfarm.product.event.ProductEventAction;
 import com.groupa.chickendirectfarm.product.event.ProductEventService;
@@ -58,9 +58,9 @@ public class ProductController {
     }
 
     @PostMapping("/restock")
-    public ResponseEntity<Product> restockProduct(@RequestBody ProductDto productDto){
-        productOrchestrationService.increaseStock(productDto.productId(), productDto.quantity(), ProductEventAction.RESTOCK);
-        return ResponseEntity.ok(productService.getProductById(productDto.productId()));
+    public ResponseEntity<Product> restockProduct(@RequestBody ProductRestockDto productRestockDto){
+        productOrchestrationService.increaseStock(productRestockDto.productId(), productRestockDto.quantity(), ProductEventAction.RESTOCK);
+        return ResponseEntity.ok(productService.getProductById(productRestockDto.productId()));
 
     }
 

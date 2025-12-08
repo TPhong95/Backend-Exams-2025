@@ -1,9 +1,9 @@
 package com.groupa.chickendirectfarm.customer.address;
 
 import com.groupa.chickendirectfarm.customer.CustomerService;
+import com.groupa.chickendirectfarm.dto.CustomerAddressCreateDto;
 import com.groupa.chickendirectfarm.exception.alreadyexist.CustomerAddressAlreadyExistException;
 import com.groupa.chickendirectfarm.exception.notfound.CustomerAddressNotFoundException;
-import com.groupa.chickendirectfarm.exception.notfound.CustomerNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,9 +18,9 @@ public class CustomerAddressService {
         this.customerService = customerService;
     }
 
-    public CustomerAddress save(CustomerAddressDto customerAddressDto){
-        var customerId = customerService.getCustomerById(customerAddressDto.customerId());
-        var newCustomerAddress = new CustomerAddress(customerAddressDto.streetName(), customerAddressDto.phone(), customerAddressDto.email(), customerId);
+    public CustomerAddress save(CustomerAddressCreateDto customerAddressCreateDto){
+        var customerId = customerService.getCustomerById(customerAddressCreateDto.customerId());
+        var newCustomerAddress = new CustomerAddress(customerAddressCreateDto.streetName(), customerAddressCreateDto.phone(), customerAddressCreateDto.email(), customerId);
         if (customerAddressRepo.existsByStreetName(newCustomerAddress.getStreetName())){
             throw new CustomerAddressAlreadyExistException("Address already exists");
         }

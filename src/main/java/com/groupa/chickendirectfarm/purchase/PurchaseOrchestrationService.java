@@ -4,12 +4,13 @@ import com.groupa.chickendirectfarm.customer.Customer;
 import com.groupa.chickendirectfarm.customer.CustomerService;
 import com.groupa.chickendirectfarm.customer.address.CustomerAddress;
 import com.groupa.chickendirectfarm.customer.address.CustomerAddressService;
+import com.groupa.chickendirectfarm.dto.PurchaseCreateDto;
 import com.groupa.chickendirectfarm.exception.DuplicateProductInPurchaseException;
 import com.groupa.chickendirectfarm.product.Product;
 import com.groupa.chickendirectfarm.product.ProductOrchestrationService;
 import com.groupa.chickendirectfarm.product.ProductService;
 import com.groupa.chickendirectfarm.purchase.batch.PurchaseBatch;
-import com.groupa.chickendirectfarm.purchase.batch.PurchaseBatchDto;
+import com.groupa.chickendirectfarm.dto.PurchaseBatchCreateDto;
 import com.groupa.chickendirectfarm.purchase.event.PurchaseEventService;
 import com.groupa.chickendirectfarm.purchase.event.ShippedStatus;
 import jakarta.transaction.Transactional;
@@ -42,23 +43,23 @@ public class PurchaseOrchestrationService {
 
 
     @Transactional
-    public Purchase create(PurchaseDto purchaseDto) {
-        Customer customer = customerService.getCustomerById(purchaseDto.customerId());
+    public Purchase create(PurchaseCreateDto purchaseCreateDto) {
+        Customer customer = customerService.getCustomerById(purchaseCreateDto.customerId());
         CustomerAddress customerAddress = customerAddressService.getCustomerAddressById(
-                purchaseDto.customerAddressId()
+                purchaseCreateDto.customerAddressId()
         );
 
         Purchase purchase = new Purchase();
         purchase.setCustomer(customer);
         purchase.setCustomerAddress(customerAddress);
-        purchase.setShippingCharge(purchaseDto.shippingPrice());
+        purchase.setShippingCharge(purchaseCreateDto.shippingPrice());
 
         List<PurchaseBatch> batches = new ArrayList<>();
         long totalPrice = 0;
         int totalQuantity = 0;
 
         Set<Integer> productIds = new HashSet<>();
-        for (PurchaseBatchDto batchDto : purchaseDto.purchaseBatchesDto()) {
+        for (PurchaseBatchCreateDto batchDto : purchaseCreateDto.purchaseBatchesDto()) {
             if (!productIds.add(batchDto.productId())) {
                 throw new DuplicateProductInPurchaseException("Duplicate product in purchase batch with id: " + batchDto.productId());
             }

@@ -1,9 +1,8 @@
 package com.groupa.chickendirectfarm.customer;
 import com.groupa.chickendirectfarm.customer.address.CustomerAddress;
-import com.groupa.chickendirectfarm.customer.address.CustomerAddressDto;
+import com.groupa.chickendirectfarm.dto.CustomerAddressCreateDto;
 import com.groupa.chickendirectfarm.customer.address.CustomerAddressService;
-import com.groupa.chickendirectfarm.exception.notfound.CustomerAddressNotFoundException;
-import com.groupa.chickendirectfarm.exception.notfound.CustomerNotFoundException;
+import com.groupa.chickendirectfarm.dto.CustomerResponseDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,8 +29,8 @@ public class CustomerController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Customer> getCustomerById(@PathVariable int id){
-        var result = customerService.getCustomerById(id);
+    public ResponseEntity<CustomerResponseDto> getCustomerById(@PathVariable int id){
+        var result = customerService.getCustomerDtoById(id);
         log.info(result.toString());
         return ResponseEntity.ok(result);
     }
@@ -50,8 +49,8 @@ public class CustomerController {
     }
 
     @PostMapping("/address")
-    public ResponseEntity<CustomerAddress> saveCustomerAddress(@RequestBody CustomerAddressDto customerAddressDto){
-        return ResponseEntity.ok(customerAddressService.save(customerAddressDto));
+    public ResponseEntity<CustomerAddress> saveCustomerAddress(@RequestBody CustomerAddressCreateDto customerAddressCreateDto){
+        return ResponseEntity.ok(customerAddressService.save(customerAddressCreateDto));
     }
 
     @GetMapping("/address/{id}")

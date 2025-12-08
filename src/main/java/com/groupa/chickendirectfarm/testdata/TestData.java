@@ -8,10 +8,10 @@ import com.groupa.chickendirectfarm.customer.address.CustomerAddress;
 import com.groupa.chickendirectfarm.customer.address.CustomerAddressRepo;
 import com.groupa.chickendirectfarm.product.*;
 import com.groupa.chickendirectfarm.product.event.ProductEventAction;
-import com.groupa.chickendirectfarm.purchase.PurchaseDto;
+import com.groupa.chickendirectfarm.dto.PurchaseCreateDto;
 import com.groupa.chickendirectfarm.purchase.PurchaseOrchestrationService;
 import com.groupa.chickendirectfarm.purchase.PurchaseRepo;
-import com.groupa.chickendirectfarm.purchase.batch.PurchaseBatchDto;
+import com.groupa.chickendirectfarm.dto.PurchaseBatchCreateDto;
 import com.groupa.chickendirectfarm.purchase.batch.PurchaseBatchRepo;
 import org.springframework.stereotype.Service;
 
@@ -53,8 +53,8 @@ public class TestData {
         createTestPurchases();
     }
 
-    private List<PurchaseBatchDto> createTestPurchaseBatches() {
-        List<PurchaseBatchDto> testPurchaseBatches = new ArrayList<>();
+    private List<PurchaseBatchCreateDto> createTestPurchaseBatches() {
+        List<PurchaseBatchCreateDto> testPurchaseBatches = new ArrayList<>();
 
         List<Breed> breeds = new ArrayList<>(Arrays.asList(Breed.values()));
         Collections.shuffle(breeds, random);
@@ -67,7 +67,7 @@ public class TestData {
             Product product = testProducts.get(breed);
             int amountOfChickens = random.nextInt(1, 11);
 
-            PurchaseBatchDto chickenBatch = new PurchaseBatchDto(
+            PurchaseBatchCreateDto chickenBatch = new PurchaseBatchCreateDto(
                     amountOfChickens,
                     product.getId()
             );
@@ -81,14 +81,14 @@ public class TestData {
             CustomerAddress customerAddress = customerAddressRepo.findById(random.nextInt(100)+1).orElseThrow();
             int shippingPrice = random.nextInt(200, 500) +1;
 
-            PurchaseDto purchaseDto = new PurchaseDto(
+            PurchaseCreateDto purchaseCreateDto = new PurchaseCreateDto(
                     customerAddress.getCustomer().getId(),
                     customerAddress.getId(),
                     shippingPrice,
                     createTestPurchaseBatches()
             );
 
-            var testPurchase = purchaseOrchestrationService.create(purchaseDto);
+            var testPurchase = purchaseOrchestrationService.create(purchaseCreateDto);
             purchaseRepo.save(testPurchase);
         }
     }
