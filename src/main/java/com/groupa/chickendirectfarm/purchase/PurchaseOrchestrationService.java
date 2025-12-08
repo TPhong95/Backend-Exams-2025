@@ -14,6 +14,7 @@ import com.groupa.chickendirectfarm.dto.PurchaseBatchCreateDto;
 import com.groupa.chickendirectfarm.purchase.event.PurchaseEventService;
 import com.groupa.chickendirectfarm.purchase.event.ShippedStatus;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.Set;
 
 @Service
+@Slf4j
 public class PurchaseOrchestrationService {
     private final PurchaseService purchaseService;
     private final ProductService productService;
@@ -86,6 +88,8 @@ public class PurchaseOrchestrationService {
         purchase.setPurchaseBatches(batches);
         purchase.setTotalPrice(totalPrice + purchase.getShippingCharge());
         purchase.setTotalQuantity(totalQuantity);
+
+
 
         return purchaseService.save(purchase);
 

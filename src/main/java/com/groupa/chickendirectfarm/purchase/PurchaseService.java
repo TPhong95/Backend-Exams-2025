@@ -1,16 +1,15 @@
 package com.groupa.chickendirectfarm.purchase;
 
-import com.groupa.chickendirectfarm.customer.CustomerService;
-import com.groupa.chickendirectfarm.customer.address.CustomerAddressService;
+import com.groupa.chickendirectfarm.exception.conflict.PurchaseAlreadyHandledException;
 import com.groupa.chickendirectfarm.exception.notfound.PurchaseNotFoundException;
 import com.groupa.chickendirectfarm.product.ProductOrchestrationService;
 import com.groupa.chickendirectfarm.product.event.ProductEventAction;
 import com.groupa.chickendirectfarm.purchase.batch.PurchaseBatch;
+import com.groupa.chickendirectfarm.purchase.event.PurchaseEvent;
 import com.groupa.chickendirectfarm.purchase.event.PurchaseEventService;
 import com.groupa.chickendirectfarm.purchase.event.ShippedStatus;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -29,32 +28,38 @@ public class PurchaseService {
         return purchaseRepo.save(purchase);
     }
 
-    public Purchase getPurchaseById(int id){
+    public Purchase getPurchaseById(int id) {
         return purchaseRepo.findById(id).orElseThrow(() -> new PurchaseNotFoundException("Purchase with id " + id + " not found"));
     }
 
-    public List<Purchase> getAllPurchases(){
+    public List<Purchase> getAllPurchases() {
         return purchaseRepo.findAll();
     }
 
-    public void deletePurchaseById(int id)
-    {
-        if (!purchaseRepo.existsById(id)){
+    public void deletePurchaseById(int id) {
+        if (!purchaseRepo.existsById(id)) {
             throw new PurchaseNotFoundException("Purchase with id " + id + " not found");
         }
         purchaseRepo.deleteById(id);
     }
 
-    public void cancelPurchaseById(int id)
-    {
+    public void cancelPurchaseById(int id) {
         Purchase purchase = getPurchaseById(id);
 
-        if (purchase == null){
+        if (purchase == null) {
             throw new PurchaseNotFoundException("Purchase with id " + id + " not found");
         }
 
 
+        ShippedStatus shippedStatus = purchase.getPurchaseEvents().stream()
+                .map(PurchaseEvent::getShippedStatus)
+                .filter(status -> status == ShippedStatus.CANCELLED || status == ShippedStatus.DELIVERED)
+                .findFirst()
+                .orElse(null);
 
+        if (shippedStatus == ShippedStatus.CANCELLED || shippedStatus == ShippedStatus.DELIVERED) {
+            throw new PurchaseAlreadyHandledException("Purchase with id " + id + " cannot be canceled since it's already " + shippedStatus.toString().toLowerCase() + ".");
+        }
 
         List<PurchaseBatch> batches = purchase.getPurchaseBatches();
         for (PurchaseBatch purchaseBatch : batches) {

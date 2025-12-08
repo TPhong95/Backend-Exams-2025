@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Slf4j
 @RestController
 @RequestMapping("/api/customer")
 
@@ -24,14 +23,12 @@ public class CustomerController {
     @PostMapping()
     public ResponseEntity<Customer> saveCustomer(@RequestBody Customer customer){
         var result = customerService.save(customer);
-        log.info(result.toString());
         return ResponseEntity.ok(result);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<CustomerResponseDto> getCustomerById(@PathVariable int id){
         var result = customerService.getCustomerDtoById(id);
-        log.info(result.toString());
         return ResponseEntity.ok(result);
     }
 

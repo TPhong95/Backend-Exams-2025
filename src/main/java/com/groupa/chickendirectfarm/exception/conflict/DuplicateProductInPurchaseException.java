@@ -1,4 +1,4 @@
-package com.groupa.chickendirectfarm.exception;
+package com.groupa.chickendirectfarm.exception.conflict;
 
 public class DuplicateProductInPurchaseException extends RuntimeException {
     public DuplicateProductInPurchaseException(String message) {

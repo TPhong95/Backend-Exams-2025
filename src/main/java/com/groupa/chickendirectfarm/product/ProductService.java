@@ -1,6 +1,6 @@
 package com.groupa.chickendirectfarm.product;
 
-import com.groupa.chickendirectfarm.exception.alreadyexist.ProductAlreadyExistsException;
+import com.groupa.chickendirectfarm.exception.conflict.ProductAlreadyExistsException;
 import com.groupa.chickendirectfarm.exception.notfound.ProductNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;

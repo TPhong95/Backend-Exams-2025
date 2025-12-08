@@ -1,6 +1,6 @@
 package com.groupa.chickendirectfarm.product;
 
-import com.groupa.chickendirectfarm.exception.OutOfStockException;
+import com.groupa.chickendirectfarm.exception.badrequest.OutOfStockException;
 import com.groupa.chickendirectfarm.product.event.ProductEventAction;
 import com.groupa.chickendirectfarm.product.event.ProductEventService;
 import jakarta.transaction.Transactional;
