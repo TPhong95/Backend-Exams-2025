@@ -21,9 +21,9 @@ public class CustomerController {
     }
 
     @PostMapping()
-    public ResponseEntity<Customer> saveCustomer(@RequestBody Customer customer){
-        var result = customerService.save(customer);
-        return ResponseEntity.ok(result);
+    public ResponseEntity<CustomerResponseDto> saveCustomer(@RequestBody Customer customer){
+        Customer saved = customerService.save(customer);
+        return ResponseEntity.ok(customerService.convertToDto(saved));
     }
 
     @GetMapping("/{id}")

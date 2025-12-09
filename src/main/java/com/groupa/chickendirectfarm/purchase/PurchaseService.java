@@ -108,7 +108,7 @@ public class PurchaseService {
     }
 
 
-    private PurchaseDetailsResponseDto convertToDetailsDto(Purchase purchase) {
+    public PurchaseDetailsResponseDto convertToDetailsDto(Purchase purchase) {
         List<PurchaseBatchResponseDto> batches = purchase.getPurchaseBatches()
                 .stream()
                 .map(this::convertBatchToDto)

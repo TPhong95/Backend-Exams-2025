@@ -104,7 +104,7 @@ public class CustomerService {
         );
     }
 
-    private CustomerResponseDto convertToDto(Customer customer) {
+    public CustomerResponseDto convertToDto(Customer customer) {
         List<CustomerAddressResponseDto> addresses = customer.getCustomerAddresses()
                 .stream()
                 .map(this::convertAddressToDto)

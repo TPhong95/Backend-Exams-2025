@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -28,11 +29,11 @@ public class Customer {
 
     @OneToMany(mappedBy = "customer")
     @JsonIgnoreProperties("customer")
-    private List<CustomerAddress> customerAddresses;
+    private List<CustomerAddress> customerAddresses = new ArrayList<>();
 
     @OneToMany(mappedBy = "customer")
   
-    private List<Purchase> purchases;
+    private List<Purchase> purchases = new ArrayList<>();
 
     public Customer(String name, String primaryPhone, String primaryEmail) {
         this.name = name;
