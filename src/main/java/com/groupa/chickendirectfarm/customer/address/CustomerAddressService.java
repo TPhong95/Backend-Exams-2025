@@ -3,11 +3,13 @@ package com.groupa.chickendirectfarm.customer.address;
 import com.groupa.chickendirectfarm.customer.CustomerService;
 import com.groupa.chickendirectfarm.dto.CustomerAddressCreateDto;
 import com.groupa.chickendirectfarm.exception.notfound.CustomerAddressNotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@Slf4j
 public class CustomerAddressService {
    private final CustomerAddressRepo customerAddressRepo;
     private final CustomerService customerService;
@@ -18,24 +20,49 @@ public class CustomerAddressService {
     }
 
     public CustomerAddress save(CustomerAddressCreateDto customerAddressCreateDto){
-        var customerId = customerService.getCustomerById(customerAddressCreateDto.customerId());
-        var newCustomerAddress = new CustomerAddress(customerAddressCreateDto.streetName(), customerAddressCreateDto.phone(), customerAddressCreateDto.email(), customerId);
-        return customerAddressRepo.save(newCustomerAddress);
+        log.info("ENTRY: Saving new customer address to customer Id: {}", customerAddressCreateDto.customerId());
+        log.debug("Address details, street: {}, phone: {}, email: {}",
+                customerAddressCreateDto.streetName(),
+                customerAddressCreateDto.phone(),
+                customerAddressCreateDto.email());
+
+        var customer = customerService.getCustomerById(customerAddressCreateDto.customerId());
+        log.debug("Customer with Id: {}, name: {} retrieved for new customer address", customer.getId(), customer.getName());
+
+        var newCustomerAddress = new CustomerAddress(customerAddressCreateDto.streetName(), customerAddressCreateDto.phone(), customerAddressCreateDto.email(), customer);
+
+        CustomerAddress savedCustomerAddress = customerAddressRepo.save(newCustomerAddress);
+        log.info("EXIT: New address added to customer with Id: {}", savedCustomerAddress.getCustomer().getId());
+
+        return savedCustomerAddress;
     }
 
     public CustomerAddress getCustomerAddressById(int id){
-        return customerAddressRepo.findById(id).orElseThrow(()  -> new CustomerAddressNotFoundException("Customer address with id " + id + " not found"));
+        log.debug("Retrieving address with Id: {}", id);
+        return customerAddressRepo.findById(id).orElseThrow(()  -> {
+            log.warn("Address with Id: {} not found", id);
+            return new CustomerAddressNotFoundException("Customer address with id " + id + " not found");
+        });
     }
 
     public List<CustomerAddress> getAllCustomerAddresses(){
-        return customerAddressRepo.findAll();
+        log.debug("Retrieving all customer addresses...");
+        List<CustomerAddress> customerAddresses = customerAddressRepo.findAll();
+        log.debug("Retrieved {} addresses", customerAddresses);
+        return customerAddresses;
     }
 
     public void deleteCustomerAddressById(int id){
+        log.info("ENTRY: Deleting customer address with Id: {}", id);
+
+        CustomerAddress customerAddress = getCustomerAddressById(id);
+
         if (!customerAddressRepo.existsById(id)){
+            log.warn("Delete failed, customer address with Id: {} not found", id);
             throw new CustomerAddressNotFoundException("Customer address with id " + id + " not found");
         }
         customerAddressRepo.deleteById(id);
+        log.info("EXIT: Customer address successfully deleted with ID: {}, streetname: {}", id, customerAddress.getStreetName() );
     }
 
 }

@@ -1,7 +1,4 @@
 package com.groupa.chickendirectfarm.purchase.batch;
-
-import com.groupa.chickendirectfarm.product.ProductService;
-import com.groupa.chickendirectfarm.purchase.PurchaseService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,14 +10,16 @@ public class PurchaseBatchService {
         this.purchaseBatchRepo = purchaseBatchRepo;
     }
 
+    //Tror ikke vi trenger denne
 public PurchaseBatch getPurchaseBatchById(int id){
-    return purchaseBatchRepo.findById(id).orElseThrow();
+        return purchaseBatchRepo.findById(id).orElseThrow();
 }
-
+    //Tror ikke vi trenger denne
 public List<PurchaseBatch> getAllPurchaseBatches(){
     return purchaseBatchRepo.findAll();
 }
 
+    //Tror ikke vi trenger denne
 public void deletePurchaseBatchById(int id){
         purchaseBatchRepo.deleteById(id);
  }

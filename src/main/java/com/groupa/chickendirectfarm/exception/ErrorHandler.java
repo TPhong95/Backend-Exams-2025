@@ -1,5 +1,6 @@
 package com.groupa.chickendirectfarm.exception;
 
+import com.groupa.chickendirectfarm.exception.badrequest.CustomerAddressDoesNotExistInCustomerException;
 import com.groupa.chickendirectfarm.exception.conflict.*;
 import com.groupa.chickendirectfarm.exception.badrequest.OutOfStockException;
 import com.groupa.chickendirectfarm.exception.notfound.CustomerAddressNotFoundException;
@@ -21,7 +22,10 @@ public class ErrorHandler {
 
     //========== 400 BAD REQUEST ==========
 
-    @ExceptionHandler(OutOfStockException.class)
+    @ExceptionHandler({
+                    OutOfStockException.class,
+                    CustomerAddressDoesNotExistInCustomerException.class}
+    )
      public ResponseEntity<String> handleBadRequestException(RuntimeException e) {
         log.error("Bad Request error: {}", e.getMessage(), e);
          return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);

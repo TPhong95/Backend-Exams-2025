@@ -10,12 +10,14 @@ import com.groupa.chickendirectfarm.exception.conflict.CustomerAlreadyExistExcep
 import com.groupa.chickendirectfarm.exception.notfound.CustomerNotFoundException;
 import com.groupa.chickendirectfarm.purchase.Purchase;
 import com.groupa.chickendirectfarm.purchase.batch.PurchaseBatch;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
+@Slf4j
 public class CustomerService {
     private final CustomerRepo customerRepo;
     public CustomerService(CustomerRepo customerRepo) {
@@ -23,39 +25,64 @@ public class CustomerService {
     }
 
     public Customer save(Customer customer){
-        if(customerRepo.existsByName(customer.getName())){
-            throw new CustomerAlreadyExistException("A customer with name " + customer.getName() + " already exists.");
+        log.info("ENTRY: Creating new Customer with customer Id: {}, Name {}, Phone: {}, Email: {}",
+                customer.getId(), customer.getName(), customer.getPrimaryPhone(), customer.getPrimaryEmail());
+
+        if(customerRepo.existsByEmail(customer.getPrimaryEmail()) || customerRepo.existsByPhone(customer.getPrimaryPhone())){
+            log.warn("Customer creation failed, Duplicate phone number or email address exists");
+            throw new CustomerAlreadyExistException("A customer with the email " + customer.getPrimaryEmail() + " or phone number: "+ customer.getPrimaryPhone() + " already exists.");
         }
-        return customerRepo.save(customer);
+
+        Customer savedCustomer = customerRepo.save(customer);
+        log.info("EXIT: Customer successfully created with ID: {} and name: {}", savedCustomer.getId(), savedCustomer.getName());
+        return savedCustomer;
     }
 
     public Customer getCustomerById(int id){
-        return customerRepo.findById(id).orElseThrow(()  -> new CustomerNotFoundException("Customer with id " + id + " not found"));
+        log.debug("Retrieving Customer with ID: {}", id);
+        return customerRepo.findById(id).orElseThrow(()  -> {
+            log.warn("Customer not found with ID: {}", id);
+            return new CustomerNotFoundException("Customer with id " + id + " not found");
+        });
     }
 
     public CustomerResponseDto getCustomerDtoById(int id){
+        log.debug("Retrieving Customer DTO with ID: {}", id);
         Customer customer = getCustomerById(id);
+        log.debug("Converting customer with Id {} to DTO", id);
         return convertToDto(customer);
     }
 
     public List<Customer> getAllCustomers(){
-        return customerRepo.findAll();
+        log.debug("Retrieving all Customers");
+        List<Customer> customers = customerRepo.findAll();
+        log.debug("Retrieved {} customers", customers.size());
+        return customers;
     }
 
     public List<CustomerResponseDto> getAllCustomerDto(){
+        log.debug("Retrieving all Customers");
      List<Customer> customers = getAllCustomers();
-     return customers.stream().map(this::convertToDto).toList();
+     List<CustomerResponseDto> dtos = customers.stream().map(this::convertToDto).toList();
+     log.debug("Converting {} customers to DTO", dtos.size());
+     return dtos;
     }
 
     public void deleteCustomerById(int id){
+        log.info("ENTRY: Deleting Customer with ID: {}", id);
+
         Customer customer = getCustomerById(id);
+
         if(customer.getPurchases() == null || customer.getPurchases().isEmpty()){
+            log.warn("Delete failed, customer with ID {} has purchases", id);
             throw new CustomerHasPurchasesException("Customer with id " + id + " has purchases.");
         }
         customerRepo.deleteById(id);
+        log.info("EXIT: Customer successfully deleted with ID: {}, name{}", id, customer.getName());
     }
 
     private CustomerAddressResponseDto convertAddressToDto(CustomerAddress address) {
+        log.debug("Converting address with id {} to DTO", address.getId());
         return new CustomerAddressResponseDto(
                 address.getId(),
                 address.getStreetName(),
@@ -64,6 +91,7 @@ public class CustomerService {
     }
 
     private PurchaseBatchResponseDto convertBatchToDto(PurchaseBatch batch) {
+        log.debug("Converting batch with id {} to DTO", batch.getId());
         return new PurchaseBatchResponseDto(
                 batch.getProduct().getBreed(). toString(),
                 batch.getQuantity(),
@@ -73,6 +101,7 @@ public class CustomerService {
     }
 
     private PurchaseResponseDto convertPurchaseToDto(Purchase purchase){
+        log.debug("Converting purchase with id {} to DTO", purchase.getId());
         List<PurchaseBatchResponseDto> batches = purchase.getPurchaseBatches()
                 .stream()
                 .map(this::convertBatchToDto)
@@ -105,6 +134,8 @@ public class CustomerService {
     }
 
     public CustomerResponseDto convertToDto(Customer customer) {
+        log.debug("Converting customer with Id {} to detailed DTO", customer.getId());
+
         List<CustomerAddressResponseDto> addresses = customer.getCustomerAddresses()
                 .stream()
                 .map(this::convertAddressToDto)
@@ -114,6 +145,9 @@ public class CustomerService {
                 .stream()
                 .map(this::convertPurchaseToDto)
                 .toList();
+
+        log.debug("Customer DTO conversion completed, {} addresses, {} purchases converted",
+                addresses.size(), purchaseHistory.size());
 
         return new CustomerResponseDto(
                 customer.getId(),
