@@ -28,7 +28,7 @@ public class CustomerService {
         log.info("ENTRY: Creating new Customer with customer Id: {}, Name {}, Phone: {}, Email: {}",
                 customer.getId(), customer.getName(), customer.getPrimaryPhone(), customer.getPrimaryEmail());
 
-        if(customerRepo.existsByEmail(customer.getPrimaryEmail()) || customerRepo.existsByPhone(customer.getPrimaryPhone())){
+        if(customerRepo.existsByPrimaryEmail(customer.getPrimaryEmail()) || customerRepo.existsByPrimaryPhone(customer.getPrimaryPhone())){
             log.warn("Customer creation failed, Duplicate phone number or email address exists");
             throw new CustomerAlreadyExistException("A customer with the email " + customer.getPrimaryEmail() + " or phone number: "+ customer.getPrimaryPhone() + " already exists.");
         }
