@@ -16,7 +16,11 @@ public class PurchaseEventService {
 
     public PurchaseEvent save(ShippedStatus shippedStatus, Purchase purchase){
         PurchaseEvent purchaseEvent = new PurchaseEvent(shippedStatus, purchase);
-        return purchaseEventRepo.save(purchaseEvent);
+        PurchaseEvent saved = purchaseEventRepo.save(purchaseEvent);
+
+        purchase.getPurchaseEvents().add(saved);
+
+        return saved;
     }
 
     public PurchaseEvent getPurchaseEventById(int id){

@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public record PurchaseResponseDto(
-        Integer id,
+        Integer purchaseId,
         List<PurchaseBatchResponseDto> batches,
         Integer totalQuantity,
         Long totalPrice,

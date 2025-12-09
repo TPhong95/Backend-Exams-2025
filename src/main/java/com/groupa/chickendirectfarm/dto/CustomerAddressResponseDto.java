@@ -1,7 +1,7 @@
 package com.groupa.chickendirectfarm.dto;
 
 public record CustomerAddressResponseDto(
-        Integer id,
+        Integer customerAddressId,
         String streetName,
         String phone,
         String email

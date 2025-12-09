@@ -31,7 +31,7 @@ public class Customer {
     private List<CustomerAddress> customerAddresses;
 
     @OneToMany(mappedBy = "customer")
-    @JsonIgnore
+  
     private List<Purchase> purchases;
 
     public Customer(String name, String primaryPhone, String primaryEmail) {

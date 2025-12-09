@@ -18,9 +18,9 @@ public class PurchaseController {
     }
 
     @PostMapping()
-    public ResponseEntity<Purchase> savePurchase(@RequestBody PurchaseCreateDto purchaseCreateDto){
+    public ResponseEntity<PurchaseDetailsResponseDto> savePurchase(@RequestBody PurchaseCreateDto purchaseCreateDto){
         Purchase purchase = purchaseOrchestrationService.create(purchaseCreateDto);
-        return ResponseEntity.ok(purchaseService.save(purchase));
+        return ResponseEntity.ok(purchaseService.getPurchaseDtoById(purchase.getId()));
     }
 
     @GetMapping("/{id}")

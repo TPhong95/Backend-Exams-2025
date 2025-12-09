@@ -87,14 +87,13 @@ public class PurchaseOrchestrationService {
             totalPrice += batchTotal;
             totalQuantity += batchDto.quantity();
     }
-        purchaseEventService.save(ShippedStatus.NOT_SHIPPED, purchase);
         purchase.setPurchaseBatches(batches);
         purchase.setTotalPrice(totalPrice + purchase.getShippingCharge());
         purchase.setTotalQuantity(totalQuantity);
+        Purchase savedPurchase = purchaseService.save(purchase);
+        purchaseEventService.save(ShippedStatus.NOT_SHIPPED, savedPurchase);
 
-
-
-        return purchaseService.save(purchase);
+        return savedPurchase;
 
 }
 }

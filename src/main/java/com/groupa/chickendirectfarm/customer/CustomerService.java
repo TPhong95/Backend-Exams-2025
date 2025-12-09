@@ -38,7 +38,6 @@ public class CustomerService {
         return convertToDto(customer);
     }
 
-    //Mangler expection på all metodene i alle klasser
     public List<Customer> getAllCustomers(){
         return customerRepo.findAll();
     }

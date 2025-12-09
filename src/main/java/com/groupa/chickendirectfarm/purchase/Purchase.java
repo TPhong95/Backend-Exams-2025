@@ -51,7 +51,7 @@ public class Purchase {
     @OneToMany(mappedBy = "purchase")
     @JsonIgnoreProperties("purchase")
     @OrderBy("timestamp DESC")
-    private List<PurchaseEvent> purchaseEvents;
+    private List<PurchaseEvent> purchaseEvents = new ArrayList<>();
 
  /*
     public Purchase(int shippingCharge, Customer customer, CustomerAddress customerAddress, List<PurchaseBatch> purchaseBatches) {
