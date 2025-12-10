@@ -96,7 +96,7 @@ public class CustomerService {
                 batch.getProduct().getBreed(). toString(),
                 batch.getQuantity(),
                 batch.getProduct().getPrice(),
-                batch.getTotalPrice()
+                batch.getBatchPrice()
         );
     }
 

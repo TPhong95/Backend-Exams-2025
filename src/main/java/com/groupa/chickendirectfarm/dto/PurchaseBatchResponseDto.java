@@ -4,7 +4,7 @@ public record PurchaseBatchResponseDto(
         String breed,
         Integer quantity,
         Integer pricePerUnit,
-        Integer totalPrice
+        Integer batchPrice
 
 ) {
 }

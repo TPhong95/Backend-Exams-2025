@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 @Slf4j
-public class ErrorHandler {
+public class GlobalErrorHandler {
 
 
     //========== 400 BAD REQUEST ==========
@@ -27,7 +27,7 @@ public class ErrorHandler {
                     CustomerAddressDoesNotExistInCustomerException.class}
     )
      public ResponseEntity<String> handleBadRequestException(RuntimeException e) {
-        log.error("Bad Request error: {}", e.getMessage(), e);
+        log.error("400 Bad Request error: {}", e.getMessage(), e);
          return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
      }
 
@@ -41,7 +41,7 @@ public class ErrorHandler {
 
              })
     public ResponseEntity<String> handleNotFoundException(RuntimeException e) {
-         log.error("Not Found error: {}", e.getMessage(), e);
+         log.error("404 Not Found error: {}", e.getMessage(), e);
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
     }
 
@@ -56,7 +56,7 @@ public class ErrorHandler {
             PurchaseAlreadyHandledException.class
     })
     public ResponseEntity<String> handleConflictException(RuntimeException e) {
-        log.error("Conflict error: {}",e.getMessage(), e);
+        log.error("409 Conflict error: {}",e.getMessage(), e);
         return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
     }
 
@@ -64,7 +64,7 @@ public class ErrorHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleGenericException(Exception e) {
-        log.error("Unexpected error: {}", e.getMessage(), e);
+        log.error("500 Unexpected error: {}", e.getMessage(), e);
         return new ResponseEntity<>("An unexpected error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

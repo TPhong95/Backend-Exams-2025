@@ -122,7 +122,7 @@ public class PurchaseService {
                 batch.getProduct().getBreed().toString(),
                 batch.getQuantity(),
                 batch.getProduct().getPrice(),
-                batch.getTotalPrice()
+                batch.getBatchPrice()
         );
     }
 

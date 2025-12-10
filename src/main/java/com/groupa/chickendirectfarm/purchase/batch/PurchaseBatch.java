@@ -13,14 +13,14 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@JsonPropertyOrder({"id", "product", "quantity", "totalPrice", "purchase"})
+@JsonPropertyOrder({"id", "product", "quantity", "batchPrice", "purchase"})
 public class PurchaseBatch {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "purchase_batch_seq")
     @SequenceGenerator(name = "purchase_batch_seq", sequenceName = "purchase_batch_seq", allocationSize = 1)
     @Id
     private int id;
     private int quantity;
-    private int totalPrice;
+    private int batchPrice;
 
     @ManyToOne()
     @JoinColumn(name = "purchase_id")
@@ -32,9 +32,9 @@ public class PurchaseBatch {
     @JsonIgnoreProperties({"purchaseBatches", "stockStatus", "description", "quantity",})
     private Product product;
 
-    public PurchaseBatch(int quantity, int totalPrice, Purchase purchase, Product product) {
+    public PurchaseBatch(int quantity, int batchPrice, Purchase purchase, Product product) {
         this.quantity = quantity;
-        this.totalPrice = totalPrice;
+        this.batchPrice = batchPrice;
         this.purchase = purchase;
         this.product = product;
     }

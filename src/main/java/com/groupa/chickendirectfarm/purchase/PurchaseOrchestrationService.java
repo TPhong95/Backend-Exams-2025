@@ -102,7 +102,7 @@ public class PurchaseOrchestrationService {
             batch.setPurchase(purchase);
             batch.setProduct(product);
             batch.setQuantity(batchDto.quantity());
-            batch.setTotalPrice(batchTotal);
+            batch.setBatchPrice(batchTotal);
 
             batches.add(batch);
             totalPrice += batchTotal;
