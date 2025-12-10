@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -32,7 +33,7 @@ public class CustomerAddress {
 
     @OneToMany(mappedBy = "customerAddress")
     @JsonIgnoreProperties("customerAddress")
-    private List<Purchase> purchases;
+    private List<Purchase> purchases = new ArrayList<>();
 
     public CustomerAddress(String streetName, String phone, String email, Customer customer) {
         this.streetName = streetName;

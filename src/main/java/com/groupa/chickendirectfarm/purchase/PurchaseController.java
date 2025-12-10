@@ -2,6 +2,7 @@ package com.groupa.chickendirectfarm.purchase;
 
 import com.groupa.chickendirectfarm.dto.PurchaseCreateDto;
 import com.groupa.chickendirectfarm.dto.PurchaseDetailsResponseDto;
+import com.groupa.chickendirectfarm.mapper.DtoMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,28 +13,37 @@ import java.util.List;
 public class PurchaseController {
     private final PurchaseService purchaseService;
     private final PurchaseOrchestrationService purchaseOrchestrationService;
-    public PurchaseController(PurchaseService purchaseService, PurchaseOrchestrationService purchaseOrchestrationService) {
+    private final DtoMapper dtoMapper;
+    public PurchaseController(PurchaseService purchaseService, PurchaseOrchestrationService purchaseOrchestrationService, DtoMapper dtoMapper) {
         this.purchaseService = purchaseService;
         this.purchaseOrchestrationService = purchaseOrchestrationService;
+        this.dtoMapper = dtoMapper;
     }
 
     @PostMapping()
     public ResponseEntity<PurchaseDetailsResponseDto> savePurchase(@RequestBody PurchaseCreateDto purchaseCreateDto){
-        Purchase purchase = purchaseOrchestrationService.create(purchaseCreateDto);
-        return ResponseEntity.ok(purchaseService.convertToDetailsDto(purchase));
+        Purchase result = purchaseOrchestrationService.create(purchaseCreateDto);
+        return ResponseEntity.ok(dtoMapper.toPurchaseDetailsDto(result));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<PurchaseDetailsResponseDto> getPurchaseById(@PathVariable int id){
-        var result = purchaseService.getPurchaseDtoById(id);
-        return ResponseEntity.ok(result);
+        Purchase result = purchaseService.getPurchaseById(id);
+        return ResponseEntity.ok(dtoMapper.toPurchaseDetailsDto(result));
     }
 
     @GetMapping()
     public ResponseEntity<List<PurchaseDetailsResponseDto>> getAllPurchases(){
-        var  result = purchaseService.getAllPurchaseDtos();
-        if (result.isEmpty()) {return ResponseEntity.notFound().build();}
-        return ResponseEntity.ok(result);
+        List<Purchase> purchases = purchaseService.getAllPurchases();
+        if (purchases.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        List<PurchaseDetailsResponseDto> dtos = purchases.stream()
+                .map(dtoMapper::toPurchaseDetailsDto)
+                .toList();
+
+        return ResponseEntity.ok(dtos);
     }
 
     @DeleteMapping("/{id}")
@@ -43,8 +53,8 @@ public class PurchaseController {
     }
 
     @PostMapping("/cancel/{id}")
-    public ResponseEntity<Purchase> cancelPurchaseById(@PathVariable int id){
-        purchaseService.cancelPurchaseById(id);
-        return ResponseEntity.ok(purchaseService.getPurchaseById(id));
+    public ResponseEntity<PurchaseDetailsResponseDto> cancelPurchaseById(@PathVariable int id){
+        Purchase result = purchaseService.cancelPurchaseById(id);
+        return ResponseEntity. ok(dtoMapper.toPurchaseDetailsDto(result));
     }
 }

@@ -48,12 +48,6 @@ public class PurchaseService {
         });
     }
 
-    public PurchaseDetailsResponseDto getPurchaseDtoById(int id) {
-        log.debug("Retrieving purchase with id: {}", id);
-        Purchase purchase = getPurchaseById(id);
-        log.debug("Converting purchase to DTO");
-        return convertToDetailsDto(purchase);
-    }
 
     public List<Purchase> getAllPurchases() {
         log.debug("Retrieving all purchases");
@@ -62,12 +56,6 @@ public class PurchaseService {
         return purchases;
     }
 
-    public List<PurchaseDetailsResponseDto> getAllPurchaseDtos() {
-        log.debug("Retrieving all purchase");
-        List<PurchaseDetailsResponseDto> dtos = purchaseRepo.findAll().stream().map(this::convertToDetailsDto).toList();
-        log.debug("Converted {} purchase to DTO", dtos.size());
-        return dtos;
-    }
 
     public void deletePurchaseById(int id) {
         log.info("ENTRY: Deleting purchase with id: {}", id);
@@ -80,7 +68,7 @@ public class PurchaseService {
         log.info("EXIT: Purchase with id: {} deleted successfully", id);
     }
 
-    public void cancelPurchaseById(int id) {
+    public Purchase cancelPurchaseById(int id) {
         log.info("ENTRY: Canceling purchase with id: {}", id);
 
         Purchase purchase = getPurchaseById(id);
@@ -114,78 +102,6 @@ public class PurchaseService {
         }
         purchaseEventService.save(ShippedStatus.CANCELLED, purchase);
         log.info("EXIT: Purchase with id: {} cancelled successfully and product stock restocked", id);
-    }
-
-    private PurchaseBatchResponseDto convertBatchToDto(PurchaseBatch batch) {
-        log.debug("Converting batch with id {} to DTO", batch.getId());
-        return new PurchaseBatchResponseDto(
-                batch.getProduct().getBreed().toString(),
-                batch.getQuantity(),
-                batch.getProduct().getPrice(),
-                batch.getBatchPrice()
-        );
-    }
-
-    private CustomerAddressResponseDto convertAddressToDto(Purchase purchase) {
-        log.debug("Converting address with id {} to DTO", purchase.getCustomerAddress().getId());
-        return new CustomerAddressResponseDto(
-                purchase.getCustomerAddress().getId(),
-                purchase.getCustomerAddress().getStreetName(),
-                purchase.getCustomerAddress().getPhone(),
-                purchase.getCustomerAddress().getEmail()
-        );
-    }
-
-    private PurchaseStatusHistoryDto convertEventToDto(PurchaseEvent event) {
-        log.debug("Converting purchase event with id {} to DTO", event.getId());
-        return new PurchaseStatusHistoryDto(
-                event.getShippedStatus().toString(),
-                event.getTimestamp()
-        );
-    }
-
-
-    public PurchaseDetailsResponseDto convertToDetailsDto(Purchase purchase) {
-        log.debug("Converting purchase with id {} to detailed DTO", purchase.getId());
-        List<PurchaseBatchResponseDto> batches = purchase.getPurchaseBatches()
-                .stream()
-                .map(this::convertBatchToDto)
-                .toList();
-
-        List<PurchaseStatusHistoryDto> statusHistory = purchase.getPurchaseEvents()
-                .stream()
-                .map(this::convertEventToDto)
-                .toList();
-
-        String currentStatus;
-        if (purchase.getPurchaseEvents().isEmpty()) {
-            currentStatus = "UNKNOWN";
-        } else {
-            currentStatus = purchase.getPurchaseEvents().getFirst().getShippedStatus(). toString();
-        }
-
-        LocalDateTime orderDate;
-        if (purchase.getPurchaseEvents().isEmpty()) {
-            orderDate = null;
-        } else {
-            orderDate = purchase.getPurchaseEvents().getLast().getTimestamp();
-        }
-
-        log.debug("Purchase DTO conversion completed, {} batches, {} status events converted", batches.size(), statusHistory.size());
-
-        return new PurchaseDetailsResponseDto(
-                purchase. getId(),
-                orderDate,
-                currentStatus,
-                purchase. getCustomer().getName(),
-                purchase.getCustomer().getPrimaryPhone(),
-                purchase.getCustomer().getPrimaryEmail(),
-                convertAddressToDto(purchase),
-                batches,
-                statusHistory,
-                purchase.getTotalQuantity(),
-                purchase.getShippingCharge(),
-                purchase.getTotalPrice()
-        );
+        return purchase;
     }
 }

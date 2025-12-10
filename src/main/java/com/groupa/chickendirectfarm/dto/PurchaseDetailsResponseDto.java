@@ -12,7 +12,7 @@ public record PurchaseDetailsResponseDto(
         String customerPhone,
         String customerEmail,
 
-        CustomerAddressResponseDto shippingAddress,
+        CustomerAddressForCustomerDto shippingAddress,
 
         List<PurchaseBatchResponseDto> batches,
 

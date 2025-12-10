@@ -2,8 +2,9 @@ package com.groupa.chickendirectfarm.customer;
 import com.groupa.chickendirectfarm.customer.address.CustomerAddress;
 import com.groupa.chickendirectfarm.dto.CustomerAddressCreateDto;
 import com.groupa.chickendirectfarm.customer.address.CustomerAddressService;
+import com.groupa.chickendirectfarm.dto.CustomerAddressResponseDto;
 import com.groupa.chickendirectfarm.dto.CustomerResponseDto;
-import lombok.extern.slf4j.Slf4j;
+import com.groupa.chickendirectfarm.mapper.DtoMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,28 +16,37 @@ import java.util.List;
 public class CustomerController {
     private final CustomerService customerService;
     private final CustomerAddressService customerAddressService;
-    public CustomerController(CustomerService customerService, CustomerAddressService customerAddressService) {
+    private final DtoMapper dtoMapper;
+
+    public CustomerController(CustomerService customerService, CustomerAddressService customerAddressService, DtoMapper dtoMapper) {
         this.customerService = customerService;
         this.customerAddressService = customerAddressService;
+        this.dtoMapper = dtoMapper;
     }
+
 
     @PostMapping()
     public ResponseEntity<CustomerResponseDto> saveCustomer(@RequestBody Customer customer){
-        Customer saved = customerService.save(customer);
-        return ResponseEntity.ok(customerService.convertToDto(saved));
+        Customer result = customerService.save(customer);
+        return ResponseEntity.ok(dtoMapper.toCustomerDto(result));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<CustomerResponseDto> getCustomerById(@PathVariable int id){
-        var result = customerService.getCustomerDtoById(id);
-        return ResponseEntity.ok(result);
+        var result = customerService.getCustomerById(id);
+        return ResponseEntity.ok(dtoMapper.toCustomerDto(result));
     }
 
     @GetMapping()
     public ResponseEntity<List<CustomerResponseDto>> getAllCustomers(){
-        var result = customerService.getAllCustomers();
-        if (result.isEmpty()) {return ResponseEntity.noContent().build();}
-        return ResponseEntity.ok(customerService.getAllCustomerDto());
+        List<Customer> customers = customerService.getAllCustomers();
+        if (customers.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        List<CustomerResponseDto> dtos = customers.stream()
+                .map(dtoMapper::toCustomerDto)
+                .toList();
+        return ResponseEntity.ok(dtos);
     }
 
     @DeleteMapping("/{id}")
@@ -46,20 +56,30 @@ public class CustomerController {
     }
 
     @PostMapping("/address")
-    public ResponseEntity<CustomerAddress> saveCustomerAddress(@RequestBody CustomerAddressCreateDto customerAddressCreateDto){
-        return ResponseEntity.ok(customerAddressService.save(customerAddressCreateDto));
+    public ResponseEntity<CustomerAddressResponseDto> saveCustomerAddress(@RequestBody CustomerAddressCreateDto customerAddressCreateDto){
+        CustomerAddress result = customerAddressService.save(customerAddressCreateDto);
+        return ResponseEntity.ok(dtoMapper.toCustomerAddressDtoFull(result));
     }
 
+
     @GetMapping("/address/{id}")
-    public ResponseEntity<CustomerAddress> getCustomerAddressById(@PathVariable int id){
-        var result = customerAddressService.getCustomerAddressById(id);
-        return ResponseEntity.ok(result);
+    public ResponseEntity<CustomerAddressResponseDto> getCustomerAddressById(@PathVariable int id){
+        CustomerAddress result = customerAddressService.getCustomerAddressById(id);
+        return ResponseEntity.ok(dtoMapper.toCustomerAddressDtoFull(result));
     }
+
+
     @GetMapping("/address")
-    public ResponseEntity<List<CustomerAddress>> getAllCustomerAddresses(){
-        var result = customerAddressService.getAllCustomerAddresses();
-        if (result.isEmpty()) {return ResponseEntity.notFound().build();}
-        return ResponseEntity.ok(result);
+    public ResponseEntity<List<CustomerAddressResponseDto>> getAllCustomerAddresses(){
+        List<CustomerAddress> addresses = customerAddressService.getAllCustomerAddresses();
+        if (addresses.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        List<CustomerAddressResponseDto> dtos = addresses. stream()
+                .map(dtoMapper::toCustomerAddressDtoFull)
+                .toList();
+
+        return ResponseEntity.ok(dtos);
     }
 
     @DeleteMapping("/address/{id}")

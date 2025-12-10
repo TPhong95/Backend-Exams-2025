@@ -7,7 +7,7 @@ public record CustomerResponseDto(
         String name,
         String primaryPhone,
         String primaryEmail,
-        List<CustomerAddressResponseDto> addresses,
+        List<CustomerAddressForCustomerDto> addresses,
         List<PurchaseResponseDto> purchaseHistory
 ) {
 }
