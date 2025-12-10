@@ -22,5 +22,4 @@ management:
     port: 8090
 logging:
   level:
-    root: DEBUG
-    org.hibernate.sql: DEBUG
+    com.groupa.chickendirectfarm: DEBUG
