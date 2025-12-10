@@ -48,7 +48,6 @@ public class PurchaseService {
         });
     }
 
-
     public List<Purchase> getAllPurchases() {
         log.debug("Retrieving all purchases");
         List<Purchase> purchases = purchaseRepo.findAll();
@@ -68,6 +67,8 @@ public class PurchaseService {
         log.info("EXIT: Purchase with id: {} deleted successfully", id);
     }
 
+
+    //Vurderer å flytte denne til PurchaseOrchestrationService
     public Purchase cancelPurchaseById(int id) {
         log.info("ENTRY: Canceling purchase with id: {}", id);
 

@@ -4,9 +4,10 @@ package com.groupa.chickendirectfarm.mapper;
 import com.groupa.chickendirectfarm.customer.Customer;
 import com.groupa.chickendirectfarm.customer.address.CustomerAddress;
 import com.groupa.chickendirectfarm.dto.*;
+import com.groupa.chickendirectfarm.product.Product;
+import com.groupa.chickendirectfarm.product.event.ProductEvent;
 import com.groupa.chickendirectfarm.purchase.Purchase;
 import com.groupa.chickendirectfarm.purchase.batch.PurchaseBatch;
-import jakarta.persistence.OrderBy;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -62,9 +63,9 @@ public class DtoMapper {
     public CustomerAddressResponseDto toCustomerAddressDtoFull(CustomerAddress address) {
         log.debug("Converting address with id {} to full DTO with purchases", address.getId());
 
-        List<PurchaseResponseDto> purchaseHistory = address. getPurchases()
+        List<PurchaseResponseDto> purchaseHistory = address.getPurchases()
                 .stream()
-                .map(this:: toPurchaseDto)
+                .map(this::toPurchaseDto)
                 .toList();
 
         return new CustomerAddressResponseDto(
@@ -96,7 +97,7 @@ public class DtoMapper {
     public PurchaseResponseDto toPurchaseDto(Purchase purchase) {
         log.debug("Converting purchase with id {} to DTO", purchase.getId());
 
-        List<PurchaseBatchResponseDto> batches = purchase. getPurchaseBatches()
+        List<PurchaseBatchResponseDto> batches = purchase.getPurchaseBatches()
                 .stream()
                 .map(this::toPurchaseBatchDto)
                 .toList();
@@ -120,7 +121,7 @@ public class DtoMapper {
                 batches,
                 purchase.getTotalQuantity(),
                 purchase.getShippingCharge(),
-                purchase. getTotalPrice(),
+                purchase.getTotalPrice(),
                 shippedStatus,
                 purchase.getCustomerAddress().getStreetName(),
                 orderDate
@@ -147,7 +148,7 @@ public class DtoMapper {
         if (purchase.getPurchaseEvents().isEmpty()) {
             currentStatus = "UNKNOWN";
         } else {
-            currentStatus = purchase.getPurchaseEvents().getFirst().getShippedStatus(). toString();
+            currentStatus = purchase.getPurchaseEvents().getFirst().getShippedStatus().toString();
         }
 
         LocalDateTime orderDate;
@@ -160,10 +161,10 @@ public class DtoMapper {
         log.debug("Purchase DTO conversion completed, {} batches, {} status events converted", batches.size(), statusHistory.size());
 
         return new PurchaseDetailsResponseDto(
-                purchase. getId(),
+                purchase.getId(),
                 orderDate,
                 currentStatus,
-                purchase. getCustomer().getName(),
+                purchase.getCustomer().getName(),
                 purchase.getCustomer().getPrimaryPhone(),
                 purchase.getCustomer().getPrimaryEmail(),
                 toCustomerAddressDtoSimple(purchase.getCustomerAddress()),
@@ -172,6 +173,49 @@ public class DtoMapper {
                 purchase.getTotalQuantity(),
                 purchase.getShippingCharge(),
                 purchase.getTotalPrice()
+        );
+    }
+
+    // ==================== PRODUCT ====================
+
+    public ProductResponseDto toProductDto(Product product) {
+        log.debug("Converting Product with Id {} to DTO", product.getId());
+
+        List<ProductEventResponseDto> productEvents = product.getProductEvents()
+                .stream()
+                .map(this::toProductEventDto)
+                .toList();
+
+        log.debug("Product DTO conversion completed, {} events converted",
+                productEvents.size());
+
+        return new ProductResponseDto(
+                product.getId(),
+                product.getBreed(),
+                product.getDescription(),
+                product.getPrice(),
+                product.getQuantity(),
+                productEvents
+        );
+
+
+    }
+
+    // ==================== PRODUCTEVENTS ====================
+
+    public ProductEventResponseDto toProductEventDto(ProductEvent event) {
+        log.debug("Converting event with id {} to simple DTO", event.getId());
+
+
+
+        return new ProductEventResponseDto(
+                event.getId(),
+                event.getStockStatus(),
+                event.getPreviousQuantity(),
+                event.getIncomingQuantity(),
+                event.getNewQuantity(),
+                event.getProductEventAction(),
+                event.getTimestamp()
         );
     }
 
