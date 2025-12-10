@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+>
+<style>
+    table, th, td {
+        border:1px solid black;
+    }
+</style>
+<head>
+    <meta charset="UTF-8">
+    <title>List of customers</title>
+</head>
+<body>
+<h1>Customer Details</h1>
+<div>
+    <p>Name: <strong th:text="${customer.getName()}"></strong></p>
+    <p>Primary phone: <strong th:text="${customer.getPrimaryPhone()}"></strong></p>
+    <p>Primary email: <strong th:text="${customer.getPrimaryEmail()}"></strong></p>
+    <p>Amount of addresses: <strong th:text="${customer.getCustomerAddresses().size()}"></strong></p>
+    <p>Amount of purchases: <strong th:text="${customer.getPurchases().size()}"></strong></p>
+</div>
+<br>
+<h1>Addresses</h1>
+<table>
+    <thead>
+    <tr>
+        <th>Street name</th>
+        <th>Phone number</th>
+        <th>Email</th>
+        <th>Purchases</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="addresses : ${customer.getCustomerAddresses()}">
+        <td th:text="${addresses.getStreetName()}"></td>
+        <td th:text="${addresses.getPhone()}"></td>
+        <td th:text="${addresses.getEmail()}"></td>
+        <td th:text="${addresses.getPurchases().size()}"></td>
+    </tr>
+    </tbody>
+</table>
+<br>
+<h1>Purchases</h1>
+<table>
+    <thead>
+    <tr>
+        <th>Purchase Id</th>
+        <th>Address</th>
+        <th>Shipping charge</th>
+        <th>Types of products</th>
+        <th>Total quantity</th>
+        <th>Total Price</th>
+        <th>Shipment Status</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="purchase : ${customer.getPurchases()}">
+        <td th:text="${purchase.getId()}"></td>
+        <td th:text="${purchase.getCustomerAddress().getStreetName()}"></td>
+        <td th:text="${purchase.getShippingCharge()}"></td>
+        <td th:text="${purchase.getPurchaseBatches().size()}"></td>
+        <td th:text="${purchase.getTotalQuantity()}"></td>
+        <td th:text="${purchase.getTotalPrice()}"></td>
+        <td th:text="${purchase.getPurchaseEvents().getFirst().getShippedStatus()}"></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
