@@ -82,7 +82,6 @@ public class TestData {
             int shippingPrice = random.nextInt(200, 500) +1;
 
             PurchaseCreateDto purchaseCreateDto = new PurchaseCreateDto(
-                    customerAddress.getCustomer().getId(),
                     customerAddress.getId(),
                     shippingPrice,
                     createTestPurchaseBatches()

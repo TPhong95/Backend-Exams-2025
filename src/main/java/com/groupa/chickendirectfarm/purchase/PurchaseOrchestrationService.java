@@ -5,7 +5,6 @@ import com.groupa.chickendirectfarm.customer.CustomerService;
 import com.groupa.chickendirectfarm.customer.address.CustomerAddress;
 import com.groupa.chickendirectfarm.customer.address.CustomerAddressService;
 import com.groupa.chickendirectfarm.dto.PurchaseCreateDto;
-import com.groupa.chickendirectfarm.exception.badrequest.CustomerAddressDoesNotExistInCustomerException;
 import com.groupa.chickendirectfarm.exception.conflict.DuplicateProductInPurchaseException;
 import com.groupa.chickendirectfarm.product.Product;
 import com.groupa.chickendirectfarm.product.ProductOrchestrationService;
@@ -47,21 +46,15 @@ public class PurchaseOrchestrationService {
 
     @Transactional
     public Purchase create(PurchaseCreateDto purchaseCreateDto) {
-        log.info("ENTRY: Creating new purchase for customer ID: {} with address: {}", purchaseCreateDto.customerId(), purchaseCreateDto.customerAddressId());
-
-        Customer customer = customerService.getCustomerById(purchaseCreateDto.customerId());
-        log.debug("Customer retrieved with name: {}",customer.getName());
+        log.info("ENTRY: Creating new purchase for customer with address Id: {}", purchaseCreateDto.customerAddressId());
 
         CustomerAddress customerAddress = customerAddressService.getCustomerAddressById(
                 purchaseCreateDto.customerAddressId()
         );
         log.debug("Customer address retrieved with streetname: {}",customerAddress.getStreetName());
 
-        if (customer.getId() != customerAddress.getCustomer().getId()) {
-            log.warn("The customer id in customer address payload does not match the database, received Id: {}", customerAddress.getCustomer().getId()
-            );
-            throw new CustomerAddressDoesNotExistInCustomerException("Customer address was not found in the list of addresses for Customer Id: " + customer.getId());
-        }
+        Customer customer = customerService.getCustomerById(customerAddress.getCustomer().getId());
+        log.debug("Customer retrieved with Id: {}, name: {}",customer.getId(), customer.getName());
 
         Purchase purchase = new Purchase();
         purchase.setCustomer(customer);
