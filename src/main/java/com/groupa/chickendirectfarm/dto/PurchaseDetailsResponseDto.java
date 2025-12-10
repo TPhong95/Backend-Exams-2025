@@ -1,5 +1,7 @@
 package com.groupa.chickendirectfarm.dto;
 
+import jakarta.persistence.OrderBy;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -16,6 +18,7 @@ public record PurchaseDetailsResponseDto(
 
         List<PurchaseBatchResponseDto> batches,
 
+        @OrderBy("timestamp DESC")
         List<PurchaseStatusHistoryDto> statusHistory,
 
         Integer totalQuantity,

@@ -6,6 +6,7 @@ import com.groupa.chickendirectfarm.customer.address.CustomerAddress;
 import com.groupa.chickendirectfarm.dto.*;
 import com.groupa.chickendirectfarm.purchase.Purchase;
 import com.groupa.chickendirectfarm.purchase.batch.PurchaseBatch;
+import jakarta.persistence.OrderBy;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
