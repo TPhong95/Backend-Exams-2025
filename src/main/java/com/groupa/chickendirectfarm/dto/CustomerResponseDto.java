@@ -9,5 +9,4 @@ public record CustomerResponseDto(
         String primaryEmail,
         List<CustomerAddressForCustomerDto> addresses,
         List<PurchaseResponseDto> purchaseHistory
-) {
-}
+) {}

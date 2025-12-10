@@ -4,5 +4,6 @@ public record CustomerAddressForCustomerDto(
         Integer customerAddressId,
         String streetName,
         String phone,
-        String email)
+        String email
+)
 {}

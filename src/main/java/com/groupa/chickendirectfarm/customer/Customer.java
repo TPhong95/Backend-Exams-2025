@@ -1,7 +1,5 @@
 package com.groupa.chickendirectfarm.customer;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.groupa.chickendirectfarm.customer.address.CustomerAddress;
 import com.groupa.chickendirectfarm.purchase.Purchase;
@@ -28,11 +26,9 @@ public class Customer {
     private String primaryEmail;
 
     @OneToMany(mappedBy = "customer")
-    @JsonIgnoreProperties("customer")
     private List<CustomerAddress> customerAddresses = new ArrayList<>();
 
     @OneToMany(mappedBy = "customer")
-  
     private List<Purchase> purchases = new ArrayList<>();
 
     public Customer(String name, String primaryPhone, String primaryEmail) {

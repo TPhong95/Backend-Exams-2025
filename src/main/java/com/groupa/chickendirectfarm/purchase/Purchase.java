@@ -32,13 +32,11 @@ public class Purchase {
 
     @ManyToOne
     @JoinColumn(name = "customer_id")
-    @JsonIgnoreProperties({"customerAddresses", "purchases"})
     private Customer customer;
 
 
     @ManyToOne
     @JoinColumn(name = "customer_address_id")
-    @JsonIgnoreProperties({"purchases", "customer"})
     private CustomerAddress customerAddress;
 
     @OneToMany(
@@ -53,12 +51,5 @@ public class Purchase {
     @OrderBy("timestamp DESC")
     private List<PurchaseEvent> purchaseEvents = new ArrayList<>();
 
- /*
-    public Purchase(int shippingCharge, Customer customer, CustomerAddress customerAddress, List<PurchaseBatch> purchaseBatches) {
-        this.shippingCharge = shippingCharge;
-        this.customer = customer;
-        this.customerAddress = customerAddress;
-        this.purchaseBatches = purchaseBatches;
-    }
-     */
+
 }
