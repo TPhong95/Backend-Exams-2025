@@ -1,6 +1,5 @@
 package com.groupa.chickendirectfarm.product;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.groupa.chickendirectfarm.product.event.ProductEvent;
 import com.groupa.chickendirectfarm.purchase.batch.PurchaseBatch;
@@ -9,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -26,17 +26,14 @@ public class Product {
     private Breed breed;
     private String description;
     private int price;
-
-
     private int quantity;
 
     @OneToMany(mappedBy = "product")
-    @JsonIgnore
     private List<PurchaseBatch> purchaseBatches;
 
     @OneToMany(mappedBy = "product")
     @OrderBy("timestamp DESC")
-    private List<ProductEvent> productEvents;
+    private List<ProductEvent> productEvents = new ArrayList<>();
 
 
 
