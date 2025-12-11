@@ -1,7 +1,8 @@
 package com.groupa.chickendirectfarm.dto;
 
 import com.groupa.chickendirectfarm.product.Breed;
-import com.groupa.chickendirectfarm.product.event.ProductEvent;
+import jakarta.persistence.OrderBy;
+
 
 import java.util.List;
 
@@ -11,5 +12,6 @@ public record ProductResponseDto(
         String description,
         int price,
         int quantity,
+        @OrderBy("timestamp DESC")
         List<ProductEventResponseDto> productEvents
 ) {}

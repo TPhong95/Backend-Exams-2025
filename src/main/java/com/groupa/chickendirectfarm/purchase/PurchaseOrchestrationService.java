@@ -6,11 +6,15 @@ import com.groupa.chickendirectfarm.customer.address.CustomerAddress;
 import com.groupa.chickendirectfarm.customer.address.CustomerAddressService;
 import com.groupa.chickendirectfarm.dto.PurchaseCreateDto;
 import com.groupa.chickendirectfarm.exception.conflict.DuplicateProductInPurchaseException;
+import com.groupa.chickendirectfarm.exception.conflict.PurchaseAlreadyHandledException;
+import com.groupa.chickendirectfarm.exception.notfound.PurchaseNotFoundException;
 import com.groupa.chickendirectfarm.product.Product;
 import com.groupa.chickendirectfarm.product.ProductOrchestrationService;
 import com.groupa.chickendirectfarm.product.ProductService;
+import com.groupa.chickendirectfarm.product.event.ProductEventAction;
 import com.groupa.chickendirectfarm.purchase.batch.PurchaseBatch;
 import com.groupa.chickendirectfarm.dto.PurchaseBatchCreateDto;
+import com.groupa.chickendirectfarm.purchase.event.PurchaseEvent;
 import com.groupa.chickendirectfarm.purchase.event.PurchaseEventService;
 import com.groupa.chickendirectfarm.purchase.event.ShippedStatus;
 import jakarta.transaction.Transactional;
@@ -124,4 +128,41 @@ public class PurchaseOrchestrationService {
         return savedPurchase;
 
 }
+@Transactional
+    public Purchase cancelPurchaseById(int id) {
+        log.info("ENTRY: Canceling purchase with id: {}", id);
+
+        Purchase purchase = purchaseService.getPurchaseById(id);
+
+        if (purchase == null) {
+            log.warn("Cancel failed, purchase with id: {} not found", id);
+            throw new PurchaseNotFoundException("Purchase with id " + id + " not found");
+        }
+
+        ShippedStatus shippedStatus = purchase.getPurchaseEvents().stream()
+                .map(PurchaseEvent::getShippedStatus)
+                .filter(status -> status == ShippedStatus.CANCELLED || status == ShippedStatus.DELIVERED || status == ShippedStatus.SHIPPED)
+                .findFirst()
+                .orElse(null);
+
+        if (shippedStatus == ShippedStatus.CANCELLED || shippedStatus == ShippedStatus.DELIVERED || shippedStatus == ShippedStatus.SHIPPED) {
+            log.warn("Cancel failed, purchase already {} on purchase id: {}", shippedStatus.toString().toLowerCase(), id);
+            throw new PurchaseAlreadyHandledException("Purchase with id " + id + " cannot be canceled since it's already " + shippedStatus.toString().toLowerCase() + ".");
+        }
+
+        log.debug("Processing cancellation of  purchase with id: {}, Restocking canceled products", id);
+
+        List<PurchaseBatch> batches = purchase.getPurchaseBatches();
+        for (PurchaseBatch purchaseBatch : batches) {
+            log.debug("Restocking product Id: {}, breed: {}, with quantity of {} products",
+                    purchaseBatch.getProduct().getId(),
+                    purchaseBatch.getProduct().getBreed(),
+                    purchaseBatch.getQuantity());
+
+            productOrchestrationService.increaseStock(purchaseBatch.getProduct().getId(), purchaseBatch.getQuantity(), ProductEventAction.CANCELED);
+        }
+        purchaseEventService.save(ShippedStatus.CANCELLED, purchase);
+        log.info("EXIT: Purchase with id: {} cancelled successfully and product stock restocked", id);
+        return purchase;
+    }
 }

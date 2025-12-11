@@ -44,12 +44,9 @@ public class DtoMapper {
                 purchaseHistory
         );
     }
-
     // ==================== CUSTOMER ADDRESS ====================
-
-    // Simple version - uden purchases (brukes i Customer DTO for å unngå circular ref)
     public CustomerAddressForCustomerDto toCustomerAddressDtoSimple(CustomerAddress address) {
-        log.debug("Converting address with id {} to simple DTO", address.getId());
+        log.debug("Converting address with id {} to DTO", address.getId());
 
         return new CustomerAddressForCustomerDto(
                 address.getId(),
@@ -175,7 +172,6 @@ public class DtoMapper {
                 purchase.getTotalPrice()
         );
     }
-
     // ==================== PRODUCT ====================
 
     public ProductResponseDto toProductDto(Product product) {
@@ -197,16 +193,12 @@ public class DtoMapper {
                 product.getQuantity(),
                 productEvents
         );
-
-
     }
 
     // ==================== PRODUCTEVENTS ====================
 
     public ProductEventResponseDto toProductEventDto(ProductEvent event) {
         log.debug("Converting event with id {} to simple DTO", event.getId());
-
-
 
         return new ProductEventResponseDto(
                 event.getId(),
@@ -218,5 +210,4 @@ public class DtoMapper {
                 event.getTimestamp()
         );
     }
-
 }

@@ -47,7 +47,7 @@ public class ProductService {
 
     public List<Product> getAllProducts(){
         log.debug("Retrieving all products...");
-        List<Product> allProducts = productRepo.findAll();
+        List<Product> allProducts = productRepo.findAllByOrderByIdAsc();
         log.debug("Retrieved {} products", allProducts.size());
         return allProducts;
     }

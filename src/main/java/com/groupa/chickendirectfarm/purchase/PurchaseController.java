@@ -54,7 +54,7 @@ public class PurchaseController {
 
     @PostMapping("/cancel/{id}")
     public ResponseEntity<PurchaseDetailsResponseDto> cancelPurchaseById(@PathVariable int id){
-        Purchase result = purchaseService.cancelPurchaseById(id);
+        Purchase result = purchaseOrchestrationService.cancelPurchaseById(id);
         return ResponseEntity. ok(dtoMapper.toPurchaseDetailsDto(result));
     }
 }

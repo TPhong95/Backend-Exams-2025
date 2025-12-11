@@ -67,42 +67,4 @@ public class PurchaseService {
         log.info("EXIT: Purchase with id: {} deleted successfully", id);
     }
 
-
-    //Vurderer å flytte denne til PurchaseOrchestrationService
-    public Purchase cancelPurchaseById(int id) {
-        log.info("ENTRY: Canceling purchase with id: {}", id);
-
-        Purchase purchase = getPurchaseById(id);
-
-        if (purchase == null) {
-            log.warn("Cancel failed, purchase with id: {} not found", id);
-            throw new PurchaseNotFoundException("Purchase with id " + id + " not found");
-        }
-
-        ShippedStatus shippedStatus = purchase.getPurchaseEvents().stream()
-                .map(PurchaseEvent::getShippedStatus)
-                .filter(status -> status == ShippedStatus.CANCELLED || status == ShippedStatus.DELIVERED)
-                .findFirst()
-                .orElse(null);
-
-        if (shippedStatus == ShippedStatus.CANCELLED || shippedStatus == ShippedStatus.DELIVERED) {
-            log.warn("Cancel failed, purchase already {} on purchase id: {}", shippedStatus.toString().toLowerCase(), id);
-            throw new PurchaseAlreadyHandledException("Purchase with id " + id + " cannot be canceled since it's already " + shippedStatus.toString().toLowerCase() + ".");
-        }
-
-        log.debug("Processing cancellation of  purchase with id: {}, Restocking canceled products", id);
-
-        List<PurchaseBatch> batches = purchase.getPurchaseBatches();
-        for (PurchaseBatch purchaseBatch : batches) {
-            log.debug("Restocking product Id: {}, breed: {}, with quantity of {} products",
-                    purchaseBatch.getProduct().getId(),
-                    purchaseBatch.getProduct().getBreed(),
-                    purchaseBatch.getQuantity());
-
-            productOrchestrationService.increaseStock(purchaseBatch.getProduct().getId(), purchaseBatch.getQuantity(), ProductEventAction.CANCELED);
-        }
-        purchaseEventService.save(ShippedStatus.CANCELLED, purchase);
-        log.info("EXIT: Purchase with id: {} cancelled successfully and product stock restocked", id);
-        return purchase;
-    }
 }

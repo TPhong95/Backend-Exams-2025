@@ -2,7 +2,6 @@ package com.groupa.chickendirectfarm.product.event;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.groupa.chickendirectfarm.product.Product;
 import com.groupa.chickendirectfarm.product.StockStatus;
@@ -51,5 +50,4 @@ public class ProductEvent {
         this.previousQuantity = previousQuantity;
         this.productEventAction = productEventAction;
     }
-
 }
