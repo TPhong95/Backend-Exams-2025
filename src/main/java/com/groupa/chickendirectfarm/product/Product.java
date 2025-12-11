@@ -35,8 +35,6 @@ public class Product {
     @OrderBy("timestamp DESC")
     private List<ProductEvent> productEvents = new ArrayList<>();
 
-
-
     public Product(Breed breed, String description, int price, int quantity) {
         this.breed = breed;
         this.description = description;
