@@ -4,8 +4,7 @@ import com.groupa.chickendirectfarm.dto.CustomerAddressCreateDto;
 import com.groupa.chickendirectfarm.customer.address.CustomerAddressService;
 import com.groupa.chickendirectfarm.dto.CustomerAddressResponseDto;
 import com.groupa.chickendirectfarm.dto.CustomerResponseDto;
-import com.groupa.chickendirectfarm.dtomappers.CustomerDtoMapper;
-import com.groupa.chickendirectfarm.dtomappers.DtoMapper;
+import com.groupa.chickendirectfarm.mapper.DtoMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,25 +16,25 @@ import java.util.List;
 public class CustomerController {
     private final CustomerService customerService;
     private final CustomerAddressService customerAddressService;
-    private final CustomerDtoMapper customerDtoMapper;
+    private final DtoMapper dtoMapper;
 
-    public CustomerController(CustomerService customerService, CustomerAddressService customerAddressService, DtoMapper dtoMapper, CustomerDtoMapper customerDtoMapper) {
+    public CustomerController(CustomerService customerService, CustomerAddressService customerAddressService, DtoMapper dtoMapper) {
         this.customerService = customerService;
         this.customerAddressService = customerAddressService;
-        this.customerDtoMapper = customerDtoMapper;
+        this.dtoMapper = dtoMapper;
     }
 
 
     @PostMapping()
     public ResponseEntity<CustomerResponseDto> saveCustomer(@RequestBody Customer customer){
         Customer result = customerService.save(customer);
-        return ResponseEntity.ok(customerDtoMapper.toCustomerDto(result));
+        return ResponseEntity.ok(dtoMapper.toCustomerDto(result));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<CustomerResponseDto> getCustomerById(@PathVariable int id){
         var result = customerService.getCustomerById(id);
-        return ResponseEntity.ok(customerDtoMapper.toCustomerDto(result));
+        return ResponseEntity.ok(dtoMapper.toCustomerDto(result));
     }
 
     @GetMapping()
@@ -45,7 +44,7 @@ public class CustomerController {
             return ResponseEntity.noContent().build();
         }
         List<CustomerResponseDto> dtos = customers.stream()
-                .map(customerDtoMapper::toCustomerDto)
+                .map(dtoMapper::toCustomerDto)
                 .toList();
         return ResponseEntity.ok(dtos);
     }
@@ -59,14 +58,14 @@ public class CustomerController {
     @PostMapping("/address")
     public ResponseEntity<CustomerAddressResponseDto> saveCustomerAddress(@RequestBody CustomerAddressCreateDto customerAddressCreateDto){
         CustomerAddress result = customerAddressService.save(customerAddressCreateDto);
-        return ResponseEntity.ok(customerDtoMapper.toCustomerAddressDtoFull(result));
+        return ResponseEntity.ok(dtoMapper.toCustomerAddressDtoFull(result));
     }
 
 
     @GetMapping("/address/{id}")
     public ResponseEntity<CustomerAddressResponseDto> getCustomerAddressById(@PathVariable int id){
         CustomerAddress result = customerAddressService.getCustomerAddressById(id);
-        return ResponseEntity.ok(customerDtoMapper.toCustomerAddressDtoFull(result));
+        return ResponseEntity.ok(dtoMapper.toCustomerAddressDtoFull(result));
     }
 
 
@@ -77,7 +76,7 @@ public class CustomerController {
             return ResponseEntity.notFound().build();
         }
         List<CustomerAddressResponseDto> dtos = addresses. stream()
-                .map(customerDtoMapper::toCustomerAddressDtoFull)
+                .map(dtoMapper::toCustomerAddressDtoFull)
                 .toList();
 
         return ResponseEntity.ok(dtos);

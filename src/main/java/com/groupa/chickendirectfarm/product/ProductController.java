@@ -3,7 +3,7 @@ package com.groupa.chickendirectfarm.product;
 import com.groupa.chickendirectfarm.dto.ProductEventResponseDto;
 import com.groupa.chickendirectfarm.dto.ProductResponseDto;
 import com.groupa.chickendirectfarm.dto.ProductRestockDto;
-import com.groupa.chickendirectfarm.dtomappers.ProductDtoMapper;
+import com.groupa.chickendirectfarm.mapper.DtoMapper;
 import com.groupa.chickendirectfarm.product.event.ProductEvent;
 import com.groupa.chickendirectfarm.product.event.ProductEventAction;
 import com.groupa.chickendirectfarm.product.event.ProductEventService;
@@ -18,25 +18,25 @@ public class ProductController {
     private final ProductService productService;
     private final ProductEventService productEventService;
     private final ProductOrchestrationService productOrchestrationService;
-    private final ProductDtoMapper productDtoMapper;
+    private final DtoMapper dtoMapper;
 
-    public ProductController(ProductService productService, ProductEventService productEventService, ProductOrchestrationService productOrchestrationService, ProductDtoMapper productDtoMapper) {
+    public ProductController(ProductService productService, ProductEventService productEventService, ProductOrchestrationService productOrchestrationService, DtoMapper dtoMapper) {
         this.productService = productService;
         this.productEventService = productEventService;
         this.productOrchestrationService = productOrchestrationService;
-        this.productDtoMapper = productDtoMapper;
+        this.dtoMapper = dtoMapper;
     }
 
     @PostMapping
     public ResponseEntity<ProductResponseDto> saveProduct(@RequestBody Product product){
         Product result = productService.save(product);
-        return ResponseEntity.ok(productDtoMapper.toProductDto(result));
+        return ResponseEntity.ok(dtoMapper.toProductDto(result));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ProductResponseDto> getProductById(@PathVariable int id){
         var result = productService.getProductById(id);
-        return ResponseEntity.ok(productDtoMapper.toProductDto(result));
+        return ResponseEntity.ok(dtoMapper.toProductDto(result));
     }
 
     @GetMapping()
@@ -46,7 +46,7 @@ public class ProductController {
            return ResponseEntity.notFound().build();
        }
        List<ProductResponseDto> dtos = products.stream()
-               .map(productDtoMapper::toProductDto)
+               .map(dtoMapper::toProductDto)
                .toList();
 
        return ResponseEntity.ok(dtos);
@@ -62,7 +62,7 @@ public class ProductController {
     @GetMapping("/event/{id}")
     public ResponseEntity<ProductEventResponseDto> getProductEventById(@PathVariable int id){
         ProductEvent result = productEventService.getEventById(id);
-        return ResponseEntity.ok(productDtoMapper.toProductEventDto(result));
+        return ResponseEntity.ok(dtoMapper.toProductEventDto(result));
     }
 
     @GetMapping("/event")
@@ -72,12 +72,11 @@ public class ProductController {
             return ResponseEntity.noContent().build();
         }
         List<ProductEventResponseDto> dtos = events.stream()
-                .map(productDtoMapper::toProductEventDto)
+                .map(dtoMapper::toProductEventDto)
                 .toList();
         return ResponseEntity.ok(dtos);
     }
 
-    //Må fikse responseEntity her
     @PostMapping("/restock")
     public ResponseEntity<Product> restockProduct(@RequestBody ProductRestockDto productRestockDto){
         productOrchestrationService.increaseStock(productRestockDto.productId(), productRestockDto.quantity(), ProductEventAction.RESTOCK);
