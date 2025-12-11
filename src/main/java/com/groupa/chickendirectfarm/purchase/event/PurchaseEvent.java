@@ -1,6 +1,5 @@
 package com.groupa.chickendirectfarm.purchase.event;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.groupa.chickendirectfarm.purchase.Purchase;
 import jakarta.persistence.*;
@@ -26,7 +25,6 @@ public class PurchaseEvent {
 
     @ManyToOne
     @JoinColumn(name = "purchase_id")
-    @JsonIgnoreProperties({"purchaseEvents", "shippingCharge", "totalPrice", "customer", "customerAddress", "purchaseBatches"})
     private Purchase purchase;
 
     public PurchaseEvent(ShippedStatus shippedStatus, Purchase purchase) {

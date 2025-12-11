@@ -47,7 +47,7 @@ public class PurchaseOrchestrationService {
     }
 
 
-
+  //Vurdere å splitte opp denne store metoden (EKSTRAOPPGAVE)
     @Transactional
     public Purchase create(PurchaseCreateDto purchaseCreateDto) {
         log.info("ENTRY: Creating new purchase for customer with address Id: {}", purchaseCreateDto.customerAddressId());
@@ -150,7 +150,7 @@ public class PurchaseOrchestrationService {
             throw new PurchaseAlreadyHandledException("Purchase with id " + id + " cannot be canceled since it's already " + shippedStatus.toString().toLowerCase() + ".");
         }
 
-        log.debug("Processing cancellation of  purchase with id: {}, Restocking canceled products", id);
+        log.debug("Processing cancellation of purchase with id: {}, Restocking canceled products", id);
 
         List<PurchaseBatch> batches = purchase.getPurchaseBatches();
         for (PurchaseBatch purchaseBatch : batches) {
@@ -163,6 +163,7 @@ public class PurchaseOrchestrationService {
         }
         purchaseEventService.save(ShippedStatus.CANCELLED, purchase);
         log.info("EXIT: Purchase with id: {} cancelled successfully and product stock restocked", id);
+
         return purchase;
     }
 }

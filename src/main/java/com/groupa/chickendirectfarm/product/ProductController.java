@@ -1,10 +1,8 @@
 package com.groupa.chickendirectfarm.product;
 
-import com.groupa.chickendirectfarm.dto.ProductEventResponseDto;
 import com.groupa.chickendirectfarm.dto.ProductResponseDto;
 import com.groupa.chickendirectfarm.dto.ProductRestockDto;
 import com.groupa.chickendirectfarm.mapper.DtoMapper;
-import com.groupa.chickendirectfarm.product.event.ProductEvent;
 import com.groupa.chickendirectfarm.product.event.ProductEventAction;
 import com.groupa.chickendirectfarm.product.event.ProductEventService;
 import org.springframework.http.ResponseEntity;
@@ -57,26 +55,7 @@ public class ProductController {
         productService.deleteProductById(id);
         return ResponseEntity.ok("Product with id " + id + " was deleted");
     }
-
-
-    @GetMapping("/event/{id}")
-    public ResponseEntity<ProductEventResponseDto> getProductEventById(@PathVariable int id){
-        ProductEvent result = productEventService.getEventById(id);
-        return ResponseEntity.ok(dtoMapper.toProductEventDto(result));
-    }
-
-    @GetMapping("/event")
-    public ResponseEntity<List<ProductEventResponseDto>> getAllProductEvents(){
-        List<ProductEvent> events = productEventService.getAllProductEvents();
-        if (events.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-        List<ProductEventResponseDto> dtos = events.stream()
-                .map(dtoMapper::toProductEventDto)
-                .toList();
-        return ResponseEntity.ok(dtos);
-    }
-
+    //Må fikse responseEntity
     @PostMapping("/restock")
     public ResponseEntity<Product> restockProduct(@RequestBody ProductRestockDto productRestockDto){
         productOrchestrationService.increaseStock(productRestockDto.productId(), productRestockDto.quantity(), ProductEventAction.RESTOCK);

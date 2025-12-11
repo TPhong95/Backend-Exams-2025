@@ -11,9 +11,12 @@ import org.springframework.stereotype.Service;
 public class ProductOrchestrationService {
     private final ProductService productService;
     private final ProductEventService productEventService;
-    public ProductOrchestrationService(ProductService productService, ProductEventService productEventService) {
+    private final ProductRepo productRepo;
+
+    public ProductOrchestrationService(ProductService productService, ProductEventService productEventService, ProductRepo productRepo) {
         this.productService = productService;
         this.productEventService = productEventService;
+        this.productRepo = productRepo;
     }
 
     @Transactional
@@ -46,7 +49,7 @@ public class ProductOrchestrationService {
             log.warn("Product with id: {} is out of stock", productId);
         }
 
-        productService.update(product);
+        updateProductQuantity(product);
         log.debug("Product stock updated, product Id: {}, has updated quantity: {}", productId, product.getQuantity());
 
         productEventService.save(newStatus, product, -quantity, previousQuantity, ProductEventAction.PURCHASE);
@@ -69,11 +72,21 @@ public class ProductOrchestrationService {
         } else  {
             newStatus = StockStatus.OUT_OF_STOCK;
         }
-        productService.update(product);
+        updateProductQuantity(product);
         log.debug("Product stock updated, product Id: {}, has updated quantity: {}", productId, product.getQuantity());
 
         productEventService.save(newStatus, product, quantity, previousQuantity, productEventAction);
         log.info("EXIT: Product stock increased successfully for product Id: {}, quantity: {} -> {}", productId, previousQuantity, product.getQuantity());
+    }
+
+    private void updateProductQuantity(Product product) {
+        log.debug("Updating product with id: {}, breed: {}, with a new quantity: {}.",
+                product.getId(), product.getBreed(), product.getQuantity());
+
+        Product updatedProduct = productRepo.save(product);
+        log.debug("Product Id: {} updated successfully! New quantity: {}",
+                updatedProduct.getId(), updatedProduct.getQuantity());
+
     }
 
 }

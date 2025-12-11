@@ -21,32 +21,7 @@ public class PurchaseEventService {
         PurchaseEvent savedEvent = purchaseEventRepo.save(purchaseEvent);
         log.info("Purchase event saved on purchase Id: {}, with shipped status {}", savedEvent.getId(), shippedStatus);
 
-        //?
         purchase.getPurchaseEvents().add(savedEvent);
-
         return savedEvent;
-    }
-
-    //Tror ikke vi trenger denne
-    public PurchaseEvent getPurchaseEventById(int id){
-        return purchaseEventRepo.findById(id).orElseThrow();
-    }
-
-    //Tror ikke vi trenger denne
-    public List<PurchaseEvent> getAllPurchaseEvents(){
-        return purchaseEventRepo.findAll();
-    }
-
-    //Tror ikke vi trenger denne
-    public void deletePurchaseEventById(int id){
-        purchaseEventRepo.deleteById(id);
-    }
-
-
-    public List<PurchaseEvent> getEventsByPurchaseId(int purchaseId) {
-        log.debug("Retrieving purchase event from purchase Id: {}", purchaseId);
-        List<PurchaseEvent> purchaseEvents = purchaseEventRepo.findByPurchaseId(purchaseId);
-        log.debug("Retrived {} events from purchase Id: {}", purchaseEvents.size(), purchaseId);
-        return purchaseEvents;
     }
 }

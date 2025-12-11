@@ -22,13 +22,9 @@ import java.util.List;
 @Slf4j
 public class PurchaseService {
     private final PurchaseRepo purchaseRepo;
-    private final ProductOrchestrationService productOrchestrationService;
-    private final PurchaseEventService purchaseEventService;
 
-    public PurchaseService(PurchaseRepo purchaseRepo, ProductOrchestrationService productOrchestrationService, PurchaseEventService purchaseEventService) {
+    public PurchaseService(PurchaseRepo purchaseRepo) {
         this.purchaseRepo = purchaseRepo;
-        this.productOrchestrationService = productOrchestrationService;
-        this.purchaseEventService = purchaseEventService;
     }
 
     public Purchase save(Purchase purchase) {

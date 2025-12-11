@@ -29,7 +29,7 @@ public class Product {
     private int quantity;
 
     @OneToMany(mappedBy = "product")
-    private List<PurchaseBatch> purchaseBatches;
+    private List<PurchaseBatch> purchaseBatches = new ArrayList<>();
 
     @OneToMany(mappedBy = "product")
     @OrderBy("timestamp DESC")

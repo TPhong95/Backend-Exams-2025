@@ -1,6 +1,4 @@
 package com.groupa.chickendirectfarm.purchase.batch;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.groupa.chickendirectfarm.product.Product;
 import com.groupa.chickendirectfarm.purchase.Purchase;
@@ -24,18 +22,10 @@ public class PurchaseBatch {
 
     @ManyToOne()
     @JoinColumn(name = "purchase_id")
-    @JsonIgnore
     private Purchase purchase;
 
     @ManyToOne()
     @JoinColumn(name = "product_id")
-    @JsonIgnoreProperties({"purchaseBatches", "stockStatus", "description", "quantity",})
     private Product product;
 
-    public PurchaseBatch(int quantity, int batchPrice, Purchase purchase, Product product) {
-        this.quantity = quantity;
-        this.batchPrice = batchPrice;
-        this.purchase = purchase;
-        this.product = product;
-    }
 }

@@ -8,17 +8,19 @@ import com.groupa.chickendirectfarm.product.Product;
 import com.groupa.chickendirectfarm.product.event.ProductEvent;
 import com.groupa.chickendirectfarm.purchase.Purchase;
 import com.groupa.chickendirectfarm.purchase.batch.PurchaseBatch;
+import com.groupa.chickendirectfarm.purchase.event.PurchaseEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 
 @Component
 @Slf4j
 public class DtoMapper {
 
-    // ==================== CUSTOMER ====================ja
+    // ==================== CUSTOMER ====================
     public CustomerResponseDto toCustomerDto(Customer customer) {
         log.debug("Converting customer with Id {} to DTO", customer.getId());
 
@@ -135,6 +137,7 @@ public class DtoMapper {
 
         List<PurchaseStatusHistoryDto> statusHistory = purchase.getPurchaseEvents()
                 .stream()
+                .sorted(Comparator.comparing(PurchaseEvent::getTimestamp).reversed())
                 .map(event -> new PurchaseStatusHistoryDto(
                         event.getShippedStatus().toString(),
                         event.getTimestamp()
@@ -145,14 +148,14 @@ public class DtoMapper {
         if (purchase.getPurchaseEvents().isEmpty()) {
             currentStatus = "UNKNOWN";
         } else {
-            currentStatus = purchase.getPurchaseEvents().getFirst().getShippedStatus().toString();
+            currentStatus = statusHistory.getFirst().status();
         }
 
         LocalDateTime orderDate;
         if (purchase.getPurchaseEvents().isEmpty()) {
             orderDate = null;
         } else {
-            orderDate = purchase.getPurchaseEvents().getLast().getTimestamp();
+            orderDate =  statusHistory.getFirst().timestamp();
         }
 
         log.debug("Purchase DTO conversion completed, {} batches, {} status events converted", batches.size(), statusHistory.size());

@@ -5,7 +5,6 @@ import com.groupa.chickendirectfarm.product.StockStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 
 @Service
 @Slf4j
@@ -27,23 +26,6 @@ public class ProductEventService {
         ProductEvent savedEvent = productEventRepo.save(productEvent);
         log.info("Product event action: {} saved to Product Id: {}", productEventAction, savedEvent.getId());
         return savedEvent;
-    }
-
-    public List<ProductEvent> getEventByProductId(int productId) {
-        log.debug("Getting product events by product Id: {}", productId);
-        List<ProductEvent> productEvents = productEventRepo.findByProductId(productId);
-        log.debug("Retrieved {} product events on product Id: {}", productEvents.size(), productId);
-        return productEvents;
-    }
-
-    //Tror ikke vi trenger denne
-    public ProductEvent getEventById(int id) {
-        return productEventRepo.findById(id).orElseThrow();
-    }
-
-    //Tror ikke vi trenger denne
-    public List<ProductEvent> getAllProductEvents() {
-        return productEventRepo.findAll();
     }
 
 

@@ -63,14 +63,4 @@ public class ProductService {
         log.info("EXIT: Deleted product with id: {} successfully!", id);
     }
 
-    public Product update(Product product) {
-        log.debug("Updating product with id: {}, breed: {}, with a new quantity: {}.",
-                product.getId(), product.getBreed(), product.getQuantity());
-
-        Product updatedProduct = productRepo.save(product);
-        log.debug("Product Id: {} updated successfully! New quantity: {}",
-                updatedProduct.getId(), updatedProduct.getQuantity());
-
-        return updatedProduct;
-    }
 }

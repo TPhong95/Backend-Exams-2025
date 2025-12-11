@@ -22,7 +22,6 @@ public class ProductEvent {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "product_event_seq")
     @SequenceGenerator(name = "product_event_seq", sequenceName = "product_event_seq", allocationSize = 1)
 
-
     @Id
     private int id;
     private LocalDateTime timestamp;
