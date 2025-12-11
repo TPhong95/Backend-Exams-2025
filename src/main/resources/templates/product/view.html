@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+>
+<style>
+    table, th, td {
+        border: 1px solid black;
+    }
+</style>
+<head>
+    <meta charset="UTF-8">
+    <title>Product Details</title>
+</head>
+<body>
+<h1>Product Details</h1>
+<div>
+    <p>Product Id: <strong th:text="${product.getId()}"></strong></p>
+    <p>Breed: <strong th:text="${product.getBreed()}"></strong></p>
+    <p>Description: <strong th:text="${product.getDescription()}"></strong></p>
+    <p>Price: <strong th:text="${product.getPrice()}"></strong></p>
+    <p>Inventory quantity: <strong th:text="${product.getQuantity()}"></strong></p>
+    <p>Status: <strong th:text="${product.getProductEvents().getFirst().getStockStatus()}"></strong></p>
+    <p>In how many purchases: <strong th:text="${product.getPurchaseBatches().size()}"></strong></p>
+    <p>Last updated: <strong th:text="${product.getProductEvents().getFirst().getTimestamp()}"></strong></p>
+</div>
+<br>
+<h1>Product history</h1>
+<table>
+    <thead>
+    <tr>
+        <th>Event Id</th>
+        <th>Previous quantity</th>
+        <th>Incoming quantity</th>
+        <th>New quantity</th>
+        <th>Event</th>
+        <th>Timestamp</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="event : ${product.getProductEvents()}">
+        <td th:text="${event.getId()}"></td>
+        <td th:text="${event.getPreviousQuantity()}"></td>
+        <td th:text="${event.getIncomingQuantity()}"></td>
+        <td th:text="${event.getNewQuantity()}"></td>
+        <td th:text="${event.getProductEventAction()}"></td>
+        <td th:text="${event.getTimestamp()}"></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

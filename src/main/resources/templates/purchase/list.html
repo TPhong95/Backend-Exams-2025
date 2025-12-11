@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+>
+<style>
+    table, th, td {
+        border:1px solid black;
+    }
+</style>
+<head>
+    <meta charset="UTF-8">
+    <title>List of purchases</title>
+</head>
+<body>
+<h1>List of purchases</h1>
+<table>
+    <thead>
+    <tr>
+        <th>Purchase Id</th>
+        <th>Customer</th>
+        <th>Address</th>
+        <th>Unique products</th>
+        <th>Total product quantity</th>
+        <th>Total product Price</th>
+        <th>Shipping Charge</th>
+        <th>Total purchase price</th>
+        <th>Shipment status</th>
+        <th>Last update</th>
+
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="purchase : ${purchases}">
+        <td th:text="${purchase.getId()}"></td>
+        <td th:text="${purchase.getCustomer().getName()}"></td>
+        <td th:text="${purchase.getCustomerAddress().getStreetName()}"></td>
+        <td th:text="${purchase.getPurchaseBatches().size()}"></td>
+        <td th:text="${purchase.getTotalQuantity()}"></td>
+        <td th:text="${purchase.getTotalPrice() - purchase.getShippingCharge()}"></td>
+        <td th:text="${purchase.getShippingCharge()}"></td>
+        <td th:text="${purchase.getTotalPrice()}"></td>
+        <td th:text="${purchase.getPurchaseEvents().getFirst().getShippedStatus()}"></td>
+        <td th:text="${purchase.getPurchaseEvents().getFirst().getTimestamp()}"></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

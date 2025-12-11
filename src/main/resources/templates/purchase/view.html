@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+>
+<style>
+    table, th, td {
+        border: 1px solid black;
+    }
+</style>
+<head>
+    <meta charset="UTF-8">
+    <title>Purchase Details</title>
+</head>
+<body>
+<h1>Purchase Details</h1>
+<div>
+    <p>Purchase Id: <strong th:text="${purchase.getId()}"></strong></p>
+    <p>Customer: <strong th:text="${purchase.getCustomer().getName()}"></strong></p>
+    <p>Address: <strong th:text="${purchase.getCustomerAddress().getStreetName()}"></strong></p>
+    <p>Shipping charge: <strong th:text="${purchase.getShippingCharge()}"></strong></p>
+    <p>Unique products: <strong th:text="${purchase.getPurchaseBatches().size()}"></strong></p>
+    <p>Total quantity of products: <strong th:text="${purchase.getTotalQuantity()}"></strong></p>
+    <p>Total purchase price: <strong th:text="${purchase.getTotalPrice()}"></strong></p>
+    <p>Shipment status: <strong th:text="${purchase.getPurchaseEvents().getFirst().getShippedStatus()}"></strong></p>
+    <p>Last updated: <strong th:text="${purchase.getPurchaseEvents().getFirst().getTimestamp()}"></strong></p>
+</div>
+<br>
+<h1>Product list</h1>
+<table>
+    <thead>
+    <tr>
+        <th>Product Id</th>
+        <th>Breed</th>
+        <th>Price per product</th>
+        <th>Quantity</th>
+        <th>Total batch price</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="batch : ${purchase.getPurchaseBatches()}">
+        <td th:text="${batch.getProduct().getId()}"></td>
+        <td th:text="${batch.getProduct().getBreed()}"></td>
+        <td th:text="${batch.getProduct().getPrice()}"></td>
+        <td th:text="${batch.getQuantity()}"></td>
+        <td th:text="${batch.getBatchPrice()}"></td>
+    </tr>
+    </tbody>
+</table>
+<br>
+<h1>Purchase history</h1>
+<table>
+    <thead>
+    <tr>
+        <th>Event Id</th>
+        <th>Shipment status</th>
+        <th>Timestamp</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="event : ${purchase.getPurchaseEvents()}">
+        <td th:text="${event.getId()}"></td>
+        <td th:text="${event.getShippedStatus()}"></td>
+        <td th:text="${event.getTimestamp()}"></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
