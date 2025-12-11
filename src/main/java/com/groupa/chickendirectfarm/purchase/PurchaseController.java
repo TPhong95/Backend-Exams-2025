@@ -1,7 +1,7 @@
 package com.groupa.chickendirectfarm.purchase;
 
-import com.groupa.chickendirectfarm.dto.PurchaseCreateDto;
-import com.groupa.chickendirectfarm.dto.PurchaseDetailsResponseDto;
+import com.groupa.chickendirectfarm.dto.purchasedtos.PurchaseCreateDto;
+import com.groupa.chickendirectfarm.dto.purchasedtos.PurchaseDetailsResponseDto;
 import com.groupa.chickendirectfarm.mapper.DtoMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

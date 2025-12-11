@@ -1,4 +1,6 @@
-package com.groupa.chickendirectfarm.dto;
+package com.groupa.chickendirectfarm.dto.customerdtos;
+
+import com.groupa.chickendirectfarm.dto.purchasedtos.PurchaseResponseDto;
 
 import java.util.List;
 

@@ -1,7 +1,7 @@
 package com.groupa.chickendirectfarm.product;
 
-import com.groupa.chickendirectfarm.dto.ProductResponseDto;
-import com.groupa.chickendirectfarm.dto.ProductRestockDto;
+import com.groupa.chickendirectfarm.dto.productdtos.ProductResponseDto;
+import com.groupa.chickendirectfarm.dto.productdtos.ProductRestockDto;
 import com.groupa.chickendirectfarm.mapper.DtoMapper;
 import com.groupa.chickendirectfarm.product.event.ProductEventAction;
 import com.groupa.chickendirectfarm.product.event.ProductEventService;

@@ -1,4 +1,4 @@
-package com.groupa.chickendirectfarm.dto;
+package com.groupa.chickendirectfarm.dto.productdtos;
 
 import com.groupa.chickendirectfarm.product.Breed;
 import jakarta.persistence.OrderBy;

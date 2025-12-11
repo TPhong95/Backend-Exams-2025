@@ -1,4 +1,4 @@
-package com.groupa.chickendirectfarm.dto;
+package com.groupa.chickendirectfarm.dto.customerdtos;
 
 public record CustomerAddressCreateDto(
         String streetName,

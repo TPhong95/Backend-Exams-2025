@@ -1,9 +1,9 @@
 package com.groupa.chickendirectfarm.customer;
 import com.groupa.chickendirectfarm.customer.address.CustomerAddress;
-import com.groupa.chickendirectfarm.dto.CustomerAddressCreateDto;
+import com.groupa.chickendirectfarm.dto.customerdtos.CustomerAddressCreateDto;
 import com.groupa.chickendirectfarm.customer.address.CustomerAddressService;
-import com.groupa.chickendirectfarm.dto.CustomerAddressResponseDto;
-import com.groupa.chickendirectfarm.dto.CustomerResponseDto;
+import com.groupa.chickendirectfarm.dto.customerdtos.CustomerAddressResponseDto;
+import com.groupa.chickendirectfarm.dto.customerdtos.CustomerResponseDto;
 import com.groupa.chickendirectfarm.mapper.DtoMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

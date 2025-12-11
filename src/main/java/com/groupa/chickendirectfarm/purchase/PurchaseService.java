@@ -1,21 +1,9 @@
 package com.groupa.chickendirectfarm.purchase;
 
-import com.groupa.chickendirectfarm.dto.CustomerAddressResponseDto;
-import com.groupa.chickendirectfarm.dto.PurchaseBatchResponseDto;
-import com.groupa.chickendirectfarm.dto.PurchaseDetailsResponseDto;
-import com.groupa.chickendirectfarm.dto.PurchaseStatusHistoryDto;
-import com.groupa.chickendirectfarm.exception.conflict.PurchaseAlreadyHandledException;
 import com.groupa.chickendirectfarm.exception.notfound.PurchaseNotFoundException;
-import com.groupa.chickendirectfarm.product.ProductOrchestrationService;
-import com.groupa.chickendirectfarm.product.event.ProductEventAction;
-import com.groupa.chickendirectfarm.purchase.batch.PurchaseBatch;
-import com.groupa.chickendirectfarm.purchase.event.PurchaseEvent;
-import com.groupa.chickendirectfarm.purchase.event.PurchaseEventService;
-import com.groupa.chickendirectfarm.purchase.event.ShippedStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service

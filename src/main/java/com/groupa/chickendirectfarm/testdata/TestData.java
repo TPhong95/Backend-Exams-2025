@@ -8,10 +8,10 @@ import com.groupa.chickendirectfarm.customer.address.CustomerAddress;
 import com.groupa.chickendirectfarm.customer.address.CustomerAddressRepo;
 import com.groupa.chickendirectfarm.product.*;
 import com.groupa.chickendirectfarm.product.event.ProductEventAction;
-import com.groupa.chickendirectfarm.dto.PurchaseCreateDto;
+import com.groupa.chickendirectfarm.dto.purchasedtos.PurchaseCreateDto;
 import com.groupa.chickendirectfarm.purchase.PurchaseOrchestrationService;
 import com.groupa.chickendirectfarm.purchase.PurchaseRepo;
-import com.groupa.chickendirectfarm.dto.PurchaseBatchCreateDto;
+import com.groupa.chickendirectfarm.dto.purchasedtos.PurchaseBatchCreateDto;
 import com.groupa.chickendirectfarm.purchase.batch.PurchaseBatchRepo;
 import org.springframework.stereotype.Service;
 

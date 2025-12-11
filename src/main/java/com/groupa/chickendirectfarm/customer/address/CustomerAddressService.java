@@ -1,7 +1,7 @@
 package com.groupa.chickendirectfarm.customer.address;
 
 import com.groupa.chickendirectfarm.customer.CustomerService;
-import com.groupa.chickendirectfarm.dto.CustomerAddressCreateDto;
+import com.groupa.chickendirectfarm.dto.customerdtos.CustomerAddressCreateDto;
 import com.groupa.chickendirectfarm.exception.notfound.CustomerAddressNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

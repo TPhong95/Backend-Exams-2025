@@ -3,7 +3,15 @@ package com.groupa.chickendirectfarm.mapper;
 
 import com.groupa.chickendirectfarm.customer.Customer;
 import com.groupa.chickendirectfarm.customer.address.CustomerAddress;
-import com.groupa.chickendirectfarm.dto.*;
+import com.groupa.chickendirectfarm.dto.customerdtos.CustomerAddressForCustomerDto;
+import com.groupa.chickendirectfarm.dto.customerdtos.CustomerAddressResponseDto;
+import com.groupa.chickendirectfarm.dto.customerdtos.CustomerResponseDto;
+import com.groupa.chickendirectfarm.dto.productdtos.ProductEventResponseDto;
+import com.groupa.chickendirectfarm.dto.productdtos.ProductResponseDto;
+import com.groupa.chickendirectfarm.dto.purchasedtos.PurchaseBatchResponseDto;
+import com.groupa.chickendirectfarm.dto.purchasedtos.PurchaseDetailsResponseDto;
+import com.groupa.chickendirectfarm.dto.purchasedtos.PurchaseResponseDto;
+import com.groupa.chickendirectfarm.dto.purchasedtos.PurchaseStatusHistoryDto;
 import com.groupa.chickendirectfarm.product.Product;
 import com.groupa.chickendirectfarm.product.event.ProductEvent;
 import com.groupa.chickendirectfarm.purchase.Purchase;
