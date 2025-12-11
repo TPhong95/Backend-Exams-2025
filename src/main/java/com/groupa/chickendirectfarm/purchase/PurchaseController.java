@@ -53,7 +53,6 @@ public class PurchaseController {
     }
 
 
-    //Viser litt mye infromasjon for en cancel, kan vurdere å endre slik at den viser mindre
     @PostMapping("/cancel/{id}")
     public ResponseEntity<PurchaseDetailsResponseDto> cancelPurchaseById(@PathVariable int id){
         Purchase result = purchaseOrchestrationService.cancelPurchaseById(id);

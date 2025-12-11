@@ -57,10 +57,14 @@ public class ProductController {
     }
     //Må fikse responseEntity
     @PostMapping("/restock")
-    public ResponseEntity<Product> restockProduct(@RequestBody ProductRestockDto productRestockDto){
-        productOrchestrationService.increaseStock(productRestockDto.productId(), productRestockDto.quantity(), ProductEventAction.RESTOCK);
-        return ResponseEntity.ok(productService.getProductById(productRestockDto.productId()));
-
+    public ResponseEntity<ProductResponseDto> restockProduct(@RequestBody ProductRestockDto productRestockDto){
+        productOrchestrationService.increaseStock(
+                productRestockDto. productId(),
+                productRestockDto.quantity(),
+                ProductEventAction.RESTOCK
+        );
+        Product result = productService.getProductById(productRestockDto.productId());
+        return ResponseEntity.ok(dtoMapper.toProductDto(result));
     }
 
 }
