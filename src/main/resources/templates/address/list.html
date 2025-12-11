@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+>
+<style>
+    table, th, td {
+        border:1px solid black;
+    }
+</style>
+<head>
+    <meta charset="UTF-8">
+    <title>List of customers</title>
+</head>
+<body>
+<h1>List of addresses</h1>
+<table>
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Phone number</th>
+        <th>Email</th>
+        <th>Customer</th>
+        <th>Purchases</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="address : ${addresses}">
+        <td th:text="${address.getStreetName()}"></td>
+        <td th:text="${address.getPhone()}"></td>
+        <td th:text="${address.getEmail()}"></td>
+        <td th:text="${address.getCustomer().getName()}"></td>
+        <td th:text="${address.getPurchases().size()}"></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

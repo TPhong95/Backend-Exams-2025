@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+>
+<style>
+    table, th, td {
+        border: 1px solid black;
+    }
+</style>
+<head>
+    <meta charset="UTF-8">
+    <title>List of addresses</title>
+</head>
+<body>
+<h1>Address Details</h1>
+<div>
+    <p>Street name: <strong th:text="${address.getStreetName()}"></strong></p>
+    <p>Phone: <strong th:text="${address.getPhone()}"></strong></p>
+    <p>Email: <strong th:text="${address.getEmail()}"></strong></p>
+    <p>Customer: <strong th:text="${address.getCustomer().getName()}"></strong></p>
+    <p>Amount of purchases: <strong th:text="${address.getPurchases().size()}"></strong></p>
+</div>
+<br>
+<h1>Customer</h1>
+<div>
+    <p>Name: <strong th:text="${address.getCustomer().getName()}"></strong></p>
+    <p>Phone: <strong th:text="${address.getCustomer().getPrimaryPhone()}"></strong></p>
+    <p>Email: <strong th:text="${address.getCustomer().getPrimaryEmail()}"></strong></p>
+</div>
+<br>
+<h1>Purchases</h1>
+<table>
+    <thead>
+    <tr>
+        <th>Purchase Id</th>
+        <th>Shipping charge</th>
+        <th>Types of products</th>
+        <th>Total quantity</th>
+        <th>Total Price</th>
+        <th>Shipment Status</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="purchase : ${address.getPurchases()}">
+        <td th:text="${purchase.getId()}"></td>
+        <td th:text="${purchase.getShippingCharge()}"></td>
+        <td th:text="${purchase.getPurchaseBatches().size()}"></td>
+        <td th:text="${purchase.getTotalQuantity()}"></td>
+        <td th:text="${purchase.getTotalPrice()}"></td>
+        <td th:text="${purchase.getPurchaseEvents().getFirst().getShippedStatus()}"></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

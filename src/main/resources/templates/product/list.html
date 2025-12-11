@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+>
+<style>
+    table, th, td {
+        border:1px solid black;
+    }
+</style>
+<head>
+    <meta charset="UTF-8">
+    <title>List of products</title>
+</head>
+<body>
+<h1>List of products</h1>
+<table>
+    <thead>
+    <tr>
+        <th>Product Id number</th>
+        <th>Breed</th>
+        <th>Price</th>
+        <th>Inventory quantity</th>
+        <th>Status</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="product : ${products}">
+        <td th:text="${product.getId()}"></td>
+        <td th:text="${product.getBreed()}"></td>
+        <td th:text="${product.getPrice()}"></td>
+        <td th:text="${product.getQuantity()}"></td>
+        <td th:text="${product.getProductEvents().getFirst().getStockStatus()}"></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
