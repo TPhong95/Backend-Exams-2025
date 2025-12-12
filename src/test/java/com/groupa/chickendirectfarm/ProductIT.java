@@ -1,5 +1,6 @@
 package com.groupa.chickendirectfarm;
 
+import com.groupa.chickendirectfarm.integrationtests.BaseIntegrationTest;
 import com.groupa.chickendirectfarm.product.*;
 import com.groupa.chickendirectfarm.product.event.ProductEventAction;
 import jakarta.transaction.Transactional;
