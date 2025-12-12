@@ -24,6 +24,7 @@ public class ProductOrchestrationService {
         log.info("ENTRY: Decreasing stock for product Id: {} by quantity of {}", productId, quantity);
 
         Product product = productService.getProductById(productId);
+
         var previousQuantity = product.getQuantity();
         log.debug("Product Id: {}, breed: {}, has quantity: {}", productId, product.getBreed(), previousQuantity);
 
