@@ -9,7 +9,7 @@ import com.groupa.chickendirectfarm.dto.customerdtos.CustomerResponseDto;
 import com.groupa.chickendirectfarm.dto.productdtos.ProductEventResponseDto;
 import com.groupa.chickendirectfarm.dto.productdtos.ProductResponseDto;
 import com.groupa.chickendirectfarm.dto.purchasedtos.PurchaseBatchResponseDto;
-import com.groupa.chickendirectfarm.dto.purchasedtos.PurchaseDetailsResponseDto;
+import com.groupa.chickendirectfarm.dto.purchasedtos.PurchaseMoreDetailsResponseDto;
 import com.groupa.chickendirectfarm.dto.purchasedtos.PurchaseResponseDto;
 import com.groupa.chickendirectfarm.dto.purchasedtos.PurchaseStatusHistoryDto;
 import com.groupa.chickendirectfarm.product.Product;
@@ -66,7 +66,6 @@ public class DtoMapper {
         );
     }
 
-    // Full version - med purchases (brukes når address hentes direkte)
     public CustomerAddressResponseDto toCustomerAddressDtoFull(CustomerAddress address) {
         log.debug("Converting address with id {} to full DTO with purchases", address.getId());
 
@@ -109,19 +108,10 @@ public class DtoMapper {
                 .map(this::toPurchaseBatchDto)
                 .toList();
 
-        String shippedStatus;
-        if (purchase.getPurchaseEvents().isEmpty()) {
-            shippedStatus = "UNKNOWN";
-        } else {
-            shippedStatus = purchase.getPurchaseEvents().getFirst().getShippedStatus().toString();
-        }
+      PurchaseEvent latestEvent = purchase.getPurchaseEvents().getFirst();
+      String shippedStatus = latestEvent.getShippedStatus().toString();
+      LocalDateTime orderDate = purchase.getPurchaseEvents().getLast().getTimestamp();
 
-        LocalDateTime orderDate;
-        if (purchase.getPurchaseEvents().isEmpty()) {
-            orderDate = null;
-        } else {
-            orderDate = purchase.getPurchaseEvents().getLast().getTimestamp();
-        }
 
         return new PurchaseResponseDto(
                 purchase.getId(),
@@ -135,7 +125,7 @@ public class DtoMapper {
         );
     }
 
-    public PurchaseDetailsResponseDto toPurchaseDetailsDto(Purchase purchase) {
+    public PurchaseMoreDetailsResponseDto toPurchaseMoreDetailsDto(Purchase purchase) {
         log.debug("Converting purchase with id {} to detailed DTO", purchase.getId());
 
         List<PurchaseBatchResponseDto> batches = purchase.getPurchaseBatches()
@@ -152,23 +142,12 @@ public class DtoMapper {
                 ))
                 .toList();
 
-        String currentStatus;
-        if (purchase.getPurchaseEvents().isEmpty()) {
-            currentStatus = "UNKNOWN";
-        } else {
-            currentStatus = statusHistory.getFirst().status();
-        }
-
-        LocalDateTime orderDate;
-        if (purchase.getPurchaseEvents().isEmpty()) {
-            orderDate = null;
-        } else {
-            orderDate =  statusHistory.getFirst().timestamp();
-        }
+        String currentStatus = statusHistory.getFirst().status();
+        LocalDateTime orderDate = statusHistory.getFirst().timestamp();
 
         log.debug("Purchase DTO conversion completed, {} batches, {} status events converted", batches.size(), statusHistory.size());
 
-        return new PurchaseDetailsResponseDto(
+        return new PurchaseMoreDetailsResponseDto(
                 purchase.getId(),
                 orderDate,
                 currentStatus,

@@ -6,7 +6,7 @@ import jakarta.persistence.OrderBy;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public record PurchaseDetailsResponseDto(
+public record PurchaseMoreDetailsResponseDto(
         Integer purchaseId,
         LocalDateTime orderDate,
         String currentStatus,

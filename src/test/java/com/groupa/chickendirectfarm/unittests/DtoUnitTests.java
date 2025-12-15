@@ -2,7 +2,7 @@ package com.groupa.chickendirectfarm.unittests;
 
 import com.groupa.chickendirectfarm.customer.Customer;
 import com.groupa.chickendirectfarm.customer.address.CustomerAddress;
-import com.groupa.chickendirectfarm.dto.purchasedtos.PurchaseDetailsResponseDto;
+import com.groupa.chickendirectfarm.dto.purchasedtos.PurchaseMoreDetailsResponseDto;
 import com.groupa.chickendirectfarm.mapper.DtoMapper;
 import com.groupa.chickendirectfarm.product.Breed;
 import com.groupa.chickendirectfarm.product.Product;
@@ -85,14 +85,12 @@ public class DtoUnitTests {
         purchase1.getPurchaseEvents().add(event3);
         purchase1.getPurchaseEvents().add(event1);
 
-        PurchaseDetailsResponseDto result = dtoMapper.toPurchaseDetailsDto(purchase1);
+        PurchaseMoreDetailsResponseDto result = dtoMapper.toPurchaseMoreDetailsDto(purchase1);
 
         assertThat(result.statusHistory().size()).isEqualTo(3);
         assertThat(result.statusHistory().getFirst().status()).isEqualTo("DELIVERED");
         assertThat(result.statusHistory().get(1).status()).isEqualTo("SHIPPED");
         assertThat(result.statusHistory().getLast().status()).isEqualTo("NOT_SHIPPED");
-
     }
-
 
 }

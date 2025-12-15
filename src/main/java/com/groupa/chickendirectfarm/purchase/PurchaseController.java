@@ -1,7 +1,7 @@
 package com.groupa.chickendirectfarm.purchase;
 
 import com.groupa.chickendirectfarm.dto.purchasedtos.PurchaseCreateDto;
-import com.groupa.chickendirectfarm.dto.purchasedtos.PurchaseDetailsResponseDto;
+import com.groupa.chickendirectfarm.dto.purchasedtos.PurchaseMoreDetailsResponseDto;
 import com.groupa.chickendirectfarm.mapper.DtoMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,26 +21,26 @@ public class PurchaseController {
     }
 
     @PostMapping()
-    public ResponseEntity<PurchaseDetailsResponseDto> savePurchase(@RequestBody PurchaseCreateDto purchaseCreateDto){
+    public ResponseEntity<PurchaseMoreDetailsResponseDto> savePurchase(@RequestBody PurchaseCreateDto purchaseCreateDto){
         Purchase result = purchaseOrchestrationService.create(purchaseCreateDto);
-        return ResponseEntity.ok(dtoMapper.toPurchaseDetailsDto(result));
+        return ResponseEntity.ok(dtoMapper.toPurchaseMoreDetailsDto(result));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PurchaseDetailsResponseDto> getPurchaseById(@PathVariable int id){
+    public ResponseEntity<PurchaseMoreDetailsResponseDto> getPurchaseById(@PathVariable int id){
         Purchase result = purchaseService.getPurchaseById(id);
-        return ResponseEntity.ok(dtoMapper.toPurchaseDetailsDto(result));
+        return ResponseEntity.ok(dtoMapper.toPurchaseMoreDetailsDto(result));
     }
 
     @GetMapping()
-    public ResponseEntity<List<PurchaseDetailsResponseDto>> getAllPurchases(){
+    public ResponseEntity<List<PurchaseMoreDetailsResponseDto>> getAllPurchases(){
         List<Purchase> purchases = purchaseService.getAllPurchases();
         if (purchases.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
 
-        List<PurchaseDetailsResponseDto> dtos = purchases.stream()
-                .map(dtoMapper::toPurchaseDetailsDto)
+        List<PurchaseMoreDetailsResponseDto> dtos = purchases.stream()
+                .map(dtoMapper::toPurchaseMoreDetailsDto)
                 .toList();
 
         return ResponseEntity.ok(dtos);
@@ -54,8 +54,8 @@ public class PurchaseController {
 
 
     @PostMapping("/cancel/{id}")
-    public ResponseEntity<PurchaseDetailsResponseDto> cancelPurchaseById(@PathVariable int id){
+    public ResponseEntity<PurchaseMoreDetailsResponseDto> cancelPurchaseById(@PathVariable int id){
         Purchase result = purchaseOrchestrationService.cancelPurchaseById(id);
-        return ResponseEntity.ok(dtoMapper.toPurchaseDetailsDto(result));
+        return ResponseEntity.ok(dtoMapper.toPurchaseMoreDetailsDto(result));
     }
 }

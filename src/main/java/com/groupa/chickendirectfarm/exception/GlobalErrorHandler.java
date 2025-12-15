@@ -51,7 +51,8 @@ public class GlobalErrorHandler {
             ProductAlreadyExistsException.class,
             DuplicateProductInPurchaseException.class,
             CustomerHasPurchasesException.class,
-            PurchaseAlreadyHandledException.class
+            PurchaseAlreadyHandledException.class,
+            BatchRequiredInPurchaseException.class
     })
     public ResponseEntity<String> handleConflictException(RuntimeException e) {
         log.error("409 Conflict error: {}",e.getMessage(), e);
