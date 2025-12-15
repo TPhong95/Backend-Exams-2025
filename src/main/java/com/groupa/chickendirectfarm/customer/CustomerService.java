@@ -50,7 +50,7 @@ public class CustomerService {
 
         Customer customer = getCustomerById(id);
 
-        if(customer.getPurchases() == null || customer.getPurchases().isEmpty()){
+        if(!customer.getPurchases().isEmpty()){
             log.warn("Delete failed, customer with ID {} has purchases", id);
             throw new CustomerHasPurchasesException("Customer with id " + id + " has purchases.");
         }

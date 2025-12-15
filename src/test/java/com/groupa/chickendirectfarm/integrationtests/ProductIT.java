@@ -10,13 +10,9 @@ import com.groupa.chickendirectfarm.product.event.ProductEventRepo;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@SpringBootTest
 @Transactional
 public class ProductIT extends BaseIntegrationTest {
 
@@ -31,7 +27,9 @@ public class ProductIT extends BaseIntegrationTest {
     @Test
     void shouldSaveAndRetrieveProduct() {
         Product product = new Product(Breed.BROWN, "The chosen one", 100, 20);
-        Product savedProduct = productService.save(product);
+        Product savedProductWithId = productService.save(product);
+        Product savedProduct = productService.getProductById(savedProductWithId.getId());
+
         assertThat(savedProduct).isNotNull();
         assertThat(savedProduct.getId()).isGreaterThan(0);
         assertThat(savedProduct.getBreed()).isEqualTo(Breed.BROWN);
@@ -45,8 +43,13 @@ public class ProductIT extends BaseIntegrationTest {
         Product product = new Product(Breed.BROWN, "The chosen one", 100, 20);
         Product savedProduct = productService.save(product);
         productOrchestrationService.increaseStock(savedProduct.getId(), 10, ProductEventAction.RESTOCK);
-        assertEquals(30, productService.getProductById(savedProduct.getId()).getQuantity(), "Should return 30");
-        assertThat(savedProduct.getBreed()).isEqualTo(Breed.BROWN);
+
+        assertThat(productService.getProductById(savedProduct.getId()).getQuantity()).isEqualTo(30);
+        assertThat(productService.getProductById(savedProduct.getId()).getBreed()).isEqualTo(Breed.BROWN);
+        assertThat(productEventRepo.findAll().getFirst().getProductEventAction()).isEqualTo(ProductEventAction.RESTOCK);
+        assertThat(productEventRepo.findAll().getFirst().getIncomingQuantity()).isEqualTo(10);
+        assertThat(productEventRepo.findAll().getFirst().getPreviousQuantity()).isEqualTo(20);
+        assertThat(productEventRepo.findAll().getFirst().getNewQuantity()).isEqualTo(30);
     }
 
     @Test
@@ -54,16 +57,22 @@ public class ProductIT extends BaseIntegrationTest {
         Product product = new Product(Breed.BROWN, "The chosen one", 100, 200);
         Product savedProduct = productService.save(product);
         productOrchestrationService.decreaseStock(savedProduct.getId(), 10);
-        assertEquals(190, productService.getProductById(savedProduct.getId()).getQuantity(), "Should return 190");
-        assertThat(savedProduct.getBreed()).isEqualTo(Breed.BROWN);
+
+        assertThat(productService.getProductById(savedProduct.getId()).getQuantity()).isEqualTo(190);
+        assertThat(productService.getProductById(savedProduct.getId()).getBreed()).isEqualTo(Breed.BROWN);
+        assertThat(productEventRepo.findAll().getFirst().getProductEventAction()).isEqualTo(ProductEventAction.PURCHASE);
+        assertThat(productEventRepo.findAll().getFirst().getIncomingQuantity()).isEqualTo(-10);
+        assertThat(productEventRepo.findAll().getFirst().getPreviousQuantity()).isEqualTo(200);
+        assertThat(productEventRepo.findAll().getFirst().getNewQuantity()).isEqualTo(190);
     }
 
     @Test
     void shouldGiveOutOfStockException() {
         Product product = new Product(Breed.BROWN, "The chosen one", 100, 20);
         Product savedProduct = productService.save(product);
+
         assertThrows(OutOfStockException.class, () -> productOrchestrationService.decreaseStock(savedProduct.getId(), 50));
-        assertThat(savedProduct.getBreed()).isEqualTo(Breed.BROWN);
+        assertThat(productService.getProductById(savedProduct.getId()).getBreed()).isEqualTo(Breed.BROWN);
     }
 
     @Test
@@ -71,10 +80,13 @@ public class ProductIT extends BaseIntegrationTest {
         Product product = new Product(Breed.BROWN, "The chosen one", 100, 20);
         Product savedProduct = productService.save(product);
         productOrchestrationService.decreaseStock(savedProduct.getId(), 20);
-        assertThat(savedProduct.getBreed()).isEqualTo(Breed.BROWN);
-        ProductEvent event = productEventRepo.findByProductId(savedProduct.getId()).getFirst();
+
+        assertThat(productService.getProductById(savedProduct.getId()).getBreed()).isEqualTo(Breed.BROWN);
+
+        ProductEvent event = productEventRepo.findAll().getFirst();
+
         assertThat(event.getStockStatus()).isEqualTo(StockStatus.OUT_OF_STOCK);
-        assertEquals(savedProduct.getId(), event.getProduct().getId());
+        assertThat(savedProduct.getId()).isEqualTo(event.getProduct().getId());
     }
 
     @Test
@@ -82,11 +94,14 @@ public class ProductIT extends BaseIntegrationTest {
         Product product = new Product(Breed.BROWN, "The chosen one", 100, -10);
         Product savedProduct = productService.save(product);
         productOrchestrationService.increaseStock(savedProduct.getId(), 5, ProductEventAction.RESTOCK);
-        assertEquals(-5, productService.getProductById(savedProduct.getId()).getQuantity(), "Should return -5");
-        assertThat(savedProduct.getBreed()).isEqualTo(Breed.BROWN);
+
+        assertThat(productService.getProductById(savedProduct.getId()).getQuantity()).isEqualTo(-5);
+        assertThat(productService.getProductById(savedProduct.getId()).getBreed()).isEqualTo(Breed.BROWN);
+
         ProductEvent event = productEventRepo.findByProductId(savedProduct.getId()).getFirst();
+
         assertThat(event.getStockStatus()).isEqualTo(StockStatus.OUT_OF_STOCK);
-        assertEquals(savedProduct.getId(), event.getProduct().getId());
+        assertThat(savedProduct.getId()).isEqualTo(event.getProduct().getId());
 
     }
 
@@ -94,14 +109,15 @@ public class ProductIT extends BaseIntegrationTest {
     void shouldGiveProductAlreadyExistException(){
         Product product = new Product(Breed.BROWN, "The chosen one", 100, -10);
         productService.save(product);
+
         assertThrows(ProductAlreadyExistsException.class, () -> productService.save(product));
         assertThat(productService.getAllProducts()).size().isEqualTo(1);
     }
 
     @Test
     void shouldGiveEmptyListAndGiveProductNotFoundExceptionOnDeletingProduct(){
-        productService.getAllProducts();
         assertThat(productService.getAllProducts()).isEmpty();
+
         assertThrows(ProductNotFoundException.class, () -> productService.deleteProductById(productService.getAllProducts().size()));
 
     }
@@ -110,8 +126,11 @@ public class ProductIT extends BaseIntegrationTest {
     void shouldDeleteAndGiveProductNotFoundExceptionOnGetProductOnID(){
         Product product = new Product(Breed.BROWN, "The chosen one", 100, -10);
         Product savedProduct = productService.save(product);
+
         assertThat(productService.getProductById(savedProduct.getId())).isNotNull();
+
         productService.deleteProductById(savedProduct.getId());
+
         assertThrows(ProductNotFoundException.class, () -> productService.getProductById(savedProduct.getId()));
         assertThat(productService.getAllProducts()).isEmpty();
 

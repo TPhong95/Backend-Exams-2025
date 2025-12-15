@@ -56,11 +56,6 @@ public class CustomerAddressService {
         log.info("ENTRY: Deleting customer address with Id: {}", id);
 
         CustomerAddress customerAddress = getCustomerAddressById(id);
-
-        if (!customerAddressRepo.existsById(id)){
-            log.warn("Delete failed, customer address with Id: {} not found", id);
-            throw new CustomerAddressNotFoundException("Customer address with id " + id + " not found");
-        }
         customerAddressRepo.deleteById(id);
         log.info("EXIT: Customer address successfully deleted with ID: {}, streetname: {}", id, customerAddress.getStreetName() );
     }

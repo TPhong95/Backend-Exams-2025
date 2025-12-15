@@ -62,6 +62,7 @@ public class PurchaseOrchestrationService {
 
         Purchase purchase = new Purchase();
         purchase.setCustomer(customer);
+        customer.getPurchases().add(purchase);
         purchase.setCustomerAddress(customerAddress);
         purchase.setShippingCharge(purchaseCreateDto.shippingPrice());
         log.debug("Purchase object initialized with shipping charge");
