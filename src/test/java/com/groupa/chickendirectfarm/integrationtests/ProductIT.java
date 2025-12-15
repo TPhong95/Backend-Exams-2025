@@ -133,6 +133,17 @@ public class ProductIT extends BaseIntegrationTest {
 
         assertThrows(ProductNotFoundException.class, () -> productService.getProductById(savedProduct.getId()));
         assertThat(productService.getAllProducts()).isEmpty();
+    }
+
+    @Test
+    void shouldGiveEmptyEventListAfterDeletingProduct(){
+        Product product = new Product(Breed.BROWN, "The chosen one", 100, 20);
+        Product savedProduct = productService.save(product);
+        productOrchestrationService.increaseStock(savedProduct.getId(), 10, ProductEventAction.RESTOCK);
+
+        assertThat(productEventRepo.findAll().size()).isEqualTo(1);
+        productService.deleteProductById(savedProduct.getId());
+        assertThat(productEventRepo.findAll().size()).isEqualTo(0);
 
     }
 }

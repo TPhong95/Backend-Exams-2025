@@ -1,0 +1,162 @@
+package com.groupa.chickendirectfarm.integrationtests;
+
+import com.groupa.chickendirectfarm.customer.Customer;
+import com.groupa.chickendirectfarm.customer.CustomerService;
+import com.groupa.chickendirectfarm.customer.address.CustomerAddress;
+import com.groupa.chickendirectfarm.customer.address.CustomerAddressService;
+import com.groupa.chickendirectfarm.dto.customerdtos.CustomerAddressCreateDto;
+import com.groupa.chickendirectfarm.dto.purchasedtos.PurchaseBatchCreateDto;
+import com.groupa.chickendirectfarm.dto.purchasedtos.PurchaseCreateDto;
+import com.groupa.chickendirectfarm.exception.conflict.BatchRequiredInPurchaseException;
+import com.groupa.chickendirectfarm.exception.notfound.PurchaseNotFoundException;
+import com.groupa.chickendirectfarm.product.Breed;
+import com.groupa.chickendirectfarm.product.Product;
+import com.groupa.chickendirectfarm.product.ProductService;
+import com.groupa.chickendirectfarm.product.event.ProductEventAction;
+import com.groupa.chickendirectfarm.purchase.Purchase;
+import com.groupa.chickendirectfarm.purchase.PurchaseOrchestrationService;
+import com.groupa.chickendirectfarm.purchase.PurchaseService;
+import com.groupa.chickendirectfarm.purchase.batch.PurchaseBatchRepo;
+import com.groupa.chickendirectfarm.purchase.event.PurchaseEventRepo;
+import com.groupa.chickendirectfarm.purchase.event.ShippedStatus;
+import jakarta.transaction.Transactional;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+
+@SpringBootTest
+@Transactional
+public class PurchaseIT extends BaseIntegrationTest{
+
+    @Autowired
+    private CustomerService customerService;
+    @Autowired
+    private ProductService productService;
+    @Autowired
+    private CustomerAddressService customerAddressService;
+    @Autowired
+    private PurchaseOrchestrationService purchaseOrchestrationService;
+    @Autowired
+    private PurchaseService purchaseService;
+    @Autowired
+    private PurchaseEventRepo purchaseEventRepo;
+    @Autowired
+    private PurchaseBatchRepo purchaseBatchRepo;
+
+
+    @Test
+    void shouldSaveAndRetrievePurchase(){
+        Customer customer = new Customer("Bob Bob", "808808", "BobBob@ChickenDirect.com");
+        Customer savedCustomer = customerService.save(customer);
+
+        Product product = new Product(Breed.BROWN, "This is the brownest chickens", 200, 40);
+        Product savedProduct = productService.save(product);
+        Product product2 = new Product(Breed.GOLDEN, "It's actually yellow chicken painted gold", 700, 500);
+        Product savedProduct2 = productService.save(product2);
+
+        CustomerAddressCreateDto customerAddress = new CustomerAddressCreateDto("Fancy street", "192949", "BobBurger@Burger.com", customer.getId());
+        CustomerAddress savedCustomerAddress = customerAddressService.save(customerAddress);
+
+        PurchaseBatchCreateDto batch1 = new PurchaseBatchCreateDto(10, savedProduct.getId());
+        PurchaseBatchCreateDto batch2 = new PurchaseBatchCreateDto(10, savedProduct2.getId());
+        List<PurchaseBatchCreateDto> purchaseBatches = new ArrayList<>();
+        purchaseBatches.add(batch1);
+        purchaseBatches.add(batch2);
+
+        PurchaseCreateDto purchase = new PurchaseCreateDto(savedCustomerAddress.getId(), 100, purchaseBatches);
+        Purchase savedPurchase = purchaseOrchestrationService.create(purchase);
+
+        assertThat(purchaseService.getPurchaseById(savedPurchase.getId())).isNotNull();
+        assertThat(purchaseService.getAllPurchases().size()).isEqualTo(1);
+        assertThat(purchaseService.getPurchaseById(savedPurchase.getId()).getPurchaseBatches().size()).isEqualTo(2);
+        assertThat(purchaseService.getPurchaseById(savedPurchase.getId()).getPurchaseBatches().getFirst().getProduct().getBreed()).isEqualTo(Breed.BROWN);
+        assertThat(purchaseService.getPurchaseById(savedPurchase.getId()).getCustomer().getId()).isEqualTo(savedCustomer.getId());
+    }
+
+    @Test
+    void shouldDeletePurchaseAndGivePurchaseNotFoundExceptionWhenGettingAndDeleting(){
+        assertThat(purchaseService.getAllPurchases().size()).isEqualTo(0);
+        assertThrows(PurchaseNotFoundException.class, () -> purchaseService.getPurchaseById(purchaseService.getAllPurchases().size()));
+        assertThrows(PurchaseNotFoundException.class, () -> purchaseService.deletePurchaseById(purchaseService.getAllPurchases().size()));
+
+        Customer customer = new Customer("Bob Bob", "808808", "BobBob@ChickenDirect.com");
+        Customer savedCustomer = customerService.save(customer);
+
+        Product product = new Product(Breed.BROWN, "This is the brownest chickens", 200, 40);
+        Product savedProduct = productService.save(product);
+        Product product2 = new Product(Breed.GOLDEN, "It's actually yellow chicken painted gold", 700, 500);
+        Product savedProduct2 = productService.save(product2);
+
+        CustomerAddressCreateDto customerAddress = new CustomerAddressCreateDto("Fancy street", "192949", "BobBurger@Burger.com", customer.getId());
+        CustomerAddress savedCustomerAddress = customerAddressService.save(customerAddress);
+
+        PurchaseBatchCreateDto batch1 = new PurchaseBatchCreateDto(10, savedProduct.getId());
+        PurchaseBatchCreateDto batch2 = new PurchaseBatchCreateDto(10, savedProduct2.getId());
+        List<PurchaseBatchCreateDto> purchaseBatches = new ArrayList<>();
+        purchaseBatches.add(batch1);
+        purchaseBatches.add(batch2);
+
+        PurchaseCreateDto purchase = new PurchaseCreateDto(savedCustomerAddress.getId(), 100, purchaseBatches);
+        Purchase savedPurchase = purchaseOrchestrationService.create(purchase);
+
+        purchaseService.deletePurchaseById(savedPurchase.getId());
+
+        assertThat(purchaseService.getAllPurchases().size()).isEqualTo(0);
+        assertThat(customerService.getCustomerById(savedCustomer.getId()).getPurchases().size()).isEqualTo(0);
+        assertThat(purchaseEventRepo.findAll().size()).isEqualTo(0);
+        assertThat(purchaseBatchRepo.findAll().size()).isEqualTo(0);
+    }
+
+    @Test
+    void shouldGiveBatchRequiredInPurchaseException(){
+        Customer customer = new Customer("Bob Bob", "808808", "BobBob@ChickenDirect.com");
+        customerService.save(customer);
+
+        CustomerAddressCreateDto customerAddress = new CustomerAddressCreateDto("Fancy street", "192949", "BobBurger@Burger.com", customer.getId());
+        CustomerAddress savedCustomerAddress = customerAddressService.save(customerAddress);
+
+        List<PurchaseBatchCreateDto> purchaseBatches = new ArrayList<>();
+        PurchaseCreateDto purchase = new PurchaseCreateDto(savedCustomerAddress.getId(), 100, purchaseBatches);
+        assertThrows(BatchRequiredInPurchaseException.class, () -> purchaseOrchestrationService.create(purchase));
+    }
+
+    @Test
+    void shouldCreateCanceledEventForPurchaseAndReturnProducts(){
+        Customer customer = new Customer("Bob Bob", "808808", "BobBob@ChickenDirect.com");
+        customerService.save(customer);
+
+        Product product = new Product(Breed.BROWN, "This is the brownest chickens", 200, 40);
+        Product savedProduct = productService.save(product);
+        Product product2 = new Product(Breed.GOLDEN, "It's actually yellow chicken painted gold", 700, 500);
+        Product savedProduct2 = productService.save(product2);
+
+        CustomerAddressCreateDto customerAddress = new CustomerAddressCreateDto("Fancy street", "192949", "BobBurger@Burger.com", customer.getId());
+        CustomerAddress savedCustomerAddress = customerAddressService.save(customerAddress);
+
+        PurchaseBatchCreateDto batch1 = new PurchaseBatchCreateDto(10, savedProduct.getId());
+        PurchaseBatchCreateDto batch2 = new PurchaseBatchCreateDto(10, savedProduct2.getId());
+        List<PurchaseBatchCreateDto> purchaseBatches = new ArrayList<>();
+        purchaseBatches.add(batch1);
+        purchaseBatches.add(batch2);
+
+        PurchaseCreateDto purchase = new PurchaseCreateDto(savedCustomerAddress.getId(), 100, purchaseBatches);
+        Purchase savedPurchase = purchaseOrchestrationService.create(purchase);
+
+        purchaseOrchestrationService.cancelPurchaseById(savedPurchase.getId());
+        assertThat(purchaseService.getPurchaseById(savedPurchase.getId()).getPurchaseEvents().getFirst().getShippedStatus()).isEqualTo(ShippedStatus.CANCELLED);
+        assertThat(purchaseService.getPurchaseById(savedPurchase.getId()).getPurchaseBatches().size()).isEqualTo(2);
+        assertThat(productService.getProductById(savedProduct.getId()).getQuantity()).isEqualTo(50);
+        assertThat(productService.getProductById(savedProduct2.getId()).getQuantity()).isEqualTo(510);
+        assertThat(productService.getProductById(savedProduct.getId()).getProductEvents().getLast().getProductEventAction()).isEqualTo(ProductEventAction.CANCELED);
+    }
+
+
+
+}

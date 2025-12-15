@@ -48,6 +48,11 @@ public class CustomerService {
     public void deleteCustomerById(int id){
         log.info("ENTRY: Deleting Customer with ID: {}", id);
 
+        if (!customerRepo.existsById(id)){
+            log.warn("Delete failed, customer with Id: {} not found", id);
+            throw new CustomerNotFoundException("Customer with id " + id + " not found");
+        }
+
         Customer customer = getCustomerById(id);
 
         if(!customer.getPurchases().isEmpty()){

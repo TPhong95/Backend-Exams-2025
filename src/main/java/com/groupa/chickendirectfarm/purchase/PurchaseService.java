@@ -1,5 +1,6 @@
 package com.groupa.chickendirectfarm.purchase;
 
+import com.groupa.chickendirectfarm.customer.Customer;
 import com.groupa.chickendirectfarm.exception.notfound.PurchaseNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -47,6 +48,12 @@ public class PurchaseService {
             log.warn("Delete failed, purchase with id: {} not found", id);
             throw new PurchaseNotFoundException("Purchase with id " + id + " not found");
         }
+
+        Purchase purchase = getPurchaseById(id);
+
+        Customer customer = purchase.getCustomer();
+        customer.getPurchases().remove(purchase);
+
         purchaseRepo.deleteById(id);
         log.info("EXIT: Purchase with id: {} deleted successfully", id);
     }

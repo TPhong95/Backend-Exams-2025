@@ -1,6 +1,5 @@
 package com.groupa.chickendirectfarm.purchase;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.groupa.chickendirectfarm.customer.address.CustomerAddress;
 import com.groupa.chickendirectfarm.customer.Customer;
@@ -38,10 +37,10 @@ public class Purchase {
     @JoinColumn(name = "customer_address_id")
     private CustomerAddress customerAddress;
 
-    @OneToMany(mappedBy = "purchase")
+    @OneToMany(mappedBy = "purchase", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PurchaseBatch> purchaseBatches = new ArrayList<>();
 
-    @OneToMany(mappedBy = "purchase")
+    @OneToMany(mappedBy = "purchase", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PurchaseEvent> purchaseEvents = new ArrayList<>();
 
 }

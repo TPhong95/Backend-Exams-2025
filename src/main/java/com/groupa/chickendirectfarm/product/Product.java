@@ -28,10 +28,10 @@ public class Product {
     private int price;
     private int quantity;
 
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product",cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PurchaseBatch> purchaseBatches = new ArrayList<>();
 
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product",cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("timestamp DESC")
     private List<ProductEvent> productEvents = new ArrayList<>();
 
