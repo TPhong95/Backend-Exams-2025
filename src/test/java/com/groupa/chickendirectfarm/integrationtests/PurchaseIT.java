@@ -12,13 +12,13 @@ import com.groupa.chickendirectfarm.exception.notfound.PurchaseNotFoundException
 import com.groupa.chickendirectfarm.product.Breed;
 import com.groupa.chickendirectfarm.product.Product;
 import com.groupa.chickendirectfarm.product.ProductService;
-import com.groupa.chickendirectfarm.product.event.ProductEventAction;
 import com.groupa.chickendirectfarm.purchase.Purchase;
 import com.groupa.chickendirectfarm.purchase.PurchaseOrchestrationService;
 import com.groupa.chickendirectfarm.purchase.PurchaseService;
 import com.groupa.chickendirectfarm.purchase.batch.PurchaseBatchRepo;
 import com.groupa.chickendirectfarm.purchase.event.PurchaseEventRepo;
 import com.groupa.chickendirectfarm.purchase.event.ShippedStatus;
+import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +49,8 @@ public class PurchaseIT extends BaseIntegrationTest{
     private PurchaseEventRepo purchaseEventRepo;
     @Autowired
     private PurchaseBatchRepo purchaseBatchRepo;
-
+    @Autowired
+    EntityManager entityManager;
 
     @Test
     void shouldSaveAndRetrievePurchase(){
@@ -78,13 +79,15 @@ public class PurchaseIT extends BaseIntegrationTest{
         assertThat(purchaseService.getPurchaseById(savedPurchase.getId()).getPurchaseBatches().size()).isEqualTo(2);
         assertThat(purchaseService.getPurchaseById(savedPurchase.getId()).getPurchaseBatches().getFirst().getProduct().getBreed()).isEqualTo(Breed.BROWN);
         assertThat(purchaseService.getPurchaseById(savedPurchase.getId()).getCustomer().getId()).isEqualTo(savedCustomer.getId());
+        assertThat(productService.getProductById(savedProduct.getId()).getQuantity()).isEqualTo(30);
     }
 
     @Test
-    void shouldDeletePurchaseAndGivePurchaseNotFoundExceptionWhenGettingAndDeleting(){
+    void shouldDeletePurchaseAndGivePurchaseNotFoundExceptionWhenGettingAndDeletingAndCanceling(){
         assertThat(purchaseService.getAllPurchases().size()).isEqualTo(0);
         assertThrows(PurchaseNotFoundException.class, () -> purchaseService.getPurchaseById(purchaseService.getAllPurchases().size()));
         assertThrows(PurchaseNotFoundException.class, () -> purchaseService.deletePurchaseById(purchaseService.getAllPurchases().size()));
+        assertThrows(PurchaseNotFoundException.class, () -> purchaseOrchestrationService.cancelPurchaseById(purchaseService.getAllPurchases().size()));
 
         Customer customer = new Customer("Bob Bob", "808808", "BobBob@ChickenDirect.com");
         Customer savedCustomer = customerService.save(customer);
@@ -140,6 +143,7 @@ public class PurchaseIT extends BaseIntegrationTest{
         CustomerAddressCreateDto customerAddress = new CustomerAddressCreateDto("Fancy street", "192949", "BobBurger@Burger.com", customer.getId());
         CustomerAddress savedCustomerAddress = customerAddressService.save(customerAddress);
 
+
         PurchaseBatchCreateDto batch1 = new PurchaseBatchCreateDto(10, savedProduct.getId());
         PurchaseBatchCreateDto batch2 = new PurchaseBatchCreateDto(10, savedProduct2.getId());
         List<PurchaseBatchCreateDto> purchaseBatches = new ArrayList<>();
@@ -149,12 +153,17 @@ public class PurchaseIT extends BaseIntegrationTest{
         PurchaseCreateDto purchase = new PurchaseCreateDto(savedCustomerAddress.getId(), 100, purchaseBatches);
         Purchase savedPurchase = purchaseOrchestrationService.create(purchase);
 
+        assertThat(productService.getProductById(savedProduct.getId()).getQuantity()).isEqualTo(30);
+        assertThat(productService.getProductById(savedProduct2.getId()).getQuantity()).isEqualTo(490);
+
+        entityManager.flush();
+        entityManager.clear();
+
         purchaseOrchestrationService.cancelPurchaseById(savedPurchase.getId());
-        assertThat(purchaseService.getPurchaseById(savedPurchase.getId()).getPurchaseEvents().getFirst().getShippedStatus()).isEqualTo(ShippedStatus.CANCELLED);
+        assertThat(purchaseService.getPurchaseById(savedPurchase.getId()).getPurchaseEvents().getLast().getShippedStatus()).isEqualTo(ShippedStatus.CANCELLED);
         assertThat(purchaseService.getPurchaseById(savedPurchase.getId()).getPurchaseBatches().size()).isEqualTo(2);
-        assertThat(productService.getProductById(savedProduct.getId()).getQuantity()).isEqualTo(50);
-        assertThat(productService.getProductById(savedProduct2.getId()).getQuantity()).isEqualTo(510);
-        assertThat(productService.getProductById(savedProduct.getId()).getProductEvents().getLast().getProductEventAction()).isEqualTo(ProductEventAction.CANCELED);
+        assertThat(productService.getProductById(savedProduct.getId()).getQuantity()).isEqualTo(40);
+        assertThat(productService.getProductById(savedProduct2.getId()).getQuantity()).isEqualTo(500);
     }
 
 

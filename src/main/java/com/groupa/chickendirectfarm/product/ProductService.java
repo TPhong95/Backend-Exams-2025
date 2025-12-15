@@ -59,7 +59,10 @@ public class ProductService {
             log.warn("Delete failed, Product with id {} not found", id);
             throw new ProductNotFoundException("Product with id " + id + " not found");
         }
-        productRepo.deleteById(id);
+
+        Product product = getProductById(id);
+
+        productRepo.delete(product);
         log.info("EXIT: Deleted product with id: {} successfully!", id);
     }
 
