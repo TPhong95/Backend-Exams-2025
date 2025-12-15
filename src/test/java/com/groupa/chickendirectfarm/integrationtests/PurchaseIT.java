@@ -164,6 +164,7 @@ public class PurchaseIT extends BaseIntegrationTest{
         assertThat(purchaseService.getPurchaseById(savedPurchase.getId()).getPurchaseBatches().size()).isEqualTo(2);
         assertThat(productService.getProductById(savedProduct.getId()).getQuantity()).isEqualTo(40);
         assertThat(productService.getProductById(savedProduct2.getId()).getQuantity()).isEqualTo(500);
+
     }
 
 
