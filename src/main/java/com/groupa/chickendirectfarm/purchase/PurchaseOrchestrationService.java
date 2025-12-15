@@ -143,11 +143,6 @@ public class PurchaseOrchestrationService {
 
         Purchase purchase = purchaseService.getPurchaseById(id);
 
-        if (purchase == null) {
-            log.warn("Cancel failed, purchase with id: {} not found", id);
-            throw new PurchaseNotFoundException("Purchase with id " + id + " not found");
-        }
-
         ShippedStatus shippedStatus = purchase.getPurchaseEvents().stream()
                 .map(PurchaseEvent::getShippedStatus)
                 .filter(status -> status == ShippedStatus.CANCELLED || status == ShippedStatus.DELIVERED || status == ShippedStatus.SHIPPED)
