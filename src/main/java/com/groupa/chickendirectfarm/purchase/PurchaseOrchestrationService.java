@@ -77,7 +77,6 @@ public class PurchaseOrchestrationService {
 
       Purchase purchase = new Purchase();
       purchase.setCustomer(customer);
-      customer.getPurchases().add(purchase);
       purchase.setCustomerAddress(customerAddress);
       purchase.setShippingCharge(purchaseCreateDto.shippingPrice());
       log.debug("Purchase object initialized with shipping charge");
@@ -126,6 +125,7 @@ public class PurchaseOrchestrationService {
       purchase.setTotalQuantity(totalQuantity);
 
       Purchase savedPurchase = purchaseService.save(purchase);
+      customer.getPurchases().add(savedPurchase);
       purchaseEventService.save(ShippedStatus.NOT_SHIPPED, savedPurchase);
 
       log.info("EXIT: Purchase ID: {} created with {} batches, total price of {}, on the address {} with customer{};",
