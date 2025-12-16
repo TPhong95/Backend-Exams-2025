@@ -60,7 +60,7 @@ public class PurchaseController {
         return ResponseEntity.ok(dtoMapper.toPurchaseMoreDetailsDto(result));
     }
 
-    @PostMapping("/update/")
+    @PostMapping("/update")
     public ResponseEntity<PurchaseMoreDetailsResponseDto> updatePurchaseById(@RequestBody PurchaseEventCreateDto event){
         Purchase result = purchaseOrchestrationService.updatePurchaseById(event.purchaseId(), event.shippedStatus());
         return ResponseEntity.ok(dtoMapper.toPurchaseMoreDetailsDto(result));

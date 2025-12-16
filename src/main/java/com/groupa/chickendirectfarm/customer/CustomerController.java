@@ -91,22 +91,22 @@ public class CustomerController {
     }
 
     @GetMapping("/address/page/{page}")
-    public ResponseEntity<Page<CustomerAddressResponseDto>> getAllCustomerAddresses(@PathVariable int page) {
+    public ResponseEntity<List<CustomerAddressResponseDto>> getAllCustomerAddresses(@PathVariable int page) {
         Page<CustomerAddress> addresses = customerAddressService.getAllCustomerAddressesPaged(page);
         if (addresses.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        Page<CustomerAddressResponseDto> dtos = addresses.map(dtoMapper::toCustomerAddressDtoFull);
+        List<CustomerAddressResponseDto> dtos = addresses.map(dtoMapper::toCustomerAddressDtoFull).getContent();
         return ResponseEntity.ok(dtos);
     }
 
     @GetMapping("/address/purchases/{page}")
-    public ResponseEntity<Page<CustomerAddressResponseDto>> getAllCustomerAddressesWithPurchases(@PathVariable int page) {
+    public ResponseEntity<List<CustomerAddressResponseDto>> getAllCustomerAddressesWithPurchases(@PathVariable int page) {
         Page<CustomerAddress> addresses = customerAddressService.getAllCustomerAddressesWithPurchases(page);
         if (addresses.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        Page<CustomerAddressResponseDto> dtos = addresses.map(dtoMapper::toCustomerAddressDtoFull);
+        List<CustomerAddressResponseDto> dtos = addresses.map(dtoMapper::toCustomerAddressDtoFull).getContent();
         return ResponseEntity.ok(dtos);
     }
 }
