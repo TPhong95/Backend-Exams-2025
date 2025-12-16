@@ -4,6 +4,9 @@ import com.groupa.chickendirectfarm.customer.CustomerService;
 import com.groupa.chickendirectfarm.dto.customerdtos.CustomerAddressCreateDto;
 import com.groupa.chickendirectfarm.exception.notfound.CustomerAddressNotFoundException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -64,6 +67,16 @@ public class CustomerAddressService {
 
         customerAddressRepo.deleteById(id);
         log.info("EXIT: Customer address successfully deleted with ID: {}, streetname: {}", id, customerAddress.getStreetName() );
+    }
+
+    public Page<CustomerAddress> getAllCustomerAddressesPaged (int page){
+        Pageable pageable = PageRequest.of(page, 10);
+        return customerAddressRepo.findAll(pageable);
+    }
+
+    public Page<CustomerAddress> getAllCustomerAddressesWithPurchases (int page){
+        Pageable pageable = PageRequest.of(page, 10);
+        return customerAddressRepo.findAddressesWithPurchases(pageable);
     }
 
 }

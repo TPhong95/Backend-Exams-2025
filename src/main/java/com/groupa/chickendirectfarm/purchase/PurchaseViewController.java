@@ -31,4 +31,11 @@ public class PurchaseViewController {
         return "purchase/view";
     }
 
+    @GetMapping("/receipt/{id}")
+    public String viewPurchaseReceipt(Model model, @PathVariable int id) {
+        Purchase purchase = purchaseService.getPurchaseById(id);
+        model.addAttribute("purchase", purchase);
+        return "purchase/receipt";
+    }
+
 }

@@ -162,12 +162,13 @@
                         </goals>
                         <configuration>
                             <dataFile>${project.build.directory}/jacoco-output/jacoco-unit-tests.exec</dataFile>
-                            <outputDirectory>${project.reporting.outputDirectory}/jacoco-unit-test-coverage-report</outputDirectory>
+                            <outputDirectory>${project.reporting.outputDirectory}/jacoco-unit-test-coverage-report
+                            </outputDirectory>
                             <excludes>
-                                <exclude>**/testdata/**/*</exclude>
-                                <exclude>**/dto/**/*</exclude>
-                                <exclude>**/mapper/**</exclude>
-                                <exclude>**/*Controller.class</exclude>
+                                <exclude>/testdata//</exclude>
+                                <exclude>/dto//</exclude>
+                                <exclude>/mapper/</exclude>
+                                <exclude>*/Controller.class</exclude>
                             </excludes>
                         </configuration>
                     </execution>
@@ -190,12 +191,14 @@
                         </goals>
                         <configuration>
                             <dataFile>${project.build.directory}/jacoco-output/jacoco-integration-tests.exec</dataFile>
-                            <outputDirectory>${project.reporting.outputDirectory}/jacoco-integration-test-coverage-report</outputDirectory>
+                            <outputDirectory>
+                                ${project.reporting.outputDirectory}/jacoco-integration-test-coverage-report
+                            </outputDirectory>
                             <excludes>
-                                <exclude>**/testdata/**/*</exclude>
-                                <exclude>**/dto/**/*</exclude>
-                                <exclude>**/mapper/**</exclude>
-                                <exclude>**/*Controller.class</exclude>
+                                <exclude>/testdata//</exclude>
+                                <exclude>/dto//</exclude>
+                                <exclude>/mapper/</exclude>
+                                <exclude>*/Controller.class</exclude>
                             </excludes>
                         </configuration>
                     </execution>
@@ -225,12 +228,13 @@
                         </goals>
                         <configuration>
                             <dataFile>${project.build.directory}/jacoco-output/merged.exec</dataFile>
-                            <outputDirectory>${project.reporting.outputDirectory}/jacoco-merged-test-coverage-report</outputDirectory>
+                            <outputDirectory>${project.reporting.outputDirectory}/jacoco-merged-test-coverage-report
+                            </outputDirectory>
                             <excludes>
-                                <exclude>**/testdata/**/*</exclude>
-                                <exclude>**/dto/**/*</exclude>
-                                <exclude>**/mapper/**</exclude>
-                                <exclude>**/*Controller.class</exclude>
+                                <exclude>/testdata//</exclude>
+                                <exclude>/dto//</exclude>
+                                <exclude>/mapper/</exclude>
+                                <exclude>*/Controller.class</exclude>
                             </excludes>
                         </configuration>
                     </execution>

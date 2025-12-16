@@ -15,7 +15,6 @@ import com.groupa.chickendirectfarm.product.Breed;
 import com.groupa.chickendirectfarm.product.Product;
 import com.groupa.chickendirectfarm.product.ProductService;
 import com.groupa.chickendirectfarm.purchase.PurchaseOrchestrationService;
-import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -26,8 +25,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
-@Transactional
-public class CustomerIT extends BaseIntegrationTest {
+
+public class IT02_CustomerIT extends BaseIntegrationTest {
 
 
     @Autowired

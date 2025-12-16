@@ -27,7 +27,6 @@ public class TestData {
     private final ProductRepo productRepo;
     private final CustomerAddressRepo customerAddressRepo;
     private final PurchaseRepo purchaseRepo;
-    private final PurchaseBatchRepo purchaseBatchRepo;
     private final PurchaseOrchestrationService purchaseOrchestrationService;
 
     private final CustomerService customerService;
@@ -35,22 +34,54 @@ public class TestData {
 
     private Map<Breed, Product> testProducts = new HashMap<>();
 
-    public TestData(CustomerRepo customerRepo, ProductRepo productRepo, CustomerAddressRepo customerAddressRepo, PurchaseRepo purchaseRepo, PurchaseBatchRepo purchaseBatchRepo, PurchaseOrchestrationService purchaseOrchestrationService, CustomerService customerService, ProductOrchestrationService productOrchestrationService) {
+    public TestData(CustomerRepo customerRepo, ProductRepo productRepo, CustomerAddressRepo customerAddressRepo, PurchaseRepo purchaseRepo, PurchaseOrchestrationService purchaseOrchestrationService, CustomerService customerService, ProductOrchestrationService productOrchestrationService) {
         this.customerRepo = customerRepo;
         this.productRepo = productRepo;
         this.customerAddressRepo = customerAddressRepo;
         this.purchaseRepo = purchaseRepo;
-        this.purchaseBatchRepo = purchaseBatchRepo;
         this.purchaseOrchestrationService = purchaseOrchestrationService;
         this.customerService = customerService;
         this.productOrchestrationService = productOrchestrationService;
     }
 
     public void createTestData() {
+        createProducts();
+        createHardCodedData();
         createCustomers();
         createAddresses();
-        createProducts();
         createTestPurchases();
+    }
+
+    private void createHardCodedData() {
+        Customer customer = customerRepo.save(new Customer(
+                "Jason",
+                faker.phoneNumber().phoneNumber(),
+                faker.internet().emailAddress()));
+
+            CustomerAddress customerAddress = customerAddressRepo.save(new CustomerAddress(
+                    "Jason's Hillybilly Chicken Farm",
+                    faker.phoneNumber().phoneNumber(),
+                    faker.internet().emailAddress(),
+                    customerService.getCustomerById(customer.getId())
+            ));
+
+
+        for (int i = 0; i < 5; i++) {
+            int shippingPrice = random.nextInt(200, 500) +1;
+
+            PurchaseCreateDto purchaseCreateDto = new PurchaseCreateDto(
+                    customerAddress.getId(),
+                    shippingPrice,
+                    createTestPurchaseBatches()
+            );
+
+            var testPurchase = purchaseOrchestrationService.create(purchaseCreateDto);
+            purchaseRepo.save(testPurchase);
+        }
+
+
+
+
     }
 
     private List<PurchaseBatchCreateDto> createTestPurchaseBatches() {

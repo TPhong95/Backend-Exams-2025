@@ -1,6 +1,7 @@
 package com.groupa.chickendirectfarm.purchase;
 
 import com.groupa.chickendirectfarm.dto.purchasedtos.PurchaseCreateDto;
+import com.groupa.chickendirectfarm.dto.purchasedtos.PurchaseEventCreateDto;
 import com.groupa.chickendirectfarm.dto.purchasedtos.PurchaseMoreDetailsResponseDto;
 import com.groupa.chickendirectfarm.mapper.DtoMapper;
 import org.springframework.http.ResponseEntity;
@@ -56,6 +57,12 @@ public class PurchaseController {
     @PostMapping("/cancel/{id}")
     public ResponseEntity<PurchaseMoreDetailsResponseDto> cancelPurchaseById(@PathVariable int id){
         Purchase result = purchaseOrchestrationService.cancelPurchaseById(id);
+        return ResponseEntity.ok(dtoMapper.toPurchaseMoreDetailsDto(result));
+    }
+
+    @PostMapping("/update/")
+    public ResponseEntity<PurchaseMoreDetailsResponseDto> updatePurchaseById(@RequestBody PurchaseEventCreateDto event){
+        Purchase result = purchaseOrchestrationService.updatePurchaseById(event.purchaseId(), event.shippedStatus());
         return ResponseEntity.ok(dtoMapper.toPurchaseMoreDetailsDto(result));
     }
 }

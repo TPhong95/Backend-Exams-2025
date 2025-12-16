@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+>
+<style>
+    html {
+        font-size: 10px;
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        padding: 0;
+        background-color: lightgrey;
+        color: black;
+    }
+</style>
+<head>
+    <meta charset="UTF-8">
+    <title>Purchase Details</title>
+</head>
+<body>
+<div style="
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.25);
+  margin: 2rem auto;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  align-items: center;
+max-width: 600px">
+    <h1>Chicken Direct</h1>
+    <img
+            style="
+                  flex-shrink: 0;
+                  width: 20rem;
+                  height: 20rem;
+                  object-fit: contain;
+                  border-radius: 8px;
+                  background-color: lightgrey;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;"
+            src="http://localhost:8080/ChickenLogo.jpg"
+            alt="ChickenLogo"
+    />
+    <h2>Purchase Receipt</h2>
+    <div>
+        <p>Purchase Id: <strong th:text="${purchase.getId()}"></strong></p>
+        <p>Customer: <strong th:text="${purchase.getCustomer().getName()}"></strong></p>
+        <p>Address: <strong th:text="${purchase.getCustomerAddress().getStreetName()}"></strong></p>
+        <p>Shipping charge: <strong th:text="${purchase.getShippingCharge()}"></strong></p>
+        <p>Total quantity of products: <strong th:text="${purchase.getTotalQuantity()}"></strong></p>
+        <p>Total purchase price: <strong th:text="${purchase.getTotalPrice()}"></strong></p>
+        <p>Shipment status: <strong th:text="${purchase.getPurchaseEvents().getFirst().getShippedStatus()}"></strong>
+        </p>
+        <p>Last updated: <strong th:text="${purchase.getPurchaseEvents().getFirst().getTimestamp()}"></strong></p>
+    </div>
+    <h3>THANK YOU FOR YOUR PURCHASE </h3>
+    <h3><strong th:text="${purchase.getCustomer().getName()}"></strong></h3>
+</div>
+</body>
+</html>

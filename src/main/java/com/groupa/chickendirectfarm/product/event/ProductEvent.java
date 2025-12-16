@@ -1,7 +1,6 @@
 package com.groupa.chickendirectfarm.product.event;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.groupa.chickendirectfarm.product.Product;
 import com.groupa.chickendirectfarm.product.StockStatus;
@@ -38,7 +37,6 @@ public class ProductEvent {
 
     @ManyToOne
     @JoinColumn(name = "product_id")
-    @JsonIgnore
     private Product product;
 
     public ProductEvent(StockStatus stockStatus, Product product, int incomingQuantity, int previousQuantity, ProductEventAction productEventAction) {

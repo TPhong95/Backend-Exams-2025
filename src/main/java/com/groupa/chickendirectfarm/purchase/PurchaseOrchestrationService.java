@@ -8,7 +8,6 @@ import com.groupa.chickendirectfarm.dto.purchasedtos.PurchaseCreateDto;
 import com.groupa.chickendirectfarm.exception.conflict.BatchRequiredInPurchaseException;
 import com.groupa.chickendirectfarm.exception.conflict.DuplicateProductInPurchaseException;
 import com.groupa.chickendirectfarm.exception.conflict.PurchaseAlreadyHandledException;
-import com.groupa.chickendirectfarm.exception.notfound.PurchaseNotFoundException;
 import com.groupa.chickendirectfarm.product.Product;
 import com.groupa.chickendirectfarm.product.ProductOrchestrationService;
 import com.groupa.chickendirectfarm.product.ProductService;
@@ -48,102 +47,103 @@ public class PurchaseOrchestrationService {
     }
 
 
-  //Vurdere å splitte opp denne store metoden (EKSTRAOPPGAVE)
-  @Transactional
-  public Purchase create(PurchaseCreateDto purchaseCreateDto) {
-      log.info("ENTRY: Creating new purchase for customer with address Id: {}", purchaseCreateDto.customerAddressId());
+    //Vurdere å splitte opp denne store metoden (EKSTRAOPPGAVE)
+    @Transactional
+    public Purchase create(PurchaseCreateDto purchaseCreateDto) {
+        log.info("ENTRY: Creating new purchase for customer with address Id: {}", purchaseCreateDto.customerAddressId());
 
-      CustomerAddress customerAddress = customerAddressService.getCustomerAddressById(
-              purchaseCreateDto.customerAddressId()
-      );
-      log.debug("Customer address retrieved with streetname: {}", customerAddress.getStreetName());
+        CustomerAddress customerAddress = customerAddressService.getCustomerAddressById(
+                purchaseCreateDto.customerAddressId()
+        );
+        log.debug("Customer address retrieved with streetname: {}", customerAddress.getStreetName());
 
-      Customer customer = customerService.getCustomerById(customerAddress.getCustomer().getId());
-      log.debug("Customer retrieved with Id: {}, name: {}", customer.getId(), customer.getName());
+        Customer customer = customerService.getCustomerById(customerAddress.getCustomer().getId());
+        log.debug("Customer retrieved with Id: {}, name: {}", customer.getId(), customer.getName());
 
 
-      Set<Integer> productIds = new HashSet<>();
-      for (PurchaseBatchCreateDto batchDto : purchaseCreateDto.purchaseBatchesDto()) {
-          if (! productIds.add(batchDto.productId())) {
-              log.warn("Duplicate product detected in purchase with product Id: {}", batchDto.productId());
-              throw new DuplicateProductInPurchaseException("Duplicate product in purchase batch with id: " + batchDto.productId());
-          }
-      }
+        Set<Integer> productIds = new HashSet<>();
+        for (PurchaseBatchCreateDto batchDto : purchaseCreateDto.purchaseBatchesDto()) {
+            if (!productIds.add(batchDto.productId())) {
+                log.warn("Duplicate product detected in purchase with product Id: {}", batchDto.productId());
+                throw new DuplicateProductInPurchaseException("Duplicate product in purchase batch with id: " + batchDto.productId());
+            }
+        }
 
-      if (productIds.isEmpty()) {
-          log.error("Purchase creation failed: No batches provided");
-          throw new BatchRequiredInPurchaseException("Purchase creation failed: No batches provided");
-      }
+        if (productIds.isEmpty()) {
+            log.error("Purchase creation failed: No batches provided");
+            throw new BatchRequiredInPurchaseException("Purchase creation failed: No batches provided");
+        }
 
-      Purchase purchase = new Purchase();
-      purchase.setCustomer(customer);
-      purchase.setCustomerAddress(customerAddress);
-      purchase.setShippingCharge(purchaseCreateDto.shippingPrice());
-      log.debug("Purchase object initialized with shipping charge");
+        Purchase purchase = new Purchase();
+        purchase.setCustomer(customer);
+        purchase.setCustomerAddress(customerAddress);
+        purchase.setShippingCharge(purchaseCreateDto.shippingPrice());
+        log.debug("Purchase object initialized with shipping charge");
 
-      List<PurchaseBatch> batches = new ArrayList<>();
-      long totalPrice = 0;
-      int totalQuantity = 0;
-      int batchNumber = 0;
+        List<PurchaseBatch> batches = new ArrayList<>();
+        long totalPrice = 0;
+        int totalQuantity = 0;
+        int batchNumber = 0;
 
- 
-      for (PurchaseBatchCreateDto batchDto : purchaseCreateDto.purchaseBatchesDto()) {
-          batchNumber++;
-          log.debug("Processing batch number: {}, product Id: {}", batchNumber, batchDto.productId());
 
-          Product product = productService.getProductById(batchDto.productId());
-          log.debug("Product retrieved breed: {}, price: {}, quantity: {}",
-                  product.getBreed(), product.getPrice(), product.getQuantity());
+        for (PurchaseBatchCreateDto batchDto : purchaseCreateDto.purchaseBatchesDto()) {
+            batchNumber++;
+            log.debug("Processing batch number: {}, product Id: {}", batchNumber, batchDto.productId());
 
-          productOrchestrationService.decreaseStock(
-                  batchDto. productId(),
-                  batchDto.quantity()
-          );
-          log.debug("Product Id: {} decreased quantity by {}", batchDto.productId(), batchDto.quantity());
+            Product product = productService.getProductById(batchDto.productId());
+            log.debug("Product retrieved breed: {}, price: {}, quantity: {}",
+                    product.getBreed(), product.getPrice(), product.getQuantity());
 
-          int batchTotal = product.getPrice() * batchDto.quantity();
+            productOrchestrationService.decreaseStock(
+                    batchDto.productId(),
+                    batchDto.quantity()
+            );
+            log.debug("Product Id: {} decreased quantity by {}", batchDto.productId(), batchDto.quantity());
 
-          PurchaseBatch batch = new PurchaseBatch();
-          batch.setPurchase(purchase);
-          batch.setProduct(product);
-          batch.setQuantity(batchDto.quantity());
-          batch.setBatchPrice(batchTotal);
+            int batchTotal = product.getPrice() * batchDto.quantity();
 
-          batches.add(batch);
-          totalPrice += batchTotal;
-          totalQuantity += batchDto.quantity();
+            PurchaseBatch batch = new PurchaseBatch();
+            batch.setPurchase(purchase);
+            batch.setProduct(product);
+            batch.setQuantity(batchDto.quantity());
+            batch.setBatchPrice(batchTotal);
 
-          log.debug("Batch number {} done processing. total cost for batch {}, total quantity for batch {}",
-                  batchNumber, batchTotal, batchDto.quantity());
-      }
+            batches.add(batch);
+            totalPrice += batchTotal;
+            totalQuantity += batchDto.quantity();
 
-      log.debug("All batches done with processing, {} batches with a total cost of purchase {}, and total quantity of products {}",
-              batches. size(), totalPrice, totalQuantity);
+            log.debug("Batch number {} done processing. total cost for batch {}, total quantity for batch {}",
+                    batchNumber, batchTotal, batchDto.quantity());
+        }
 
-      purchase.setPurchaseBatches(batches);
-      purchase.setTotalPrice(totalPrice + purchase.getShippingCharge());
-      purchase.setTotalQuantity(totalQuantity);
+        log.debug("All batches done with processing, {} batches with a total cost of purchase {}, and total quantity of products {}",
+                batches.size(), totalPrice, totalQuantity);
 
-      Purchase savedPurchase = purchaseService.save(purchase);
-      customer.getPurchases().add(savedPurchase);
-      purchaseEventService.save(ShippedStatus.NOT_SHIPPED, savedPurchase);
+        purchase.setPurchaseBatches(batches);
+        purchase.setTotalPrice(totalPrice + purchase.getShippingCharge());
+        purchase.setTotalQuantity(totalQuantity);
 
-      log.info("EXIT: Purchase ID: {} created with {} batches, total price of {}, on the address {} with customer{};",
-              savedPurchase.getId(),
-              savedPurchase.getPurchaseBatches().size(),
-              savedPurchase.getTotalPrice(),
-              savedPurchase.getCustomerAddress().getStreetName(),
-              savedPurchase. getCustomer().getName());
+        Purchase savedPurchase = purchaseService.save(purchase);
+        customer.getPurchases().add(savedPurchase);
+        purchaseEventService.save(ShippedStatus.NOT_SHIPPED, savedPurchase);
 
-      return savedPurchase;
-  }
-@Transactional
+        log.info("EXIT: Purchase ID: {} created with {} batches, total price of {}, on the address {} with customer{};",
+                savedPurchase.getId(),
+                savedPurchase.getPurchaseBatches().size(),
+                savedPurchase.getTotalPrice(),
+                savedPurchase.getCustomerAddress().getStreetName(),
+                savedPurchase.getCustomer().getName());
+
+        return savedPurchase;
+    }
+
+    @Transactional
     public Purchase cancelPurchaseById(int id) {
         log.info("ENTRY: Canceling purchase with id: {}", id);
 
         Purchase purchase = purchaseService.getPurchaseById(id);
 
-        ShippedStatus shippedStatus = purchase.getPurchaseEvents().stream()
+        ShippedStatus shippedStatus = purchase.getPurchaseEvents().reversed().stream()
                 .map(PurchaseEvent::getShippedStatus)
                 .filter(status -> status == ShippedStatus.CANCELLED || status == ShippedStatus.DELIVERED || status == ShippedStatus.SHIPPED)
                 .findFirst()
@@ -167,6 +167,34 @@ public class PurchaseOrchestrationService {
         }
         purchaseEventService.save(ShippedStatus.CANCELLED, purchase);
         log.info("EXIT: Purchase with id: {} cancelled successfully and product stock restocked", id);
+
+        return purchase;
+    }
+
+    @Transactional
+    public Purchase updatePurchaseById(int id, ShippedStatus newShippedStatus) {
+        log.info("ENTRY: Updating purchase with id: {}", id);
+
+        Purchase purchase = purchaseService.getPurchaseById(id);
+
+        ShippedStatus shippedStatus = purchase.getPurchaseEvents().reversed().stream()
+                .map(PurchaseEvent::getShippedStatus)
+                .filter(status -> status == ShippedStatus.CANCELLED || status == ShippedStatus.DELIVERED || status == ShippedStatus.SHIPPED)
+                .findFirst()
+                .orElse(null);
+
+        if (shippedStatus == ShippedStatus.CANCELLED || shippedStatus == ShippedStatus.DELIVERED || (shippedStatus == ShippedStatus.SHIPPED && newShippedStatus == ShippedStatus.SHIPPED)) {
+            log.warn("Update failed, purchase already {} on purchase id: {}", shippedStatus.toString().toLowerCase(), id);
+            throw new PurchaseAlreadyHandledException("Purchase with id " + id + " cannot be updated since it's already " + shippedStatus.toString().toLowerCase() + ".");
+        }
+
+
+
+        log.debug("Processing update of purchase with id: {}", id);
+
+
+        purchaseEventService.save(newShippedStatus, purchase);
+        log.info("EXIT: Purchase with id: {} updated successfully", id);
 
         return purchase;
     }

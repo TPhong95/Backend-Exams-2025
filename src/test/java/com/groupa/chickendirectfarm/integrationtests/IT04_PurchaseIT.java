@@ -8,6 +8,7 @@ import com.groupa.chickendirectfarm.dto.customerdtos.CustomerAddressCreateDto;
 import com.groupa.chickendirectfarm.dto.purchasedtos.PurchaseBatchCreateDto;
 import com.groupa.chickendirectfarm.dto.purchasedtos.PurchaseCreateDto;
 import com.groupa.chickendirectfarm.exception.conflict.BatchRequiredInPurchaseException;
+import com.groupa.chickendirectfarm.exception.conflict.PurchaseAlreadyHandledException;
 import com.groupa.chickendirectfarm.exception.notfound.PurchaseNotFoundException;
 import com.groupa.chickendirectfarm.product.Breed;
 import com.groupa.chickendirectfarm.product.Product;
@@ -19,10 +20,8 @@ import com.groupa.chickendirectfarm.purchase.batch.PurchaseBatchRepo;
 import com.groupa.chickendirectfarm.purchase.event.PurchaseEventRepo;
 import com.groupa.chickendirectfarm.purchase.event.ShippedStatus;
 import jakarta.persistence.EntityManager;
-import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,9 +30,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
-@SpringBootTest
-@Transactional
-public class PurchaseIT extends BaseIntegrationTest{
+
+public class IT04_PurchaseIT extends BaseIntegrationTest{
 
     @Autowired
     private CustomerService customerService;
@@ -166,6 +164,52 @@ public class PurchaseIT extends BaseIntegrationTest{
         assertThat(productService.getProductById(savedProduct2.getId()).getQuantity()).isEqualTo(500);
 
     }
+
+    @Test
+    void shouldUpdatePurchaseAndCreateEvent(){
+        Customer customer = new Customer("Bob Bob", "808808", "BobBob@ChickenDirect.com");
+        customerService.save(customer);
+
+        Product product = new Product(Breed.BROWN, "This is the brownest chickens", 200, 40);
+        Product savedProduct = productService.save(product);
+        Product product2 = new Product(Breed.GOLDEN, "It's actually yellow chicken painted gold", 700, 500);
+        Product savedProduct2 = productService.save(product2);
+
+        CustomerAddressCreateDto customerAddress = new CustomerAddressCreateDto("Fancy street", "192949", "BobBurger@Burger.com", customer.getId());
+        CustomerAddress savedCustomerAddress = customerAddressService.save(customerAddress);
+
+
+        PurchaseBatchCreateDto batch1 = new PurchaseBatchCreateDto(10, savedProduct.getId());
+        PurchaseBatchCreateDto batch2 = new PurchaseBatchCreateDto(10, savedProduct2.getId());
+        List<PurchaseBatchCreateDto> purchaseBatches = new ArrayList<>();
+        purchaseBatches.add(batch1);
+        purchaseBatches.add(batch2);
+
+        PurchaseCreateDto purchase = new PurchaseCreateDto(savedCustomerAddress.getId(), 100, purchaseBatches);
+        Purchase savedPurchase = purchaseOrchestrationService.create(purchase);
+
+        assertThat(purchaseService.getPurchaseById(savedPurchase.getId()).getPurchaseEvents().size()).isEqualTo(1);
+
+        entityManager.flush();
+        entityManager.clear();
+
+        purchaseOrchestrationService.updatePurchaseById(savedPurchase.getId(), ShippedStatus.SHIPPED);
+        assertThat(purchaseService.getPurchaseById(savedPurchase.getId()).getPurchaseEvents().getLast().getShippedStatus()).isEqualTo(ShippedStatus.SHIPPED);
+        assertThat(purchaseService.getPurchaseById(savedPurchase.getId()).getPurchaseEvents().size()).isEqualTo(2);
+        assertThrows(PurchaseAlreadyHandledException.class, () -> purchaseOrchestrationService.updatePurchaseById(savedPurchase.getId(), ShippedStatus.SHIPPED));
+
+
+        purchaseOrchestrationService.updatePurchaseById(savedPurchase.getId(), ShippedStatus.DELIVERED);
+        assertThat(purchaseService.getPurchaseById(savedPurchase.getId()).getPurchaseEvents().size()).isEqualTo(3);
+        assertThrows(PurchaseAlreadyHandledException.class, () -> purchaseOrchestrationService.updatePurchaseById(savedPurchase.getId(), ShippedStatus.SHIPPED));
+        assertThrows(PurchaseAlreadyHandledException.class, () -> purchaseOrchestrationService.updatePurchaseById(savedPurchase.getId(), ShippedStatus.NOT_SHIPPED));
+        assertThrows(PurchaseAlreadyHandledException.class, () -> purchaseOrchestrationService.updatePurchaseById(savedPurchase.getId(), ShippedStatus.CANCELLED));
+        assertThrows(PurchaseAlreadyHandledException.class, () -> purchaseOrchestrationService.updatePurchaseById(savedPurchase.getId(), ShippedStatus.DELIVERED));
+        assertThrows(PurchaseAlreadyHandledException.class, () -> purchaseOrchestrationService.cancelPurchaseById(savedPurchase.getId()));
+
+    }
+
+
 
 
 
