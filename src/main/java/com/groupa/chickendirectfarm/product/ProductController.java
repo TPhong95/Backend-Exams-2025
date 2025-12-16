@@ -55,7 +55,7 @@ public class ProductController {
         productService.deleteProductById(id);
         return ResponseEntity.ok("Product with id " + id + " was deleted");
     }
-    //Må fikse responseEntity
+
     @PostMapping("/restock")
     public ResponseEntity<ProductResponseDto> restockProduct(@RequestBody ProductRestockDto productRestockDto){
         productOrchestrationService.increaseStock(
