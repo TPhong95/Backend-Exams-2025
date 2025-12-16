@@ -195,10 +195,10 @@
                                 ${project.reporting.outputDirectory}/jacoco-integration-test-coverage-report
                             </outputDirectory>
                             <excludes>
-                                <exclude>/testdata//</exclude>
-                                <exclude>/dto//</exclude>
-                                <exclude>/mapper/</exclude>
-                                <exclude>*/Controller.class</exclude>
+                                <exclude>**/testdata/**</exclude>
+                                <exclude>**/dto/**</exclude>
+                                <exclude>**/mapper/**</exclude>
+                                <exclude>**/*Controller.class</exclude>
                             </excludes>
                         </configuration>
                     </execution>
@@ -231,10 +231,10 @@
                             <outputDirectory>${project.reporting.outputDirectory}/jacoco-merged-test-coverage-report
                             </outputDirectory>
                             <excludes>
-                                <exclude>/testdata//</exclude>
-                                <exclude>/dto//</exclude>
-                                <exclude>/mapper/</exclude>
-                                <exclude>*/Controller.class</exclude>
+                                <exclude>**/testdata/**</exclude>
+                                <exclude>**/dto/**</exclude>
+                                <exclude>**/mapper/**</exclude>
+                                <exclude>**/*Controller.class</exclude>
                             </excludes>
                         </configuration>
                     </execution>
