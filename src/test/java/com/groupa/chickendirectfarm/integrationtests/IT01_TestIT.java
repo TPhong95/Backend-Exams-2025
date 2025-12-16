@@ -33,7 +33,7 @@ public class IT01_TestIT extends BaseIntegrationTest {
 
         assertThat(productRepo.findAll()).extracting(Product::getBreed).containsExactlyInAnyOrder(Breed.BROWN, Breed.GOLDEN, Breed.BLACK, Breed.WHITE);
         assertThat(customerRepo.findAll().size()).isEqualTo(21);
-        assertThat(purchaseRepo.findAll().size()).isEqualTo(55);
+        assertThat(purchaseRepo.findAll().size()).isEqualTo(51);
         assertThat(customerAddressRepo.findAll().size()).isEqualTo(101);
     }
 }

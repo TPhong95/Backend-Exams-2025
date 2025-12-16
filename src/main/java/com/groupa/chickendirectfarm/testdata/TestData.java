@@ -12,7 +12,6 @@ import com.groupa.chickendirectfarm.dto.purchasedtos.PurchaseCreateDto;
 import com.groupa.chickendirectfarm.purchase.PurchaseOrchestrationService;
 import com.groupa.chickendirectfarm.purchase.PurchaseRepo;
 import com.groupa.chickendirectfarm.dto.purchasedtos.PurchaseBatchCreateDto;
-import com.groupa.chickendirectfarm.purchase.batch.PurchaseBatchRepo;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -66,7 +65,6 @@ public class TestData {
             ));
 
 
-        for (int i = 0; i < 5; i++) {
             int shippingPrice = random.nextInt(200, 500) +1;
 
             PurchaseCreateDto purchaseCreateDto = new PurchaseCreateDto(
@@ -77,10 +75,6 @@ public class TestData {
 
             var testPurchase = purchaseOrchestrationService.create(purchaseCreateDto);
             purchaseRepo.save(testPurchase);
-        }
-
-
-
 
     }
 
